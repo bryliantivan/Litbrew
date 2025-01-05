@@ -7,10 +7,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        raleway: ['Raleway', 'sans-serif'],
+        'raleway': ['Raleway', 'sans-serif'],
         'motter-corpus-std': ['Motter corpus std', 'sans-serif'],
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')
+  ],
 }

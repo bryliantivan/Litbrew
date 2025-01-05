@@ -14,6 +14,12 @@ import brown_sugar_cookies from "./brown_sugar_cookies.png";
 import almond_croissant from "./almond_croissant.png";
 import chocolate_chips_croissants from "./chocolate_chips_croissants.png";
 
+
+import homepage_cover1 from "./homepage_cover1.png"
+import homepage_cover2 from "./homepage_cover2.png"
+import homepage_cover3 from "./homepage_cover3.png"
+
+
 export {
     instagram,
     twitter,
@@ -29,5 +35,9 @@ export {
     misberries_pie,
     brown_sugar_cookies,
     almond_croissant,
-    chocolate_chips_croissants
+    chocolate_chips_croissants,
+
+    homepage_cover1,
+    homepage_cover2,
+    homepage_cover3
 }
