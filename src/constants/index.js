@@ -1,5 +1,6 @@
 import { instagram, twitter, linkedin, tiktok } from "../assets/images";
 import {  oreo_cheesecake, chocolate_cake, dark_chocolate_chip_cookies, mint_cupcake, apple_pie, oreo_cupcake, misberries_pie, brown_sugar_cookies, almond_croissant, chocolate_chips_croissants } from "../assets/images";
+import { classic_americano, milk_bubble_tea, matcha_tea, coffe_milk, oreo_smoothies, caramel_macchiato } from "../assets/images";  
 
 export const navLinks = [
     { href: "Home", label: "HOME" },
@@ -101,3 +102,36 @@ export const desserts = [
         price: "IDR 32.000",
     },
 ];
+
+export const drinks = [
+    {
+        imgUrl: classic_americano,
+        name: "Classic Americano",
+        price: "IDR 20.000",
+    },
+    {
+        imgUrl: milk_bubble_tea,
+        name: "Milk Bubble Tea",
+        price: "IDR 25.000",
+    },
+    {
+        imgUrl: matcha_tea,
+        name: "Matcha Tea",
+        price: "IDR 25.000",
+    },
+    {
+        imgUrl: coffe_milk,
+        name: "Coffee Milk",
+        price: "IDR 28.000",
+    },
+    {
+        imgUrl: oreo_smoothies,
+        name: "Oreo Smoothies",
+        price: "IDR 30.000",
+    },
+    {
+        imgUrl: caramel_macchiato,
+        name: "Caramel Macchiato",
+        price: "IDR 35.000",
+    },
+]

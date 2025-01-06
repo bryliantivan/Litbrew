@@ -1,4 +1,5 @@
 import { homepage_cover1, homepage_cover2, homepage_cover3 } from "../assets/images";
+import { drinks } from "../constants";
 import { useEffect, useState } from 'react';
 import { Carousel } from 'flowbite';
 import { statistics } from "../constants";
@@ -45,6 +46,17 @@ const Home = () => {
     { image: homepage_cover3, alt: "carousel-3", loading: "lazy" }
   ];
 
+  // Untuk Carrousel kedua Buddy Choice
+  const [currentIndex, setCurrentIndex] = useState(1);
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? drinks.length - 1 : prevIndex - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === drinks.length - 1 ? 0 : prevIndex + 1));
+  };
+
   return (
     <>
       <div className="relative overflow-hidden">
@@ -54,7 +66,7 @@ const Home = () => {
             {slides.map((slide, index) => (
               <div
                 key={index}
-                className={`mt-8  absolute w-full h-full duration-700 ease-in-out transition-opacity ${
+                className={`mt-8 absolute w-full h-full duration-700 ease-in-out transition-opacity ${
                   activeSlide === index ? 'opacity-100 z-20' : 'opacity-0 z-10'
                 }`}
                 data-carousel-item={activeSlide === index ? "active" : ""}
@@ -70,7 +82,7 @@ const Home = () => {
           </div>
 
           {/* Content overlay */}
-          <div className="absolute inset-0 flex items-center justify-center z-30 bg-black/30 backdrop-blur-[3px]">
+          <div className="absolute inset-0 flex items-center justify-center z-30 bg-black/30 backdrop-blur-[50px]">
             <div className="text-center max-w-4xl px-4">
               <p className="text-white text-xl tracking-wider mb-4 animate-fade-in">
                 Our Summer Hot-takes!
@@ -92,16 +104,16 @@ const Home = () => {
           </div>
 
           {/* Slider indicators */}
-          <div className="absolute z-30 flex space-x-4 -translate-x-1/2 bottom-10 left-1/2">
+          <div className="absolute z-30 flex space-x-2 -translate-x-1/2 bottom-10 left-1/2">
             {[0, 1, 2].map((index) => (
               <button 
                 key={index}
                 type="button" 
-                className={`w-4 h-4 rounded-full border-2 transition-all duration-300
-                  ${activeSlide === index ? 'bg-white border-white' : 'bg-black/20 border-black/20'}`}
-                aria-current={activeSlide === index}
-                aria-label={`Slide ${index + 1}`}
-                data-carousel-slide-to={index}
+                className={`transition-all duration-300 ${
+                  activeSlide === index 
+                    ? 'bg-[#3D5AF1] w-10 h-2.5 rounded-full' 
+                    : 'bg-white w-2.5 h-2.5 rounded-full'
+                }`}
                 onClick={() => setActiveSlide(index)}
               />
             ))}
@@ -135,23 +147,81 @@ const Home = () => {
         </div>
       </div>
 
-            {/* Statistic */}
-      <div className=" p-36 w-full flex flex-col justify-center items-center flex-wrap gap-6 mx-auto h-[640px] bg-gradient-to-b from-[#4BC1D2] to-white">
-        <h2>About</h2>
-        <h1>Litbrew</h1>
-        <p className="text-center">Born out of a passion for both literature and exceptional coffee, Litbrew opened its doors in 2024 with a simple yet bold vision: to create a space that invites people to read, relax, and recharge.</p>
+      {/* Statistic */}
+      <div className="p-36 w-full flex flex-col justify-center items-center flex-wrap gap-6 mx-auto h-[700px] bg-gradient-to-b from-[#4BC1D2] to-white">
+        <h2 className="font-raleway font-black text-5xl">About</h2>
+        <h1 className="font-motter-corpus-std text-[4.5rem]">Litbrew</h1>
+        <p className="text-center font-raleway w-3/4 font-semibold">
+          Born out of a passion for both literature and exceptional coffee, Litbrew opened its doors in 2024 with a simple yet bold vision: to create a space that invites people to read, relax, and recharge.
+        </p>
         <div className="flex justify-center items-center flex-wrap w-full mt-10 gap-16">
           {statistics.map((stat) => (
             <div key={stat.label}>
               <p className="text-4xl font-palanquin font-bold">{stat.value}</p>
-              <p className="leading-7 font-montserrat text-slate-gray">{stat.label}</p>
+              <p className="leading-7 font-raleway font-semibold text-slate-gray">{stat.label}</p>
             </div>
           ))}
         </div>
       </div>
+
+       {/* Buddy Choice */}
+      <div className="flex justify-center items-center bg-[#06779D] w-full h-32">
+        <h1 className="text-5xl font-motter-corpus-std text-[#CFF2F5]">LitBrew's Buddy Choice</h1>
+      </div>
+
+      <div className="mt-16">
+        <div className="bg-[#fef9f6] min-h-screen flex flex-col items-center py-8">
+          {/* Header */}
+          <h1 className="text-3xl font-raleway md:text-5xl font-bold text-[#4a403a] mb-10">Litbrew's Buddy Choice</h1>
+
+          {/* Carousel */}
+          <div className="relative h-[32rem] w-7/8 max-w-6xl overflow-hidden">
+            <div className="h-full mt-10 flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${(currentIndex - 1) * 33.33}%)` }}>
+              {drinks.map((drink, index) => (
+                <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-105' : 'scale-75'}`}>
+                  {currentIndex === index && (
+                    <div className="absolute bottom-56 transform translate-y-1/2 w-48 h-16 bg-[#CFF2F5] rounded-[50%] z-0"></div>
+                  )}
+                  <img
+                    src={drink.imgUrl}
+                    alt={drink.name}
+                    className="relative z-10 w-48 h-64 md:w-64 md:h-80 object-fill mx-2"
+                  />
+                  <p className="text-xl font-semibold text-[#4a403a] mt-4">{drink.name}</p>
+                  <p className="text-lg text-[#6b6b6b]">{drink.price}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={handlePrev}
+              className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-[#EDEDED] text-black px-2 md:px-3 py-4 md:py-6 rounded-full hover:bg-[#2C4ACB] hover:text-white focus:outline-none"
+            >
+              ❮
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-[#EDEDED] text-black px-2 md:px-3 py-4 md:py-6 rounded-full hover:bg-[#2C4ACB] hover:text-white focus:outline-none"
+            >
+              ❯
+            </button>
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center space-x-2 mt-6">
+            {drinks.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-3 rounded-full transition-all duration-300 ${currentIndex === index ? "bg-[#3D5AF1] w-10" : "bg-gray-300 w-3"}`}
+              ></button>
+            ))}
+          </div>
+        </div>
+      </div>
     </>
-    
-    
   );
 };
 

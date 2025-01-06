@@ -15,9 +15,17 @@ import almond_croissant from "./almond_croissant.png";
 import chocolate_chips_croissants from "./chocolate_chips_croissants.png";
 
 
-import homepage_cover1 from "./homepage_cover1.png"
-import homepage_cover2 from "./homepage_cover2.png"
-import homepage_cover3 from "./homepage_cover3.png"
+import homepage_cover1 from "./homepage_cover1.png";
+import homepage_cover2 from "./homepage_cover2.png";
+import homepage_cover3 from "./homepage_cover3.png";
+
+
+import classic_americano from "./classic_americano.png";
+import milk_bubble_tea from "./milk_bubble_tea.png";
+import matcha_tea from "./matcha_tea.png";
+import coffe_milk from "./coffe_milk.png";
+import oreo_smoothies from "./oreo_smoothies.png";
+import caramel_macchiato from "./caramel_macchiato.png";
 
 
 export {
@@ -39,5 +47,12 @@ export {
 
     homepage_cover1,
     homepage_cover2,
-    homepage_cover3
+    homepage_cover3,
+
+    classic_americano, 
+    milk_bubble_tea, 
+    matcha_tea, 
+    coffe_milk,
+    oreo_smoothies, 
+    caramel_macchiato
 }
