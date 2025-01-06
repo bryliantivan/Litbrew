@@ -41,6 +41,12 @@ export const socialMedia = [
     { src: linkedin, alt: "linkedin logo" },
     { src: tiktok, alt: "tiktok logo" },
 ];
+
+export const statistics = [
+    { value: '1k+', label: 'Books' },
+    { value: '500+', label: 'Shop' },
+    { value: '10+', label: 'Menu' },
+];
     
     
 export const desserts = [
