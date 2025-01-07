@@ -1,6 +1,6 @@
+import React, { useRef, useState, useEffect } from 'react';
 import { homepage_cover1, homepage_cover2, homepage_cover3 } from "../assets/images";
 import { drinks } from "../constants";
-import { useEffect, useState } from 'react';
 import { Carousel } from 'flowbite';
 import { statistics } from "../constants";
 
@@ -48,6 +48,7 @@ const Home = () => {
 
   // Untuk Carrousel kedua Buddy Choice
   const [currentIndex, setCurrentIndex] = useState(1);
+  const sectionRef = useRef(null);
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? drinks.length - 1 : prevIndex - 1));
@@ -55,6 +56,10 @@ const Home = () => {
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex === drinks.length - 1 ? 0 : prevIndex + 1));
+  };
+
+  const handleExploreNow = () => {
+    sectionRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -96,10 +101,16 @@ const Home = () => {
               <p className="text-white font-raleway font-semibold text-xl max-w-2xl mx-auto mb-8 animate-fade-in">
                 Discover boundless imagination in a library cafe designed for dreamers, thinkers, and creators.
               </p>
-              <button className="bg-[#4BC1D2] font-raleway text-white font-bold px-10 py-4 rounded-full 
+              <button onClick={handleExploreNow} className="bg-[#4BC1D2] font-raleway text-white font-bold px-10 py-4 rounded-full 
                 hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300 shadow-lg animate-fade-in">
                 Explore Now
               </button>
+
+              {/* Section to scroll to */}
+              <div ref={sectionRef} className="target-section">
+                {/* Content of the section */}
+              </div>
+
             </div>
           </div>
 
@@ -148,7 +159,7 @@ const Home = () => {
       </div>
 
       {/* Statistic */}
-      <div className="p-36 w-full flex flex-col justify-center items-center flex-wrap gap-6 mx-auto h-[700px] bg-gradient-to-b from-[#4BC1D2] to-white">
+      <div className="p-36 w-full flex flex-col justify-center items-center flex-wrap gap-6 mx-auto h-[700px] bg-gradient-to-b from-[#4BC1D2] to-[#fef9f6]">
         <h2 className="font-raleway font-black text-5xl">About</h2>
         <h1 className="font-motter-corpus-std text-[4.5rem]">Litbrew</h1>
         <p className="text-center font-raleway w-3/4 font-semibold">
@@ -165,11 +176,8 @@ const Home = () => {
       </div>
 
        {/* Buddy Choice */}
-      <div className="flex justify-center items-center bg-[#06779D] w-full h-32">
-        <h1 className="text-5xl font-motter-corpus-std text-[#CFF2F5]">LitBrew's Buddy Choice</h1>
-      </div>
 
-      <div className="mt-16">
+      <div>
         <div className="bg-[#fef9f6] min-h-screen flex flex-col items-center py-8">
           {/* Header */}
           <h1 className="text-3xl font-raleway md:text-5xl font-bold text-[#4a403a] mb-10">Litbrew's Buddy Choice</h1>
