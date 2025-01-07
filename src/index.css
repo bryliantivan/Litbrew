@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  background-color: #fef9f6;
+}
+
 * {
   margin: 0;
   padding: 0;
