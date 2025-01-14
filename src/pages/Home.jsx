@@ -3,8 +3,10 @@ import { homepage_cover1, homepage_cover2, homepage_cover3, homepage_dessert1, h
 import { drinks } from "../constants";
 import { Carousel } from 'flowbite';
 import { statistics } from "../constants";
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
@@ -49,25 +51,37 @@ const Home = () => {
   const dessert_slides = [
     {
       content: (
-        <div className="flex flex-col items-center justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert1})` }}>
-          <h2 className="text-4xl font-bold">Delicious Desserts</h2>
-          <p className="mt-4 text-lg">Indulge in our selection of mouth-watering desserts.</p>
+        <div className="flex flex-col items-end justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat font" style={{ backgroundImage: `url(${homepage_dessert1})` }}>
+          <div className='mr-20'>
+            <h2 className="text-5xl text-center font-motter-corpus-std">FIND YOUR DESSERT</h2>
+            <p className="mt-6 text-xl text-center font-raleway">Indulge in our freshly brewed coffee and now,<br/>a delightful selection of desserts. </p>
+            <button onClick={() => navigate('/menu')} className="bg-[#4BC1D2] font-raleway text-white font-bold mt-8 px-10 py-4 rounded-full 
+              hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-lg animate-fade-in">
+              ORDER NOW!
+            </button>
+          </div>
         </div>
       ),
     },
     {
       content: (
-        <div className="flex flex-col items-center justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert2})` }}>
-          <h2 className="text-4xl font-bold">Sweet Treats</h2>
-          <p className="mt-4 text-lg">Experience the sweetness in every bite.</p>
+        <div className="flex flex-col items-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert2})` }}>
+          <h2 className="text-7xl mt-48 text-center font-motter-corpus-std text-[#07779D]">NEW MENU</h2>
+          <p className="text-5xl self-end text-center font-raleway font-extrabold mr-44 mt-[8.5rem]">Chocolate Cake<br/>ONLY 20k!<br/>GRAB IT FAST</p>
         </div>
       ),
     },
     {
       content: (
-        <div className="flex flex-col items-center justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert3})` }}>
-          <h2 className="text-4xl font-bold">Tasty Delights</h2>
-          <p className="mt-4 text-lg">Savor the flavors of our delightful desserts.</p>
+        <div className="flex flex-col items-end justify-center h-full text-center bg-cover bg-center bg-no-repeat font" style={{ backgroundImage: `url(${homepage_dessert3})` }}>
+          <div className='mr-32'>
+            <h2 className="text-8xl text-right font-raleway font-extrabold text-[#583123]">ICE<br/>CREAM</h2>
+            <p className="mt-6 text-3xl font-extrabold text-right font-raleway text-[#583123]">Only on site</p>
+            <button onClick={() => navigate('/menu')} className="bg-[#583123] font-raleway text-white font-bold mt-8 px-10 py-4 rounded-full 
+              hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-2xl animate-fade-in">
+              LITBREW NEW PICK
+            </button>
+          </div>
         </div>
       ),
     },
@@ -167,7 +181,7 @@ const Home = () => {
           </div>
 
           {/* Carousel controls */}
-          <button 
+          {/* <button 
             type="button" 
             className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" 
             data-carousel-prev
@@ -190,7 +204,7 @@ const Home = () => {
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
               </svg>
             </span>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -220,6 +234,7 @@ const Home = () => {
             </button>
             <div className="w-px h-8 bg-white"></div> {/* Vertical line */}
             <button
+              onClick={() => navigate('/about')}
               className="h-full w-1/2 font-raleway text-white font-bold px-6 py-3 rounded-r-full bg-transparent hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300"
             >
               About Us
@@ -290,6 +305,7 @@ const Home = () => {
               </button>
               <div className="w-px h-8 bg-white"></div> {/* Vertical line */}
               <button
+                onClick={() => navigate('/menu')}
                 className="h-full w-1/2 font-raleway text-white font-bold px-6 py-3 rounded-r-full bg-transparent hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300"
               >
                 Menu
@@ -299,7 +315,7 @@ const Home = () => {
         </div>
 
         {/* Find Your Dessert Carousel */}
-        <div id="default-carousel" className="relative w-full h-screen" data-carousel="slide">
+        <div ref={(el) => (sectionRefs.current[2] = el)} id="default-carousel" className="relative w-full h-screen" data-carousel="slide">
           <div className="relative h-full overflow-hidden w-full">
             {dessert_slides.map((slide, index) => (
               <div

@@ -8,7 +8,7 @@ export default {
     extend: {
       fontFamily: {
         'raleway': ['Raleway', 'sans-serif'],
-        'motter-corpus-std': ['Motter corpus std', 'sans-serif'],
+        'motter-corpus-std': ['motter-corpus-std', 'sans-serif'],
       },
     },
   },
