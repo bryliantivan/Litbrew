@@ -1,6 +1,7 @@
 import { instagram, twitter, linkedin, tiktok } from "../assets/images";
 import {  oreo_cheesecake, chocolate_cake, dark_chocolate_chip_cookies, mint_cupcake, apple_pie, oreo_cupcake, misberries_pie, brown_sugar_cookies, almond_croissant, chocolate_chips_croissants } from "../assets/images";
-import { classic_americano, milk_bubble_tea, matcha_tea, coffe_milk, oreo_smoothies, caramel_macchiato } from "../assets/images";  
+import { classic_americano, milk_bubble_tea, matcha_tea, coffe_milk, oreo_smoothies, caramel_macchiato } from "../assets/images";
+import {  bumi_manusia, dilan_1990, laskar_pelangi, negeri_5 } from "../assets/images";
 
 export const navLinks = [
     { href: "Home", label: "HOME" },
@@ -48,7 +49,12 @@ export const statistics = [
     { value: '500+', label: 'Shop' },
     { value: '10+', label: 'Menu' },
 ];
-    
+
+export const statistics2 = [
+    { value: '800+', label: 'Book Listing' },
+    { value: '1k+', label: 'Registered Member' },
+    { value: '50+', label: 'Branch Count' },
+]
     
 export const desserts = [
     {
@@ -103,7 +109,7 @@ export const desserts = [
     },
 ];
 
-export const drinks = [
+export const homepage_drinks = [
     {
         imgUrl: classic_americano,
         name: "Classic Americano",
@@ -134,4 +140,27 @@ export const drinks = [
         name: "Caramel Macchiato",
         price: "IDR 35.000",
     },
+]
+
+export const homepage_books = [
+    {
+        imgUrl: bumi_manusia,
+        title: "Bumi Manusia",
+        author: "Pramoedya Ananta Toer",
+    },
+    {
+        imgUrl: dilan_1990,
+        title: "Dilan 1990",
+        author: "Pidi Baiq",
+    },
+    {
+        imgUrl: laskar_pelangi,
+        title: "Laskar Pelangi",
+        author: "Andrea Hirata",
+    },
+    {
+        imgUrl: negeri_5,
+        title: "Negeri 5 Menara",
+        author: "Ahmad Fuadi",
+    }
 ]

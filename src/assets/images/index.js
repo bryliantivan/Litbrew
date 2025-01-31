@@ -22,6 +22,8 @@ import homepage_dessert1 from "./homepage_dessert1.png";
 import homepage_dessert2 from "./homepage_dessert2.png";
 import homepage_dessert3 from "./homepage_dessert3.png";
 
+import homepage_book from "./homepage_book.png";
+
 import classic_americano from "./classic_americano.png";
 import milk_bubble_tea from "./milk_bubble_tea.png";
 import matcha_tea from "./matcha_tea.png";
@@ -29,7 +31,16 @@ import coffe_milk from "./coffe_milk.png";
 import oreo_smoothies from "./oreo_smoothies.png";
 import caramel_macchiato from "./caramel_macchiato.png";
 
+import bumi_manusia from "./bumi_manusia.png";
+import dilan_1990 from "./dilan_1990.png";
+import laskar_pelangi from "./laskar_pelangi.png";
+import negeri_5 from "./negeri_5.png";
 
+import homepage_galery1 from "./homepage_galery1.png";
+import homepage_galery2 from "./homepage_galery2.png";
+import homepage_galery3 from "./homepage_galery3.png";
+import homepage_galery4 from "./homepage_galery4.png";
+import homepage_galery5 from "./homepage_galery5.png";
 
 export {
     instagram,
@@ -54,11 +65,22 @@ export {
     homepage_dessert1,
     homepage_dessert2,
     homepage_dessert3,
-
+    homepage_book,
+    homepage_galery1,
+    homepage_galery2,
+    homepage_galery3,
+    homepage_galery4,
+    homepage_galery5,
+    
     classic_americano, 
     milk_bubble_tea, 
     matcha_tea, 
     coffe_milk,
     oreo_smoothies, 
-    caramel_macchiato
+    caramel_macchiato,
+
+    bumi_manusia,
+    dilan_1990,
+    laskar_pelangi,
+    negeri_5
 }
