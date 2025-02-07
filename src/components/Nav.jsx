@@ -1,9 +1,14 @@
 import { Link, NavLink } from 'react-router-dom';
 import { navLinks } from '../constants';
 import { useState, useEffect } from 'react';
+import { IoPersonSharp } from "react-icons/io5";
+import { IoMdArrowDropdown } from "react-icons/io";
+
+
 
 const Nav = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     // Fungsi untuk memeriksa token di localStorage
@@ -31,6 +36,10 @@ const Nav = () => {
     window.dispatchEvent(new Event('storage'));
   };
 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
   return (
     <nav className="bg-[#07779D] fixed w-full z-50 top-0 start-0">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -50,13 +59,43 @@ const Nav = () => {
             </Link>
           ) : (
             // Jika sudah login, tampilkan tombol LOG OUT
-            <button 
-              type="button" 
-              className="text-[#03151E] focus:ring-4 focus:outline-none focus:ring-blue-300 font-raleway font-semibold rounded-lg text-sm px-4 py-2 text-center bg-[#D1E9FF] hover:bg-[#57d0f8] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg"
-              onClick={handleLogout}
-            >
-              LOG OUT
-            </button>
+            <div className="relative">
+              <button 
+                type="button" 
+                onClick={toggleDropdown}
+                className="text-[#03151E] focus:ring-4 focus:outline-none focus:ring-blue-300 font-raleway font-semibold rounded-lg text-sm px-4 py-2 text-center bg-[#D1E9FF] hover:bg-[#57d0f8] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg flex items-center"
+              >
+                <IoPersonSharp />
+                <IoMdArrowDropdown className="ml-2" />
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                  <Link 
+                    to="/myorder"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                   
+                  >
+                    My Order
+                  </Link>
+                  <Link 
+                    to="/profile"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                   
+                  >
+                    Profile
+                  </Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Log Out
+                  </button>
+                  
+                </div>
+                
+                
+              )}
+            </div>
           )}
         </div>
         <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">

@@ -5,6 +5,8 @@ import MenuDetail from './pages/MenuDetail';
 import BookDetail from './pages/BookDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import MyOrder from './pages/MyOrder';
+import Profile from './pages/Profile';
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
           <Route path="/order" element={<Order />} />
           <Route path='/login' element={<Login/>}/>
           <Route path='/register' element={<Register/>}/>
+          <Route path="/myorder" element={<MyOrder />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
       <Footer />
