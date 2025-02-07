@@ -42,7 +42,6 @@ import dilan_1990 from "./dilan_1990.png";
 import laskar_pelangi from "./laskar_pelangi.png";
 import negeri_5 from "./negeri_5.png";
 
-
 import homepage_galery1 from "./homepage_galery1.png";
 import homepage_galery2 from "./homepage_galery2.png";
 import homepage_galery3 from "./homepage_galery3.png";
@@ -91,9 +90,10 @@ export {
     barista_making_coffee,
     barista_smiling,
     customer_interaction,
-
     bumi_manusia,
     dilan_1990,
     laskar_pelangi,
     negeri_5
 }
+
+
