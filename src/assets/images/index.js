@@ -29,6 +29,11 @@ import coffe_milk from "./coffe_milk.png";
 import oreo_smoothies from "./oreo_smoothies.png";
 import caramel_macchiato from "./caramel_macchiato.png";
 
+import about_team_photo from "./about_team_photo.jpeg";
+import about_us_photo from "./about_us_photo.jpeg"; 
+import barista_making_coffee from "./barista_making_coffee.jpg"; 
+import barista_smiling from "./barista_smiling.jpg"; 
+import customer_interaction from "./customer_interaction.jpeg";
 
 
 export {
@@ -60,5 +65,11 @@ export {
     matcha_tea, 
     coffe_milk,
     oreo_smoothies, 
-    caramel_macchiato
+    caramel_macchiato,
+
+    about_team_photo,
+    about_us_photo,
+    barista_making_coffee,
+    barista_smiling,
+    customer_interaction
 }
