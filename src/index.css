@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "motter-corpus-std";
+  src: local("motter-corpus-std"), url("motter-corpus-std.otf") format("opentype");
+}
+
 html, body {
   background-color: #fef9f6;
 }

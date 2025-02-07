@@ -1,12 +1,20 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { homepage_cover1, homepage_cover2, homepage_cover3, homepage_dessert1, homepage_dessert2, homepage_dessert3 } from "../assets/images";
-import { drinks } from "../constants";
+import { homepage_galery1, homepage_galery2, homepage_galery3, homepage_galery4, homepage_galery5,homepage_book, homepage_cover1, homepage_cover2, homepage_cover3, homepage_dessert1, homepage_dessert2, homepage_dessert3 } from "../assets/images";
+import { homepage_books, homepage_drinks } from "../constants";
 import { Carousel } from 'flowbite';
-import { statistics } from "../constants";
+import { statistics, statistics2 } from "../constants";
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
-
+  const galleryImages = [
+    homepage_galery1,
+    homepage_galery2,
+    homepage_galery3,
+    homepage_galery4,
+    homepage_galery5,
+  ];
   useEffect(() => {
     const carouselElement = document.getElementById('default-carousel');
     const carousel = new Carousel(carouselElement, {
@@ -49,25 +57,37 @@ const Home = () => {
   const dessert_slides = [
     {
       content: (
-        <div className="flex flex-col items-center justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert1})` }}>
-          <h2 className="text-4xl font-bold">Delicious Desserts</h2>
-          <p className="mt-4 text-lg">Indulge in our selection of mouth-watering desserts.</p>
+        <div className="flex flex-col items-end justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat font" style={{ backgroundImage: `url(${homepage_dessert1})` }}>
+          <div className='mr-20'>
+            <h2 className="text-5xl text-center font-motter-corpus-std">FIND YOUR DESSERT</h2>
+            <p className="mt-6 text-xl text-center font-raleway">Indulge in our freshly brewed coffee and now,<br/>a delightful selection of desserts. </p>
+            <button onClick={() => navigate('/menu')} className="bg-[#4BC1D2] font-raleway text-white font-bold mt-8 px-10 py-4 rounded-full 
+              hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-lg animate-fade-in">
+              ORDER NOW!
+            </button>
+          </div>
         </div>
       ),
     },
     {
       content: (
-        <div className="flex flex-col items-center justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert2})` }}>
-          <h2 className="text-4xl font-bold">Sweet Treats</h2>
-          <p className="mt-4 text-lg">Experience the sweetness in every bite.</p>
+        <div className="flex flex-col items-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert2})` }}>
+          <h2 className="text-7xl mt-48 text-center font-motter-corpus-std text-[#4BC1D2]">NEW MENU</h2>
+          <p className="text-5xl self-end text-center font-raleway font-extrabold mr-44 mt-[8.5rem]">Chocolate Cake<br/>ONLY 20k!<br/>GRAB IT FAST</p>
         </div>
       ),
     },
     {
       content: (
-        <div className="flex flex-col items-center justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert3})` }}>
-          <h2 className="text-4xl font-bold">Tasty Delights</h2>
-          <p className="mt-4 text-lg">Savor the flavors of our delightful desserts.</p>
+        <div className="flex flex-col items-end justify-center h-full text-center bg-cover bg-center bg-no-repeat font" style={{ backgroundImage: `url(${homepage_dessert3})` }}>
+          <div className='mr-32'>
+            <h2 className="text-8xl text-right font-raleway font-extrabold text-[#583123]">ICE<br/>CREAM</h2>
+            <p className="mt-6 text-3xl font-extrabold text-right font-raleway text-[#583123]">Only on site</p>
+            <button onClick={() => navigate('/menu')} className="bg-[#583123] font-raleway text-white font-bold mt-8 px-10 py-4 rounded-full 
+              hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-2xl animate-fade-in">
+              LITBREW NEW PICK
+            </button>
+          </div>
         </div>
       ),
     },
@@ -76,11 +96,11 @@ const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? drinks.length - 1 : prevIndex - 1));
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? homepage_drinks.length - 1 : prevIndex - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === drinks.length - 1 ? 0 : prevIndex + 1));
+    setCurrentIndex((prevIndex) => (prevIndex === homepage_drinks.length - 1 ? 0 : prevIndex + 1));
   };
 
   const sectionRefs = useRef([]);
@@ -167,7 +187,7 @@ const Home = () => {
           </div>
 
           {/* Carousel controls */}
-          <button 
+          {/* <button 
             type="button" 
             className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" 
             data-carousel-prev
@@ -190,7 +210,7 @@ const Home = () => {
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
               </svg>
             </span>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -220,6 +240,7 @@ const Home = () => {
             </button>
             <div className="w-px h-8 bg-white"></div> {/* Vertical line */}
             <button
+              onClick={() => navigate('/about')}
               className="h-full w-1/2 font-raleway text-white font-bold px-6 py-3 rounded-r-full bg-transparent hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300"
             >
               About Us
@@ -238,7 +259,7 @@ const Home = () => {
           <div className="relative h-[32rem] w-7/8 max-w-6xl overflow-hidden">
             <div className="h-full mt-10 flex transition-transform duration-500 ease-in-out"
                 style={{ transform: `translateX(-${(currentIndex - 1) * 33.33}%)` }}>
-              {drinks.map((drink, index) => (
+              {homepage_drinks.map((drink, index) => (
                 <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-105' : 'scale-75'}`}>
                   {currentIndex === index && (
                     <div className="absolute bottom-56 transform translate-y-1/2 w-48 h-16 bg-[#CFF2F5] rounded-[50%] z-0"></div>
@@ -271,7 +292,7 @@ const Home = () => {
 
           {/* Dots Indicator */}
           <div className="flex justify-center space-x-2">
-            {drinks.map((_, index) => (
+            {homepage_drinks.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
@@ -290,6 +311,7 @@ const Home = () => {
               </button>
               <div className="w-px h-8 bg-white"></div> {/* Vertical line */}
               <button
+                onClick={() => navigate('/menu')}
                 className="h-full w-1/2 font-raleway text-white font-bold px-6 py-3 rounded-r-full bg-transparent hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300"
               >
                 Menu
@@ -299,7 +321,7 @@ const Home = () => {
         </div>
 
         {/* Find Your Dessert Carousel */}
-        <div id="default-carousel" className="relative w-full h-screen" data-carousel="slide">
+        <div ref={(el) => (sectionRefs.current[2] = el)} id="default-carousel" className="relative w-full h-screen" data-carousel="slide">
           <div className="relative h-full overflow-hidden w-full">
             {dessert_slides.map((slide, index) => (
               <div
@@ -357,8 +379,120 @@ const Home = () => {
           </button>
         </div>
       </div>
+
+
+      <div className="p-48 w-full flex flex-col justify-center items-center flex-wrap gap-5 mx-auto h-[58rem]] bg-gradient-to-b from-[#4BC1D2] to-[#fef9f6]">
+        <h1 className='text-4xl text-center pt-32 font-motter-corpus-std text-[#07779D]'>The Book Lover's Dreamland Awaits!</h1>
+        <h4 className='text-xl mt-10 font-medium font-raleway text-[#06779D] text-center'>Welcome to the ultimate book lover's paradise! Join our community and contribute to the ever-evolving library of stories, where every book has a chance to inspire someone new.</h4>
+      </div>
+
+      {/* Favourite Reads */}
+      <div className="bg-[#fef9f6] flex w-full">
+        <div className="w-1/2 flex justify-center">
+          <img
+            src={homepage_book}
+            alt="homepage_book"
+            className="w-full"
+          />
+        </div>
+
+        <div className="relative flex bg-[#06779D] 
+        flex-col justify-center items-start w-1/2 pl-28 pr-12">
+          <h1 className="mt-10 font-motter-corpus-std text-white 
+          text-xl sm:text-[3vw] 
+          sm:leading-[1] font-bold">
+            Your Favourite <span className='text-[#D1E9FF]'>Reads<br/>Are Here!</span>
+          </h1>
+          <p className="font-raleway text-white text-xl leading-8 mt-14 mb-10 ">
+          Buy your favorite books online with ease! Enjoy exclusive offers and discounts on selected titles. Dive into our collection and find special deals that make reading more affordable. Shop now and unlock more savings with every purchase!
+          </p>
+
+          <div className="flex text-white text-[1vw] justify-start items-start flex-wrap w-full mt-10 gap-16">
+            {statistics2.map((stat) => (
+              <div key={stat.label}>
+                <p className="text-4xl font-raleway font-bold">{stat.value}</p>
+                <p className="leading-7 font-raleway text-slate-gray">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={() => navigate('/book')} className="bg-[#4BC1D2] font-raleway text-white font-bold mt-16 py-4 rounded-full 
+            hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-lg animate-fade-in w-[12vw] text-center">
+            ORDER NOW!
+          </button>
+        </div>
+      </div>
+
+      {/* Best Pick */}
+      <div>
+        <h1 className='font-motter-corpus-std text-center text-[2.5vw] text-[#06779D] mt-40 mb-10'>BEST PICKS THIS WEEKEND!</h1>
+        <div className='flex items-center justify-center w-full bg-[#fef9f6]'>
+          {homepage_books.map((book, index) => (
+            <div key={index} className="flex flex-col items-center justify-center w-full">
+              <img
+                src={book.imgUrl}
+                alt={book.title}
+                className="w-[20vw]"
+              />
+              <h1 className="text-[2vw] font-raleway font-bold text-[#4BC1D2]">{book.title}</h1>
+              <p className="text-[1vw] font-raleway font-semibold">{book.author}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Gallery */}
+      <div>
+        <div className="bg-[#fef9f6] min-h-screen flex flex-col items-center py-12">
+          {/* Header */}
+          <h1 className="mt-16 mb-12 text-4xl font-raleway md:text-5xl font-bold text-[#4a403a]">Litbrew's Gallery</h1>
+
+          {/* Carousel */}
+          <div className="relative h-[30vw] w-5/6 overflow-hidden">
+            <div className="h-full mt-32 flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${(currentIndex - 1) * 33.33}%)` }}>
+              {galleryImages.map((image, index) => (
+                <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-150 z-50' : 'scale-80 z-10'}`}>
+                  {currentIndex === index && (
+                    <div className="absolute bottom-56 transform translate-y-1/2 w-48 h-16 bg-gradient-to-b from-[#FFFFFF] to-[#64b0b7] rounded-[50%] z-0"></div>
+                  )}
+                  <img
+                    src={image}
+                    className="relative z-20 w-[30w] object-fill mx-2"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={handlePrev}
+              className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-[#EDEDED] text-black px-2 md:px-3 py-4 md:py-6 rounded-full hover:bg-[#2C4ACB] hover:text-white focus:outline-none"
+            >
+              ❮
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-[#EDEDED] text-black px-2 md:px-3 py-4 md:py-6 rounded-full hover:bg-[#2C4ACB] hover:text-white focus:outline-none"
+            >
+              ❯
+            </button>
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center space-x-2">
+            {homepage_drinks.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-3 rounded-full transition-all duration-300 ${currentIndex === index ? "bg-[#3D5AF1] w-10" : "bg-gray-300 w-3"}`}
+              ></button>
+            ))}
+          </div>
+        </div>
+      </div>
+      
     </>
   );
 };
-
 export default Home;
