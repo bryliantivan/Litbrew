@@ -31,18 +31,16 @@ import coffe_milk from "./coffe_milk.png";
 import oreo_smoothies from "./oreo_smoothies.png";
 import caramel_macchiato from "./caramel_macchiato.png";
 
-<<<<<<< HEAD
 import about_team_photo from "./about_team_photo.jpeg";
 import about_us_photo from "./about_us_photo.jpeg"; 
 import barista_making_coffee from "./barista_making_coffee.jpg"; 
 import barista_smiling from "./barista_smiling.jpg"; 
 import customer_interaction from "./customer_interaction.jpeg";
-=======
+
 import bumi_manusia from "./bumi_manusia.png";
 import dilan_1990 from "./dilan_1990.png";
 import laskar_pelangi from "./laskar_pelangi.png";
 import negeri_5 from "./negeri_5.png";
->>>>>>> 16035514f8ab3f461a729e2579a026d21bac12f2
 
 import homepage_galery1 from "./homepage_galery1.png";
 import homepage_galery2 from "./homepage_galery2.png";
@@ -87,16 +85,14 @@ export {
     oreo_smoothies, 
     caramel_macchiato,
 
-<<<<<<< HEAD
     about_team_photo,
     about_us_photo,
     barista_making_coffee,
     barista_smiling,
     customer_interaction
-=======
     bumi_manusia,
     dilan_1990,
     laskar_pelangi,
     negeri_5
->>>>>>> 16035514f8ab3f461a729e2579a026d21bac12f2
+
 }
