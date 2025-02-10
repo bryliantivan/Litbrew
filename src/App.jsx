@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MyOrder from './pages/MyOrder';
 import Profile from './pages/Profile';
+import OrderTracking from './pages/OrderTracking';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
           <Route path='/register' element={<Register/>}/>
           <Route path="/myorder" element={<MyOrder />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/ordertracking" element={<OrderTracking/>}/>
         </Routes>
       </Router>
       <Footer />
