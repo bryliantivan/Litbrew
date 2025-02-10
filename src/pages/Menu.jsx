@@ -7,14 +7,28 @@ const Menu = () => {
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState("All"); // State for category filter
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
+  const [cart, setCart] = useState([]); // State for managing the cart
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State for user login status
 
   useEffect(() => {
+    // Check if token exists in local storage
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+
     axios.get("http://localhost:3000/api/products")
       .then((response) => {
         console.log("Data API:", response.data);
         setProducts(response.data);
       })
       .catch((error) => console.error("Error fetching products:", error));
+
+    // Load cart from local storage
+    const savedCart = JSON.parse(localStorage.getItem("cart"));
+    if (savedCart) {
+      setCart(savedCart);
+    }
   }, []);
 
   // Filter products based on category and search term
@@ -25,6 +39,26 @@ const Menu = () => {
     }
     return product.category === category && product.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
+
+  // Function to handle adding products to the cart
+  const addToCart = (product) => {
+    if (!isLoggedIn) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+    const existingProduct = cart.find(item => item._id === product._id);
+    let newCart;
+    if (existingProduct) {
+      newCart = cart.map(item =>
+        item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      newCart = [...cart, { ...product, quantity: 1 }];
+    }
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
+    console.log("Cart:", newCart);
+  };
 
   return (
     <div className="container px-5 py-36 mx-auto">
@@ -97,7 +131,7 @@ const Menu = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
+              <ProductCard key={product._id} product={product} addToCart={addToCart} />
             ))
           ) : (
             <p className="text-center text-gray-500 col-span-3">
@@ -111,7 +145,15 @@ const Menu = () => {
 };
 
 // Komponen untuk menampilkan tiap produk
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, addToCart }) => {
+  const [added, setAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000); // Reset added state after 2 seconds
+  };
+
   return (
     <div className="group flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-[#03151E] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
       <Link to={`/menu/${product._id}`} className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
@@ -122,13 +164,15 @@ const ProductCard = ({ product }) => {
           <h4 className="text-xl tracking-tight text-white pb-3">{product.name}</h4>
         </Link>
         <p className="text-xs text-white sm:text-l pb-4">
-                                {product?.description}
-                            </p>
+          {product?.description}
+        </p>
         <div className="grid grid-cols-2 gap-3">
           <div className="mt-2 mb-5 flex items-center justify-between">
             <p><span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. {product.price}</span></p>
           </div>
-          <button type="button" class="text-white bg-[#4BC1D2] hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">BUY</button>
+          <button type="button" className={`text-white ${added ? "bg-green-500" : "bg-[#4BC1D2]"} hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`} onClick={handleAddToCart}>
+            {added ? "Added" : "BUY"}
+          </button>
         </div>
       </div>
     </div>

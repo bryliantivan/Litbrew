@@ -1,41 +1,76 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Button } from "flowbite-react";
 
 const Book = () => {
   const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // Fix: Add searchTerm state
+  const [category, setCategory] = useState("All"); // State for category filter
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
+  const [cart, setCart] = useState([]); // State for managing the cart
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State for user login status
 
   useEffect(() => {
+    // Check if token exists in local storage
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+
     axios.get("http://localhost:3000/api/products")
       .then((response) => {
         console.log("Data API:", response.data);
         setProducts(response.data);
       })
       .catch((error) => console.error("Error fetching products:", error));
+
+    // Load cart from local storage
+    const savedCart = JSON.parse(localStorage.getItem("cart"));
+    if (savedCart) {
+      setCart(savedCart);
+    }
   }, []);
 
-  // Filter produk hanya untuk kategori "Book" + Search Feature
+  // Filter products based on category and search term
   const filteredProducts = products.filter((product) =>
     product.category === "Book" &&
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) // Search Filter
   );
 
+  // Function to handle adding products to the cart
+  const addToCart = (product) => {
+    if (!isLoggedIn) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+    const existingProduct = cart.find(item => item._id === product._id);
+    let newCart;
+    if (existingProduct) {
+      newCart = cart.map(item =>
+        item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      newCart = [...cart, { ...product, quantity: 1 }];
+    }
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
+    console.log("Cart:", newCart);
+  };
+
   return (
     <div className="container px-5 py-36 mx-auto">
-      {/* Title */}
       <div className="inset-0 flex items-center justify-center z-30">
         <div className="text-center max-w-4xl px-4">
           <h1 className="text-[#03151E] font-motter-corpus-std text-8xl mb-6 animate-fade-in">
-            Read & Relax
+            SIPS & DIPS
           </h1>
-          <h3 className="text-black font-raleway text-2xl mb-2 animate-fade-in">
-          Prepared by LitBrew’s Crew, just for you
-          </h3>
+          <p className="text-white font-raleway font-semibold text-xl max-w-2xl mx-auto mb-8 animate-fade-in">
+            <h3 className="text-black font-raleway text-2xl mb-2 animate-fade-in">
+              Made by LitBrew’s Buddies for you
+            </h3>
+          </p>
         </div>
       </div>
-
-      {/* Search Bar */}
       <form className="max-w-md mx-auto">
         <div className="relative flex items-center">
           {/* Input Field */}
@@ -45,7 +80,7 @@ const Book = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full p-3 ps-5 text-sm text-gray-600 border border-blue-400 rounded-full bg-white focus:ring-blue-500 focus:border-blue-500 outline-none"
-            placeholder="Search Books"
+            placeholder="Search Menu"
           />
 
           {/* Search Button with Icon */}
@@ -72,25 +107,53 @@ const Book = () => {
         </div>
       </form>
 
-      {/* Books Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))
-        ) : (
-          <p className="text-center text-gray-500 col-span-3">No books available.</p>
-        )}
+      {/* Filter Buttons */}
+      <div className="flex flex-wrap items-start gap-2 mb-6">
+        <Button className={`px-4 py-2 ${category === "All" ? "bg-blue-500 text-white" : "bg-[#4BC1D2] text-white hover:bg-blue-700"}`}
+          size="l" onClick={() => setCategory("All")}>
+          All
+        </Button>
+        <Button className={`px-4 py-2 ${category === "Food" ? "bg-blue-500 text-white" : "bg-[#4BC1D2] text-white hover:bg-blue-700"}`}
+          size="l" onClick={() => setCategory("Food")}>
+          Food
+        </Button>
+        <Button className={`px-4 py-2 ${category === "Drink" ? "bg-blue-500 text-white" : "bg-[#4BC1D2] text-white hover:bg-blue-700"}`}
+          size="l" onClick={() => setCategory("Drink")}>
+          Drink
+        </Button>
+      </div>
+
+      {/* Grid Produk */}
+      <div className="flex justify-center items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <ProductCard key={product._id} product={product} addToCart={addToCart} />
+            ))
+          ) : (
+            <p className="text-center text-gray-500 col-span-3">
+              No {category !== "All" ? category.toLowerCase() : ""} products available.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-// Komponen untuk menampilkan tiap produk (Book Card)
-const ProductCard = ({ product }) => {
+// Komponen untuk menampilkan tiap produk
+const ProductCard = ({ product, addToCart }) => {
+  const [added, setAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000); // Reset added state after 2 seconds
+  };
+
   return (
-    <div className="group my-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-[#03151E] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
-      <Link to={`/menu/${product._id}`} className="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl">
+    <div className="group flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-[#03151E] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
+      <Link to={`/menu/${product._id}`} className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
         <img className="absolute top-0 right-0 h-full w-full object-cover bg-[#D1E9FF]" src={product.image} alt={product.name} />
       </Link>
       <div className="mt-4 px-5 pb-1">
@@ -98,13 +161,15 @@ const ProductCard = ({ product }) => {
           <h4 className="text-xl tracking-tight text-white pb-3">{product.name}</h4>
         </Link>
         <p className="text-xs text-white sm:text-l pb-4">
-                                {product?.description}
-                            </p>
+          {product?.description}
+        </p>
         <div className="grid grid-cols-2 gap-3">
           <div className="mt-2 mb-5 flex items-center justify-between">
-            <p><span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. <span className="text-2xl">{product.price}</span></span></p>
+            <p><span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. {product.price}</span></p>
           </div>
-          <button type="button" class="text-white bg-[#4BC1D2] hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">BORROW</button>
+          <button type="button" className={`text-white ${added ? "bg-green-500" : "bg-[#4BC1D2]"} hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`} onClick={handleAddToCart}>
+            {added ? "Added" : "BUY"}
+          </button>
         </div>
       </div>
     </div>

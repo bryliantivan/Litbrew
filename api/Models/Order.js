@@ -11,6 +11,11 @@ const orderItemSchema = mongoose.Schema({
         ref: "Product",
         required: true,
     },
+    totalPrice: { 
+        type: Number, 
+        required: true, 
+        default: function() { return this.qty * this.price; }  // automatically calculate total price based on qty and price
+    },
 })
 
 const orderSchema = new mongoose.Schema({
