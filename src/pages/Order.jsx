@@ -5,14 +5,30 @@ import { useNavigate } from "react-router-dom";
 const Order = () => {
   const [order, setOrder] = useState([]);
   const [notes, setNotes] = useState({});
+  const [vouchers, setVouchers] = useState([]);
+  const [selectedVoucher, setSelectedVoucher] = useState("");
+  const [orderType, setOrderType] = useState("dine-in");
   const navigate = useNavigate();
 
   useEffect(() => {
     const savedOrder = JSON.parse(localStorage.getItem("cart"));
-    console.log("Saved Order:", savedOrder); // Tambahkan log ini
+    console.log("Saved Order:", savedOrder); 
+
     if (savedOrder) {
       setOrder(savedOrder);
     }
+
+    // Fetch available vouchers
+    const fetchVouchers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/vouchers");
+        setVouchers(response.data);
+      } catch (error) {
+        console.error("Error fetching vouchers:", error);
+      }
+    };
+
+    fetchVouchers();
   }, []);
 
   const handleDecrement = (index) => {
@@ -83,30 +99,29 @@ const Order = () => {
           image: item.image,
           category: item.category,
           totalPrice: item.price * item.quantity,
-          note: notes[index] || "", // Tambahkan catatan ke setiap item
+          note: notes[index] || "",
         })),
-        paymentMethod: "cash", // or any other method you want to use
+        paymentMethod: "cash",
         taxPrice: tax,
         totalPrice: totalWithTax,
+        voucher: selectedVoucher,
       };
 
-      console.log("Order Data:", orderData); // Tambahkan log ini
+      console.log("Order Data:", orderData);
 
       // Kirim data order ke backend
       const response = await axios.post("http://localhost:3000/api/orders", orderData, config);
       console.log("Order saved:", response.data);
 
-      // Clear cart after successful order
       localStorage.removeItem("cart");
       setOrder([]);
 
-      // Tampilkan alert setelah pesanan berhasil disimpan
       alert("Your order has been processed successfully!");
 
-      // Redirect to a success page or order summary page
       navigate("/order-success");
     } catch (error) {
       console.error("Error saving order:", error);
+      alert("There was an error processing your order. Please try again.");
     }
   };
 
@@ -121,26 +136,67 @@ const Order = () => {
       </div>
 
       <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
-        <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Shopping Cart</h2>
+        {/* Order Type */}
+        <section className="bg-white rounded-lg shadow p-6 mb-4">
+          <h2 className="text-lg font-semibold font-raleway mb-2 text-[#21325E] content-center">Order Type</h2>
+          <p className="text-sm text-gray-600 mb-3">Select your order type</p>
+          <div className="flex space-x-4">
+            <button 
+              className={`flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in" ? "bg-[#AAE8ED] text-[#21325E]" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
+              onClick={() => setOrderType("dine-in")}
+            >
+              Dine-in
+            </button>
+            <button 
+              className={`flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "takeaway" ? "bg-[#AAE8ED] text-[#21325E]" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
+              onClick={() => setOrderType("takeaway")}
+            >
+              Takeaway
+            </button>
+          </div>
+        </section>
 
-          <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-            <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-              <div className="space-y-6">
-                {order.length > 0 ? (
-                  order.map((product, index) => (
-                    <div key={product._id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
-                      <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                        <a href="#" className="shrink-0 md:order-1">
-                          <img className="h-20 w-20 dark:hidden" src={product.image} alt={product.name} />
-                          <img className="hidden h-20 w-20 dark:block" src={product.image} alt={product.name} />
-                        </a>
+        {/* Customer Details */}
+        <section className="bg-white rounded-lg shadow p-4 mb-6">
+          <h2 className="text-lg font-semibold font-raleway mb-2">Customer Details</h2>
+          <p className="text-sm text-gray-600 mb-3">Enter your details</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="customerName" className="block text-sm font-medium font-raleway text-gray-700">Customer Name</label>
+              <input type="text" id="customerName" name="customerName" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter customer name" />
+            </div>
+            {orderType === "dine-in" ? (
+              <div>
+                <label htmlFor="tableNumber" className="block text-sm font-medium font-raleway text-gray-700">Table Number</label>
+                <input type="text" id="tableNumber" name="tableNumber" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter your table number" />
+              </div>
+            ) : (
+              <div>
+                <label htmlFor="estimatedArrival" className="block text-sm font-medium font-raleway text-gray-700">Estimated Arrival</label>
+                <input type="time" id="estimatedArrival" name="estimatedArrival" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter estimated arrival time" />
+              </div>
+            )}
+          </div>
+        </section>
+
+        <h2 className="text-xl font-semibold font-raleway text-gray-900 dark:text-white sm:text-2xl text-center">Selected Items</h2>
+        <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
+          <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
+            <div className="space-y-6">
+              {order.length > 0 ? (
+                order.map((product, index) => (
+                  <div key={product._id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
+                    <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
+                      <a href="#" className="shrink-0 md:order-1">
+                        <img className="h-20 w-20 dark:hidden" src={product.image} alt={product.name} />
+                        <img className="hidden h-20 w-20 dark:block" src={product.image} alt={product.name} />
+                      </a>
 
                         <label htmlFor={`counter-input-${index}`} className="sr-only">Choose quantity:</label>
                         <div className="flex items-center justify-between md:order-3 md:justify-end">
                           <div className="flex items-center">
-                            <button
-                              type="button"
+                            <button 
+                              type="button" 
                               onClick={() => handleDecrement(index)}
                               className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
@@ -148,16 +204,16 @@ const Order = () => {
                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h16" />
                               </svg>
                             </button>
-                            <input
-                              type="text"
-                              id={`counter-input-${index}`}
-                              className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-                              value={product.quantity}
-                              readOnly
-                              required
+                            <input 
+                              type="text" 
+                              id={`counter-input-${index}`} 
+                              className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" 
+                              value={product.quantity} 
+                              readOnly 
+                              required 
                             />
-                            <button
-                              type="button"
+                            <button 
+                              type="button" 
                               onClick={() => handleIncrement(index)}
                               className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
@@ -185,9 +241,9 @@ const Order = () => {
                           </div>
                           <div>
 
-                            <input type="text" id={`note-${index}`} className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Add a note for this item"
+                            <input type="text"  id={`note-${index}`} className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Add a note for this item"
                               value={notes[index] || ""}
-                              onChange={(e) => handleNoteChange(index, e.target.value)} />
+                              onChange={(e) => handleNoteChange(index, e.target.value)}/>
                           </div>
                         </div>
                       </div>
@@ -200,28 +256,27 @@ const Order = () => {
                 )}
               </div>
 
-              {/* Order Summary */}
-              <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-                <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-                  <p className="text-xl font-semibold text-gray-900 dark:text-white">Order summary</p>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <dl className="flex items-center justify-between gap-4">
-                        <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Original price</dt>
-                        <dd className="text-base font-medium text-gray-900 dark:text-white">IDR {total.toLocaleString('id-ID')}</dd>
-                      </dl>
-                      <dl className="flex items-center justify-between gap-4">
-                        <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Tax (11%)</dt>
-                        <dd className="text-base font-medium text-gray-900 dark:text-white">IDR {tax.toLocaleString('id-ID')}</dd>
-                      </dl>
-                    </div>
-                    <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                      <dt className="text-base font-bold text-gray-900 dark:text-white">Total</dt>
-                      <dd className="text-base font-bold text-gray-900 dark:text-white">IDR {totalWithTax.toLocaleString('id-ID')}</dd>
+            {/* Order Summary */}
+            <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
+              <div className="mt-6 space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+                <p className="text-xl font-semibold font-raleway text-gray-900 dark:text-white">Order summary</p>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <dl className="flex items-center justify-between gap-4">
+                      <dt className="text-base font-normal font-raleway text-gray-500 dark:text-gray-400">Original price</dt>
+                      <dd className="text-base font-medium font-raleway text-gray-900 dark:text-white">IDR {total.toLocaleString('id-ID')}</dd>
+                    </dl>
+                    <dl className="flex items-center justify-between gap-4">
+                      <dt className="text-base font-normal font-raleway text-gray-500 dark:text-gray-400">Tax (11%)</dt>
+                      <dd className="text-base font-medium font-raleway text-gray-900 dark:text-white">IDR {tax.toFixed(2).toLocaleString('id-ID')}</dd>
                     </dl>
                   </div>
-                  <button onClick={handleCheckout} className="flex w-full items-center justify-center rounded-lg bg-[#AAE8ED] px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed to Checkout</button>
+                  <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+                    <dt className="text-base font-bold font-raleway text-gray-900 dark:text-white">Total</dt>
+                    <dd className="text-base font-bold font-raleway text-gray-900 dark:text-white">IDR {totalWithTax.toFixed(2).toLocaleString('id-ID')}</dd>
+                  </dl>
                 </div>
+                <button onClick={handleCheckout} className="flex w-full items-center justify-center rounded-lg bg-[#AAE8ED] hover:bg-[#3AA1B2] hover:text-white px-5 py-2.5 text-sm font-medium font-raleway text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Checkout</button>
               </div>
             </div>
           </div>
