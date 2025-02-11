@@ -92,6 +92,7 @@ const Order = () => {
 
       console.log("Order Data:", orderData); // Tambahkan log ini
 
+      // Kirim data order ke backend
       const response = await axios.post("http://localhost:3000/api/orders", orderData, config);
       console.log("Order saved:", response.data);
 
@@ -138,8 +139,8 @@ const Order = () => {
                         <label htmlFor={`counter-input-${index}`} className="sr-only">Choose quantity:</label>
                         <div className="flex items-center justify-between md:order-3 md:justify-end">
                           <div className="flex items-center">
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               onClick={() => handleDecrement(index)}
                               className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
@@ -147,16 +148,16 @@ const Order = () => {
                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h16" />
                               </svg>
                             </button>
-                            <input 
-                              type="text" 
-                              id={`counter-input-${index}`} 
-                              className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" 
-                              value={product.quantity} 
-                              readOnly 
-                              required 
+                            <input
+                              type="text"
+                              id={`counter-input-${index}`}
+                              className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+                              value={product.quantity}
+                              readOnly
+                              required
                             />
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               onClick={() => handleIncrement(index)}
                               className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                             >
@@ -184,9 +185,9 @@ const Order = () => {
                           </div>
                           <div>
 
-                            <input type="text"  id={`note-${index}`} className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Add a note for this item"
+                            <input type="text" id={`note-${index}`} className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Add a note for this item"
                               value={notes[index] || ""}
-                              onChange={(e) => handleNoteChange(index, e.target.value)}/>
+                              onChange={(e) => handleNoteChange(index, e.target.value)} />
                           </div>
                         </div>
                       </div>

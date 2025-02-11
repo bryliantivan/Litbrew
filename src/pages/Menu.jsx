@@ -9,6 +9,7 @@ const Menu = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [cart, setCart] = useState([]); // State for managing the cart
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State for user login status
+  const [addedProducts, setAddedProducts] = useState([]); // State for tracking added products
 
   useEffect(() => {
     // Check if token exists in local storage
@@ -28,6 +29,7 @@ const Menu = () => {
     const savedCart = JSON.parse(localStorage.getItem("cart"));
     if (savedCart) {
       setCart(savedCart);
+      setAddedProducts(savedCart.map(item => item._id)); // Set added products from saved cart
     }
   }, []);
 
@@ -57,6 +59,7 @@ const Menu = () => {
     }
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
+    setAddedProducts([...addedProducts, product._id]); // Add product to added products
     console.log("Cart:", newCart);
   };
 
@@ -131,7 +134,7 @@ const Menu = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <ProductCard key={product._id} product={product} addToCart={addToCart} />
+              <ProductCard key={product._id} product={product} addToCart={addToCart} added={addedProducts.includes(product._id)} />
             ))
           ) : (
             <p className="text-center text-gray-500 col-span-3">
@@ -145,15 +148,7 @@ const Menu = () => {
 };
 
 // Komponen untuk menampilkan tiap produk
-const ProductCard = ({ product, addToCart }) => {
-  const [added, setAdded] = useState(false);
-
-  const handleAddToCart = () => {
-    addToCart(product);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000); // Reset added state after 2 seconds
-  };
-
+const ProductCard = ({ product, addToCart, added }) => {
   return (
     <div className="group flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-[#03151E] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
       <Link to={`/menu/${product._id}`} className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
@@ -170,7 +165,7 @@ const ProductCard = ({ product, addToCart }) => {
           <div className="mt-2 mb-5 flex items-center justify-between">
             <p><span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. {product.price}</span></p>
           </div>
-          <button type="button" className={`text-white ${added ? "bg-green-500" : "bg-[#4BC1D2]"} hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`} onClick={handleAddToCart}>
+          <button type="button" className={`text-white ${added ? "bg-green-500" : "bg-[#4BC1D2]"} hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`} onClick={() => addToCart(product)}>
             {added ? "Added" : "BUY"}
           </button>
         </div>

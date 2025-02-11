@@ -28,6 +28,8 @@ orderRoute.post(
         totalPrice,
         user: req.user._id,
         note: req.body.note,
+        isPaid: true,  // Set isPaid to true automatically after order is created
+        paidAt: Date.now(),
       });
 
       const createdOrder = await order.save();
@@ -54,14 +56,15 @@ orderRoute.get(
   })
 );
 
-// Update order to paid (only admin can validate payment)
+// Update order to paid (no admin validation needed)
 orderRoute.put(
   "/:id/pay",
   protect,
-  isAdmin,
   asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
+    
     if (order) {
+      // Set order as paid directly (no admin validation)
       order.isPaid = true;
       order.paidAt = Date.now();
       order.paymentResult = {
@@ -70,8 +73,20 @@ orderRoute.put(
         update_time: req.body.update_time,
         email_address: req.body.payer.email_address,
       };
-      const updatedOrder = await order.save();
 
+      // Add points to the user based on the order's totalPrice
+      const pointsEarned = Math.floor(order.totalPrice / 10); // Contoh, 1 poin untuk setiap 10 unit order
+      const user = await User.findById(order.user);
+      if (user) {
+        user.points += pointsEarned; // Tambahkan poin
+        await user.save();
+      } else {
+        res.status(404);
+        throw new Error("User Not Found");
+      }
+
+      // Save the updated order and respond
+      const updatedOrder = await order.save();
       res.status(200).json(updatedOrder);
     } else {
       res.status(404);
@@ -79,6 +94,8 @@ orderRoute.put(
     }
   })
 );
+
+
 
 // Get logged in user orders
 orderRoute.get(
