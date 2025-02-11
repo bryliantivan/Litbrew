@@ -25,6 +25,7 @@ const databaseSeeder = require("./databaseSeeder");
 const userRoute = require("./Routes/User");
 const productRoute = require("./Routes/Product");
 const orderRoute = require("./Routes/Order");
+const voucherRoute = require("./Routes/Voucher");
 
 app.use(express.json())
 
@@ -42,6 +43,8 @@ app.use('/api/products', productRoute);
 //routes buat orders
 // api/orders
 app.use('/api/orders', orderRoute);
+
+app.use('/api/vouchers', voucherRoute);
 
 app.listen(port, ()=>{
     console.log(`server running in port ${port}`)

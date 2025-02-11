@@ -148,14 +148,14 @@ const Order = () => {
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderType("dine-in")}
             >
-              <img src={orderType === "dine-in" ? dineInWhite : dineInBlue} alt="Dine-in" className="w-12 h-12 mr-2" />
+              <img src={orderType === "dine-in" ? dineInWhite : dineInBlue} alt="Dine-in" className="w-12 h-12 mr-2 " />
               Dine-in
             </button>
             <button 
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "takeaway" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderType("takeaway")}
             >
-              <img src={orderType === "takeaway" ? takeawayWhite : takeawayBlue} alt="Takeaway" className="w-12 h-12 mr-2" />
+              <img src={orderType === "takeaway" ? takeawayWhite : takeawayBlue} alt="Takeaway" className="w-12 h-12 mr-2 " />
               Takeaway
             </button>
           </div>

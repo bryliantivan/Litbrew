@@ -10,6 +10,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    points: {
+      type: Number,
+      default: 0,
+    },redeemedVouchers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Voucher',  // Referensikan model Voucher
+    }],
   },
   { timestamps: true }
 );
