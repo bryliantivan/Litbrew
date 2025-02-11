@@ -12,7 +12,8 @@ const Order = () => {
 
   useEffect(() => {
     const savedOrder = JSON.parse(localStorage.getItem("cart"));
-    console.log("Saved Order:", savedOrder);
+    console.log("Saved Order:", savedOrder); 
+
     if (savedOrder) {
       setOrder(savedOrder);
     }
