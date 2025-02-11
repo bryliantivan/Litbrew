@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import dineInBlue from '../assets/images/dine-in blue.png';
+import dineInWhite from '../assets/images/dine-in white.png';
+import takeawayBlue from '../assets/images/takeaway blue.png';
+import takeawayWhite from '../assets/images/takeaway white.png';
 
 const Order = () => {
   const [order, setOrder] = useState([]);
@@ -141,15 +145,17 @@ const Order = () => {
           <p className="text-sm text-gray-600 mb-3">Select your order type</p>
           <div className="flex space-x-4">
             <button 
-              className={`flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in" ? "bg-[#AAE8ED] text-[#21325E]" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
+              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderType("dine-in")}
             >
+              <img src={orderType === "dine-in" ? dineInWhite : dineInBlue} alt="Dine-in" className="w-12 h-12 mr-2" />
               Dine-in
             </button>
             <button 
-              className={`flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "takeaway" ? "bg-[#AAE8ED] text-[#21325E]" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
+              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "takeaway" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderType("takeaway")}
             >
+              <img src={orderType === "takeaway" ? takeawayWhite : takeawayBlue} alt="Takeaway" className="w-12 h-12 mr-2" />
               Takeaway
             </button>
           </div>
@@ -254,7 +260,7 @@ const Order = () => {
                 ))
               ) : (
                 <p className="text-center text-gray-500 col-span-3">
-                  No products in the order.
+                  No products in your cart.
                 </p>
               )}
             </div>

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { coffe_milk } from '../assets/images';
-import { StarRating } from '../components';
+import StarRating from '../components/StarRating';
 
 const Review = () => {
   const { productId } = useParams();
@@ -39,17 +38,7 @@ const Review = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="rating" className="block text-sm font-medium text-gray-700">Rating</label>
-          <select
-            id="rating"
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="">Select a rating</option>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <option key={star} value={star}>{star} Star{star > 1 && "s"}</option>
-            ))}
-          </select>
+          <StarRating rating={rating} setRating={setRating} />
         </div>
         <div>
           <label htmlFor="comment" className="block text-sm font-medium text-gray-700">Comment</label>
