@@ -1,12 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { About, Book, Home, Menu, Order, } from './pages';
+import { About, Book, Home, Menu, Order, MenuDetail, BookDetail, Login, Register, MyOrder, Profile, Review} from './pages';
 import { Nav, Footer } from './components';
-import MenuDetail from './pages/MenuDetail';
-import BookDetail from './pages/BookDetail';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import MyOrder from './pages/MyOrder';
-import Profile from './pages/Profile';
 
 const App = () => {
   return (
@@ -26,6 +20,7 @@ const App = () => {
           <Route path='/register' element={<Register/>}/>
           <Route path="/myorder" element={<MyOrder />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/review" element={<Review />} />
         </Routes>
       </Router>
       <Footer />
