@@ -27,6 +27,7 @@ orderRoute.post(
         taxPrice,
         totalPrice,
         user: req.user._id,
+        note: req.body.note,
       });
 
       const createdOrder = await order.save();

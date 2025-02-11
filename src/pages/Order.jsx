@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Order = () => {
   const [order, setOrder] = useState([]);
+  const [notes, setNotes] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +35,13 @@ const Order = () => {
     const newOrder = order.filter((_, i) => i !== index);
     setOrder(newOrder);
     localStorage.setItem("cart", JSON.stringify(newOrder));
+  };
+
+  const handleNoteChange = (index, value) => {
+    setNotes((prevNotes) => ({
+      ...prevNotes,
+      [index]: value,
+    }));
   };
 
   const calculateTotal = () => {
@@ -67,7 +75,7 @@ const Order = () => {
       };
 
       const orderData = {
-        orderItems: order.map(item => ({
+        orderItems: order.map((item, index) => ({
           product: item._id,
           name: item.name,
           price: item.price,
@@ -75,6 +83,7 @@ const Order = () => {
           image: item.image,
           category: item.category,
           totalPrice: item.price * item.quantity,
+          note: notes[index] || "", // Tambahkan catatan ke setiap item
         })),
         paymentMethod: "cash", // or any other method you want to use
         taxPrice: tax,
@@ -172,6 +181,12 @@ const Order = () => {
                               </svg>
                               Remove
                             </button>
+                          </div>
+                          <div>
+
+                            <input type="text"  id={`note-${index}`} className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Add a note for this item"
+                              value={notes[index] || ""}
+                              onChange={(e) => handleNoteChange(index, e.target.value)}/>
                           </div>
                         </div>
                       </div>

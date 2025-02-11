@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { About, Book, Home, Menu, Order, MenuDetail, BookDetail, Login, Register, MyOrder, Profile, Review} from './pages';
+import { About, Book, Home, Menu, Order, MenuDetail, BookDetail, Login, Register, MyOrder, Profile, Review, OrderTracking} from './pages';
 import { Nav, Footer } from './components';
 
 const App = () => {
@@ -21,6 +21,8 @@ const App = () => {
           <Route path="/myorder" element={<MyOrder />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/review" element={<Review />} />
+          <Route path="/orderracking" element={<OrderTracking/>}/>
+
         </Routes>
       </Router>
       <Footer />

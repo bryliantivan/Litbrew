@@ -16,6 +16,7 @@ const orderItemSchema = mongoose.Schema({
         required: true, 
         default: function() { return this.qty * this.price; }  // automatically calculate total price based on qty and price
     },
+    note: {type: String}
 })
 
 const orderSchema = new mongoose.Schema({

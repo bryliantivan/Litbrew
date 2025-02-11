@@ -69,24 +69,24 @@ const Nav = () => {
                 <IoMdArrowDropdown className="ml-2" />
               </button>
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-blue-100 rounded-md shadow-lg py-2 z-50 font-motter-corpus-std">
                   <Link 
                     to="/myorder"
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300"
                    
                   >
                     My Order
                   </Link>
                   <Link 
                     to="/profile"
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300"
                    
                   >
                     Profile
                   </Link>
                   <button 
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300"
                   >
                     Log Out
                   </button>
