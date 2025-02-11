@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -53,12 +52,10 @@ const Review = () => {
             // Loop through each order item and submit review
             for (let i = 0; i < orderItems.length; i++) {
                 const reviewData = {
-                    productId: orderItems[i]._id,
                     rating: productRatings[i],
-                    reviewText,
-                    orderId: orderDetails._id
+                    comment: reviewText,
                 };
-                await axios.post(`http://localhost:3000/api/products/${reviewData.productId}/reviews`, reviewData, config);
+                await axios.post(`http://localhost:3000/api/products/${orderItems[i]._id}/reviews`, reviewData, config);
             }
 
             alert('Reviews submitted successfully!');
@@ -78,11 +75,11 @@ const Review = () => {
             <p>This is the review page.</p>
 
             <div className='text-center'>
-                <div className="font-motter-corpus-std text-xl">COMPLETED ORDER!<br/>Order ID: {orderDetails._id}</div>
+                <div className="font-motter-corpus-std text-xl">COMPLETED ORDER!<br />Order ID: {orderDetails._id}</div>
                 <div><span className='text-[#464646]'>Order date: </span>{new Date(orderDetails.createdAt).toLocaleDateString('en-GB')}</div>
                 <div><span className='text-[#464646]'>Order time: </span>{new Date(orderDetails.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div>
             </div>
-            
+
             <div className="text-center bg-[#EFFCFF] border-[#1F81B9] m-[5vw] rounded-lg p-4">
                 <h1 className='font-raleway text-xl'>How Was It?</h1>
                 <p className='font-raleway text-xl'>Rate your experience & share your thoughts!</p>
@@ -144,81 +141,8 @@ const Review = () => {
                     Submit
                 </button>
             </div>
-=======
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
-import { coffe_milk } from '../assets/images';
-import { StarRating } from '../components';
-
-const Review = () => {
-  const { productId } = useParams();
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const reviewData = {
-        rating,
-        comment,
-      };
-      await axios.post(`http://localhost:3000/api/products/${productId}/review`, reviewData, config);
-      alert("Review submitted successfully!");
-      navigate("/my-order");
-    } catch (error) {
-      console.error("Error submitting review:", error);
-      alert("There was an error submitting your review. Please try again.");
-    }
-  };
-
-  return (
-    <div className="container px-5 py-36 mx-auto">
-      <h1 className="text-3xl font-semibold mb-6">Rate Your Order</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="rating" className="block text-sm font-medium text-gray-700">Rating</label>
-          <select
-            id="rating"
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="">Select a rating</option>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <option key={star} value={star}>{star} Star{star > 1 && "s"}</option>
-            ))}
-          </select>
->>>>>>> 0eedc208c3d6f5dda95d8dc801526c0d5d0a6d8e
         </div>
-        <div>
-          <label htmlFor="comment" className="block text-sm font-medium text-gray-700">Comment</label>
-          <textarea
-            id="comment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            rows="4"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Write your review here..."
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Submit Review
-        </button>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default Review;
