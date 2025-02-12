@@ -5,10 +5,6 @@ import dineInBlue from '../assets/images/dine-in blue.png';
 import dineInWhite from '../assets/images/dine-in white.png';
 import takeawayBlue from '../assets/images/takeaway blue.png';
 import takeawayWhite from '../assets/images/takeaway white.png';
-import arrivedblue from '../assets/images/arrived blue.png';
-import arrivedWhite from '../assets/images/arrived white.png';
-import notarrivedblue from '../assets/images/not arrived blue.png';
-import notarrivedWhite from '../assets/images/not arrived white.png';
 
 const Order = () => {
   const [order, setOrder] = useState([]);
@@ -16,8 +12,7 @@ const Order = () => {
   const [vouchers, setVouchers] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState("");
   const [orderType, setOrderType] = useState("dine-in");
-  const [orderStatus, setOrderStatus] = useState("not-arrived");
-  const [numPeople, setNumPeople] = useState(1);
+  const [estimatedPickupTime, setEstimatedPickupTime] = useState(""); // Added state for pickup time
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +26,7 @@ const Order = () => {
     // Fetch available vouchers
     const fetchVouchers = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/vouchers");
+        const response = await axios.get("http://localhost:3000/api/users/profile");
         setVouchers(response.data);
       } catch (error) {
         console.error("Error fetching vouchers:", error);
@@ -124,8 +119,9 @@ const Order = () => {
         taxPrice: tax,
         totalPrice: totalWithTax,
         voucher: selectedVoucher,
-        orderStatus,
-        numPeople: orderStatus === "not-arrived" && orderType === "dine-in" ? numPeople : undefined,
+        orderType: orderType,  // Add orderType
+        tableNumber: orderType === "dine-in" ? document.getElementById("tableNumber").value : null,  // Include tableNumber for dine-in
+        estimatedPickupTime: orderType === "takeaway" ? estimatedPickupTime : null, // Only include for takeaway
       };
 
       console.log("Order Data:", orderData);
@@ -145,7 +141,6 @@ const Order = () => {
     }
   };
 
-
   return (
     <div className="container px-5 py-36 mx-auto">
       <div className="inset-0 flex items-center justify-center z-30">
@@ -157,28 +152,6 @@ const Order = () => {
       </div>
 
       <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
-        {/* Order Status */}
-        <section className="bg-white rounded-lg shadow p-6 mb-4">
-          <h2 className="text-lg font-semibold font-raleway mb-2 text-[#21325E] content-center">Order Location</h2>
-          <p className="text-sm text-gray-600 mb-3">Select your current location</p>
-          <div className="flex space-x-4">
-            <button 
-              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderStatus === "arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
-              onClick={() => setOrderStatus("arrived")}
-            >
-              <img src={orderStatus === "arrived" ? arrivedWhite : arrivedblue} alt="Arrived" className="w-12 h-12 mr-2" />
-              Arrived
-            </button>
-            <button 
-              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderStatus === "not-arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
-              onClick={() => setOrderStatus("not-arrived")}
-            >
-              <img src={orderStatus === "not-arrived" ? notarrivedWhite : notarrivedblue} alt="Not Arrived" className="w-12 h-12 mr-2" />
-              Not Arrived
-            </button>
-          </div>
-        </section>
-
         {/* Order Type */}
         <section className="bg-white rounded-lg shadow p-6 mb-4">
           <h2 className="text-lg font-semibold font-raleway mb-2 text-[#21325E] content-center">Order Type</h2>
@@ -188,38 +161,18 @@ const Order = () => {
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderType("dine-in")}
             >
-              <img src={orderType === "dine-in" ? dineInWhite : dineInBlue} alt="Dine-in" className="w-12 h-12 mr-2" />
+              <img src={orderType === "dine-in" ? dineInWhite : dineInBlue} alt="Dine-in" className="w-12 h-12 mr-2 " />
               Dine-in
             </button>
             <button
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "takeaway" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderType("takeaway")}
             >
-              <img src={orderType === "takeaway" ? takeawayWhite : takeawayBlue} alt="Takeaway" className="w-12 h-12 mr-2" />
+              <img src={orderType === "takeaway" ? takeawayWhite : takeawayBlue} alt="Takeaway" className="w-12 h-12 mr-2 " />
               Takeaway
             </button>
           </div>
         </section>
-
-        {/* Number of People */}
-        {orderStatus === "not-arrived" && orderType === "dine-in" && (
-          <section className="bg-white rounded-lg shadow p-4 mb-6">
-            <h2 className="text-lg font-semibold font-raleway mb-2">Reservation Details</h2>
-            <p className="text-sm text-gray-600 mb-3">Enter the number of people for the reservation</p>
-            <div>
-              <label htmlFor="numPeople" className="block text-sm font-medium font-raleway text-gray-700">Number of People</label>
-              <input 
-                type="number" 
-                id="numPeople" 
-                name="numPeople" 
-                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                value={numPeople} 
-                onChange={(e) => setNumPeople(e.target.value)} 
-                min="1" 
-              />
-            </div>
-          </section>
-        )}
 
         {/* Customer Details */}
         <section className="bg-white rounded-lg shadow p-4 mb-6">
