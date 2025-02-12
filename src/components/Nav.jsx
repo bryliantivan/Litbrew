@@ -3,18 +3,21 @@ import { navLinks } from '../constants';
 import { useState, useEffect } from 'react';
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
-
-
+import axios from 'axios'; // Import axios to make requests
 
 const Nav = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState(null);  // To store user data
 
   useEffect(() => {
     // Fungsi untuk memeriksa token di localStorage
     const checkToken = () => {
       const token = localStorage.getItem('token');
       setIsLoggedIn(!!token);
+      if (token) {
+        fetchUserData(token);  // If logged in, fetch user data
+      }
     };
 
     // Cek token saat komponen dimount
@@ -29,9 +32,24 @@ const Nav = () => {
     };
   }, []);
 
+  // Function to fetch user data from the API
+  const fetchUserData = async (token) => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/users/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      setUser(response.data);  // Set the user data from the response
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
+    setUser(null);  // Clear user data on logout
     // Memicu event 'storage' secara manual agar komponen lain yang mendengarkan event ini (misalnya, Nav) ter-update
     window.dispatchEvent(new Event('storage'));
   };
@@ -48,7 +66,6 @@ const Nav = () => {
         </NavLink>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {!isLoggedIn ? (
-            // Jika belum login, arahkan ke halaman login
             <Link to="/login">
               <button
                 type="button"
@@ -58,7 +75,6 @@ const Nav = () => {
               </button>
             </Link>
           ) : (
-            // Jika sudah login, tampilkan tombol LOG OUT
             <div className="relative">
               <button
                 type="button"
@@ -67,37 +83,43 @@ const Nav = () => {
               >
                 <div className="relative w-10 h-10 overflow-hidden rounded-full">
                   <svg className="absolute w-12 h-12 -left-1" fill="#D1E9FF" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                   </svg>
                 </div>
-
               </button>
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-blue-100 rounded-md shadow-lg py-2 z-50 font-motter-corpus-std">
+              {dropdownOpen && user && (
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-4 px-6 z-50 font-motter-corpus-std border border-gray-200">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-300">
+                      {/* Placeholder for user avatar */}
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-800 font-semibold">{user.name}</p>
+                      <p className="text-xs text-gray-500">{user.email}</p>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-800 mb-3">
+                    <p>XP Points: {user.points}</p>
+                  </div>
                   <Link
                     to="/myorder"
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300"
-
+                    className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
                   >
                     My Order
                   </Link>
                   <Link
                     to="/profile"
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300"
-
+                    className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
                   >
-                    Profile
+                    Profile Settings
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300"
+                    className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
                   >
-                    Log Out
+                    Sign Out
                   </button>
-
                 </div>
-
-
               )}
             </div>
           )}
