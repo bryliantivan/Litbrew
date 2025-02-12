@@ -1,6 +1,6 @@
 const express = require("express");
+const asyncHandler = require("express-async-handler");  // <-- Import AsyncHandler
 const userRoute = express.Router();
-const asyncHandler = require("express-async-handler");
 const User = require("../Models/User");
 const generateToken = require('../tokenGenerate');
 const protect = require("../middleware/Auth");
@@ -28,7 +28,7 @@ userRoute.post('/login', asyncHandler(
             throw new Error("Invalid email or password");
         }
     })
-)
+);
 
 // Register route (Pendaftaran pengguna)
 userRoute.post("/", asyncHandler(
@@ -50,7 +50,7 @@ userRoute.post("/", asyncHandler(
 
             if (user) {
                 res.status(201).json({
-                    _id: user.id,
+                    _id: user._id,
                     name: user.name,
                     email: user.email,
                     points: user.points,  // Poin default yang dimiliki pengguna baru
@@ -64,7 +64,7 @@ userRoute.post("/", asyncHandler(
             }
         }
     })
-)
+);
 
 // Get user profile data (Auth protected)
 userRoute.get("/profile", protect, asyncHandler(async (req, res) => {
@@ -75,8 +75,8 @@ userRoute.get("/profile", protect, asyncHandler(async (req, res) => {
             _id: user._id,
             email: user.email,
             name: user.name,
-            points: user.points,  // Menampilkan poin pengguna
-            redeemedVouchers: user.redeemedVouchers,  // Menampilkan voucher yang telah ditebus
+            points: user.points,
+            redeemedVouchers: user.redeemedVouchers,
             isAdmin: user.isAdmin,
             createdAt: user.createdAt,
         });
@@ -84,7 +84,8 @@ userRoute.get("/profile", protect, asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error("User not found");
     }
-}))
+}));
+
 
 // Update user profile (Auth protected)
 userRoute.put("/profile", protect, asyncHandler(async (req, res) => {

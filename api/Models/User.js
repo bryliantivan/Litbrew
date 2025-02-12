@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema(
     points: {
       type: Number,
       default: 0,
-    },redeemedVouchers: [{
+    },
+    redeemedVouchers: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Voucher',  // Referensikan model Voucher
     }],
@@ -36,4 +37,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-module.exports = mongoose.model("User", userSchema);
+// Check if the model already exists to prevent overwriting
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+
+module.exports = User;

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const orderItemSchema = mongoose.Schema({
     name: { type: String, required: true },
@@ -14,10 +14,10 @@ const orderItemSchema = mongoose.Schema({
     totalPrice: {
         type: Number,
         required: true,
-        default: function() { return this.qty * this.price; }  // Automatically calculate total price based on qty and price
+        default: function() { return this.qty * this.price; }
     },
     note: { type: String },
-})
+});
 
 const orderSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
@@ -35,22 +35,28 @@ const orderSchema = new mongoose.Schema({
     orderType: {
         type: String,
         required: true,
-        enum: ['takeaway', 'dine-in'],  // Pesanan bisa pilih takeaway atau dine-in
+        enum: ['takeaway', 'dine-in'],
     },
     tableNumber: {
         type: Number,
-        required: function() { return this.orderType === 'dine-in'; }, // Jika pesanan dine-in, nomor meja diperlukan
-        min: 1, // Validasi untuk nomor meja (misalnya, meja harus lebih dari 0)
+        required: function() { return this.orderType === 'dine-in'; },
+        min: 1,
     },
     estimatedPickupTime: {
         type: Date,
-        required: function() { return this.orderType === 'takeaway'; },  // Estimasi waktu pickup hanya diperlukan untuk takeaway
+        required: function() { return this.orderType === 'takeaway'; },
     },
-    location:{
+    orderStatus: {
         type: String,
-        required: true,
-        enum:['Arrived', 'Not arrived'],
-    }
-}, { timestamps: true })
+        enum: ['Arrived', 'Not arrived'],
+        default: 'Not arrived',
+    },
+    numPeople: {
+        type: Number,
+        required: function() { return this.orderType === 'dine-in'; },
+        min: 1,
+    },
+    location: { type: String },
+}, { timestamps: true });
 
-module.exports = mongoose.model('Order', orderSchema)
+module.exports = mongoose.model('Order', orderSchema);
