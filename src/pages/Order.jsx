@@ -29,17 +29,33 @@ const Order = () => {
     }
 
     // Fetch available vouchers
-    const fetchVouchers = async () => {
+    const fetchUserAndVouchers = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/vouchers");
-        setVouchers(response.data);
+        // Fetch data pengguna termasuk redeemedVouchers
+        const userResponse = await axios.get("http://localhost:3000/api/users/profile");
+        setRedeemedVouchers(userResponse.data.redeemedVouchers); // Ambil redeemedVouchers dari profil pengguna
+
+        // Fetch available vouchers
+        const voucherResponse = await axios.get("http://localhost:3000/api/vouchers");
+        setVouchers(voucherResponse.data);
       } catch (error) {
-        console.error("Error fetching vouchers:", error);
+        console.error("Error fetching vouchers or user data:", error);
       }
     };
 
     fetchVouchers();
   }, []);
+
+  const handleVoucherSelection = (e) => {
+    const selectedCode = e.target.value;
+    setSelectedVoucher(selectedCode);
+
+    // Hanya izinkan memilih voucher yang telah diredeem
+    if (!redeemedVouchers.includes(selectedCode)) {
+      alert("This voucher has not been redeemed by you.");
+      setSelectedVoucher(""); // Reset voucher selection
+    }
+  };
 
   const handleDecrement = (index) => {
     const newOrder = [...order];
@@ -326,26 +342,34 @@ const Order = () => {
 
             {/* Add Voucher */}
             <section className="bg-white rounded-lg shadow p-4 mb-6 mt-6">
-              <h2 className="text-lg font-semibold font-raleway mb-2">Apply Your Voucher</h2>
-              <p className="text-sm text-gray-600 mb-3">Select your voucher</p>
-              <div className="flex space-x-4">
-                <select
-                  className="flex-1 py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition"
-                  value={selectedVoucher}
-                  onChange={(e) => setSelectedVoucher(e.target.value)}
-                >
-                  <option value="">Select a voucher</option>
-                  {vouchers.map((voucher) => (
+        <h2 className="text-lg font-semibold font-raleway mb-2">Apply Your Voucher</h2>
+        <p className="text-sm text-gray-600 mb-3">Select your voucher</p>
+        <div className="flex space-x-4">
+          {redeemedVouchers.length > 0 ? (
+            <>
+              <select
+                className="flex-1 py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition"
+                value={selectedVoucher}
+                onChange={handleVoucherSelection}
+              >
+                <option value="">Select a voucher</option>
+                {vouchers
+                  .filter(voucher => redeemedVouchers.includes(voucher.code)) // Hanya tampilkan voucher yang telah diredeem
+                  .map((voucher) => (
                     <option key={voucher._id} value={voucher.code}>
                       {voucher.code} - {voucher.discount}% off
                     </option>
                   ))}
-                </select>
-                <button className="py-2 px-4 rounded-full text-white bg-[#21325E] hover:bg-[#4BC1D2] focus:outline-none focus:ring-2 focus:ring-[#4BC1D2] transition">
-                  Apply
-                </button>
-              </div>
-            </section>
+              </select>
+              <button className="py-2 px-4 rounded-full text-white bg-[#21325E] hover:bg-[#4BC1D2] focus:outline-none focus:ring-2 focus:ring-[#4BC1D2] transition">
+                Apply
+              </button>
+            </>
+          ) : (
+            <p className="text-gray-500">No vouchers available to apply.</p>
+          )}
+        </div>
+      </section>
 
             {/* Order Summary */}
             <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
