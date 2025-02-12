@@ -48,6 +48,17 @@ import homepage_galery3 from "./homepage_galery3.png";
 import homepage_galery4 from "./homepage_galery4.png";
 import homepage_galery5 from "./homepage_galery5.png";
 
+import cup_profile from "./cup_profile.png";
+import Badge_01 from "./Badge_01.png";
+import Badge_02 from "./Badge_02.png";
+import Badge_03 from "./Badge_03.png";
+import Badge_04 from "./Badge_04.png";
+import Badge_05 from "./Badge_05.png";
+import Badge_06 from "./Badge_06.png";
+import Badge_07 from "./Badge_07.png";
+import voucher from "./voucher.svg";
+import xp from "./xp.svg";
+
 export {
     instagram,
     twitter,
@@ -93,7 +104,18 @@ export {
     bumi_manusia,
     dilan_1990,
     laskar_pelangi,
-    negeri_5
+    negeri_5,
+
+    cup_profile,
+    Badge_01,
+    Badge_02,
+    Badge_03,
+    Badge_04,
+    Badge_05,
+    Badge_06,
+    Badge_07,
+    voucher,
+    xp
 }
 
 
