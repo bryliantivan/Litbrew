@@ -45,6 +45,11 @@ const orderSchema = new mongoose.Schema({
     estimatedPickupTime: {
         type: Date,
         required: function() { return this.orderType === 'takeaway'; },  // Estimasi waktu pickup hanya diperlukan untuk takeaway
+    },
+    location:{
+        type: String,
+        required: true,
+        enum:['Arrived', 'Not arrived'],
     }
 }, { timestamps: true })
 
