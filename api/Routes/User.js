@@ -4,6 +4,8 @@ const userRoute = express.Router();
 const User = require("../Models/User");
 const generateToken = require('../tokenGenerate');
 const protect = require("../middleware/Auth");
+const Voucher = require("../Models/Voucher");
+
 
 // Login route
 userRoute.post('/login', asyncHandler(
@@ -117,5 +119,39 @@ userRoute.put("/profile", protect, asyncHandler(async (req, res) => {
         throw new Error("User not found");
     }
 }))
+
+//redeem voucher
+userRoute.put("/redeem", protect, asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id); // Find the user based on the token
+    const { voucherCode } = req.body; // Assuming the voucher code is sent in the body
+
+    if (user) {
+        // Check if the user has the voucher in the redeemed list
+        const voucherIndex = user.redeemedVouchers.indexOf(voucherCode);
+
+        if (voucherIndex === -1) {
+            res.status(400);
+            throw new Error("Voucher not found or already used");
+        }
+
+        // Remove the redeemed voucher from the list
+        user.redeemedVouchers.splice(voucherIndex, 1);
+
+        // Subtract points for the voucher redemption
+        user.points -= 100;  // Assuming 100 points for redemption, adjust as needed
+        await user.save();  // Save the updated user data
+
+        res.json({
+            message: "Voucher redeemed and removed from list",
+            points: user.points, // Send the updated points
+            redeemedVouchers: user.redeemedVouchers, // Send the updated redeemed vouchers list
+        });
+    } else {
+        res.status(404);
+        throw new Error("User not found");
+    }
+}));
+
+
 
 module.exports = userRoute;

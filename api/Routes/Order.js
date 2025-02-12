@@ -10,18 +10,16 @@ orderRoute.post(
   "/",
   protect,
   asyncHandler(async (req, res) => {
-    const { orderItems, paymentMethod, taxPrice, totalPrice, note, orderType, tableNumber, orderStatus, numPeople } = req.body;
+    const { orderItems, paymentMethod, taxPrice, totalPrice, note, orderType, tableNumber, orderStatus, numPeople, voucher } = req.body;
+  if (!orderItems || !orderItems.length) {
+    res.status(400);
+    throw new Error("No items in the order.");
+  }
 
-    if (orderItems && orderItems.length === 0) {
-      res.status(400);
-      throw new Error("No order items found");
-    }
-
-    // Validasi orderType untuk dine-in atau takeaway
-    if (!orderType || (orderType === 'dine-in' && !tableNumber)) {
-      res.status(400);
-      throw new Error("Table number is required for dine-in orders");
-    }
+  if (orderStatus === "dine-in" && !tableNumber) {
+    res.status(400);
+    throw new Error("Table number is required for dine-in orders.");
+  }
 
     const order = new Order({
       orderItems,
@@ -34,6 +32,7 @@ orderRoute.post(
       tableNumber,  // Menyimpan nomor meja untuk dine-in
       orderStatus,  // Menyimpan status pesanan
       numPeople,  // Menyimpan jumlah orang untuk dine-in
+      voucher,
       isPaid: false,  // Set isPaid menjadi false, jika belum dibayar
       paidAt: null,  // Set waktu pembayaran menjadi null
     });

@@ -15,7 +15,7 @@ const OrderTracking = () => {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                const response = await axios.get('http://localhost:3000/api/orders/67aab01b313c497ccf74cb91', config); // Ganti dengan endpoint API yang sesuai
+                const response = await axios.get('http://localhost:3000/api/orders/67ac696313ba9d483c11b244', config); // Ganti dengan endpoint API yang sesuai
                 const orderData = response.data;
                 setOrderDetails(orderData);
                 setOrderItems(orderData.orderItems);

@@ -14,49 +14,47 @@ const orderItemSchema = mongoose.Schema({
     totalPrice: {
         type: Number,
         required: true,
-        default: function() { return this.qty * this.price; }
+        default: function () { return this.qty * this.price; }
     },
     note: { type: String },
 });
 
 const orderSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
-    orderItems: [orderItemSchema],
-    paymentMethod: { type: String, required: true, default: "cash" },
-    taxPrice: { type: Number, required: true, default: 0.0 },
-    totalPrice: { type: Number, required: true, default: 0.0 },
+    paymentMethod: { type: String, required: true, default: "Cash" },
     isPaid: {
         type: Boolean,
         required: true,
         default: false,
     },
-    paidAt: { type: Date },
-    isDelivered: { type: Boolean, required: true, default: false },
-    orderType: {
-        type: String,
+    paidAt: {
+        type: Date,
+    }, isDelivered: {
+        type: Boolean,
         required: true,
-        enum: ['takeaway', 'dine-in'],
+        default: false,
     },
+    deliveredAt: {
+        type: Date,
+    },
+    orderItems: [{
+        name: { type: String, required: true },
+        qty: { type: Number, required: true },
+        price: { type: Number, required: true },
+        totalPrice: { type: Number, required: true },
+        note: { type: String },
+    }],
+    totalPrice: { type: Number, required: true },
+    voucher: { type: String, required: true },  // Ensure voucher is included
+    orderStatus: { type: String, enum: ['arrived', 'not-arrived'] },
+    numPeople: { type: Number, required: true },  // Ensure numPeople is included for dine-in
     tableNumber: {
         type: Number,
-        required: function() { return this.orderType === 'dine-in'; },
+        required: function () {
+            return this.orderType === 'dine-in'; // Ensure tableNumber is required for dine-in
+        },
         min: 1,
     },
-    estimatedPickupTime: {
-        type: Date,
-        required: function() { return this.orderType === 'takeaway'; },
-    },
-    orderStatus: {
-        type: String,
-        enum: ['Arrived', 'Not arrived'],
-        default: 'Not arrived',
-    },
-    numPeople: {
-        type: Number,
-        required: function() { return this.orderType === 'dine-in'; },
-        min: 1,
-    },
-    location: { type: String },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

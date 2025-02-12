@@ -18,7 +18,10 @@ const Order = () => {
   const [orderType, setOrderType] = useState("dine-in");
   const [orderStatus, setOrderStatus] = useState("not-arrived");
   const [numPeople, setNumPeople] = useState(1);
+  const [redeemedVouchers, setRedeemedVouchers] = useState([]); // Redeemed vouchers state
   const navigate = useNavigate();
+  const [estimatedPickupTime, setEstimatedPickupTime] = useState("");
+  const [tableNumber, setTableNumber] = useState("");
 
   useEffect(() => {
     const savedOrder = JSON.parse(localStorage.getItem("cart"));
@@ -28,64 +31,43 @@ const Order = () => {
       setOrder(savedOrder);
     }
 
-    // Fetch available vouchers
+    // Fetch user data and vouchers
     const fetchUserAndVouchers = async () => {
       try {
-        // Fetch data pengguna termasuk redeemedVouchers
-        const userResponse = await axios.get("http://localhost:3000/api/users/profile");
-        setRedeemedVouchers(userResponse.data.redeemedVouchers); // Ambil redeemedVouchers dari profil pengguna
+        const token = localStorage.getItem("token"); // Get the token from localStorage
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        // Fetch user data including redeemedVouchers
+        const userResponse = await axios.get("http://localhost:3000/api/users/profile", config);
+        setRedeemedVouchers(userResponse.data.redeemedVouchers); // Get redeemed vouchers from user profile
 
         // Fetch available vouchers
-        const voucherResponse = await axios.get("http://localhost:3000/api/vouchers");
-        setVouchers(voucherResponse.data);
+        const voucherResponse = await axios.get("http://localhost:3000/api/vouchers", config);
+        setVouchers(voucherResponse.data); // Set available vouchers
       } catch (error) {
         console.error("Error fetching vouchers or user data:", error);
       }
     };
 
-    fetchVouchers();
+    fetchUserAndVouchers();
   }, []);
 
   const handleVoucherSelection = (e) => {
     const selectedCode = e.target.value;
     setSelectedVoucher(selectedCode);
 
-    // Hanya izinkan memilih voucher yang telah diredeem
+    // Only allow selecting a voucher that has been redeemed
     if (!redeemedVouchers.includes(selectedCode)) {
       alert("This voucher has not been redeemed by you.");
       setSelectedVoucher(""); // Reset voucher selection
     }
   };
 
-  const handleDecrement = (index) => {
-    const newOrder = [...order];
-    if (newOrder[index].quantity > 1) {
-      newOrder[index].quantity -= 1;
-      setOrder(newOrder);
-      localStorage.setItem("cart", JSON.stringify(newOrder));
-    }
-  };
-
-  const handleIncrement = (index) => {
-    const newOrder = [...order];
-    newOrder[index].quantity += 1;
-    setOrder(newOrder);
-    localStorage.setItem("cart", JSON.stringify(newOrder));
-  };
-
-  const handleRemove = (index) => {
-    const newOrder = order.filter((_, i) => i !== index);
-    setOrder(newOrder);
-    localStorage.setItem("cart", JSON.stringify(newOrder));
-  };
-
-  const handleNoteChange = (index, value) => {
-    setNotes((prevNotes) => ({
-      ...prevNotes,
-      [index]: value,
-    }));
-  };
-
+  // Calculate the total price
   const calculateTotal = () => {
     let total = 0;
     order.forEach(product => {
@@ -98,33 +80,44 @@ const Order = () => {
     return total;
   };
 
+  // Calculate tax
   const calculateTax = (total) => {
-    return total * 0.11;
+    return total * 0.11; // Assuming 11% tax
   };
 
+  // Calculate the discount based on the selected voucher
   const calculateDiscount = () => {
     if (selectedVoucher) {
-      const voucher = vouchers.find(v => v.code === selectedVoucher);
-      return voucher ? (calculateTotal() * (voucher.discount / 100)) : 0;
+      const voucher = vouchers.find(v => v._id === selectedVoucher); // Find the selected voucher
+      if (voucher) {
+        return (calculateTotal() * (voucher.discountAmount / 100)); // Apply the discount percentage to the total
+      }
     }
     return 0;
   };
 
-  const total = calculateTotal();
-  const tax = calculateTax(total);
-  const discount = calculateDiscount();
-  const totalWithTax = total + tax - discount;
+  const total = calculateTotal(); // Original price without discount
+  const tax = calculateTax(total); // Tax calculated from the original total
+  const discount = calculateDiscount(); // Discount based on the selected voucher
+  const totalWithTax = total + tax - discount; // Total price after discount and tax
 
+  // Handle the checkout process
   const handleCheckout = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token"); // Retrieve token from localStorage
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       };
-
+  
+      // Ensure tableNumber is provided for dine-in orders
+      if (orderType === "dine-in" && !tableNumber) {
+        alert("Please enter a table number for dine-in orders.");
+        return; // Stop the checkout process if table number is missing
+      }
+  
       const orderData = {
         orderItems: order.map((item, index) => ({
           product: item._id,
@@ -139,27 +132,29 @@ const Order = () => {
         paymentMethod: "cash",
         taxPrice: tax,
         totalPrice: totalWithTax,
-        voucher: selectedVoucher,
+        voucher: selectedVoucher ||null,
         orderStatus,
-        numPeople: orderStatus === "not-arrived" && orderType === "dine-in" ? numPeople : undefined,
+        numPeople: orderType === "dine-in" ? numPeople : undefined,
+        tableNumber: orderType === "dine-in" ? tableNumber : undefined, // Include table number if dine-in
       };
-
-      console.log("Order Data:", orderData);
-
+  
+      console.log("Order Data:", orderData);    
+  
       const response = await axios.post("http://localhost:3000/api/orders", orderData, config);
       console.log("Order saved:", response.data);
-
+  
       localStorage.removeItem("cart");
       setOrder([]);
-
+  
       alert("Your order has been processed successfully!");
-
+  
       navigate("/order-success");
     } catch (error) {
       console.error("Error saving order:", error);
       alert("There was an error processing your order. Please try again.");
     }
   };
+  
 
 
   return (
@@ -178,14 +173,14 @@ const Order = () => {
           <h2 className="text-lg font-semibold font-raleway mb-2 text-[#21325E] content-center">Order Location</h2>
           <p className="text-sm text-gray-600 mb-3">Select your current location</p>
           <div className="flex space-x-4">
-            <button 
+            <button
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderStatus === "arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderStatus("arrived")}
             >
               <img src={orderStatus === "arrived" ? arrivedWhite : arrivedblue} alt="Arrived" className="w-12 h-12 mr-2" />
               Arrived
             </button>
-            <button 
+            <button
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderStatus === "not-arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderStatus("not-arrived")}
             >
@@ -224,14 +219,14 @@ const Order = () => {
             <p className="text-sm text-gray-600 mb-3">Enter the number of people for the reservation</p>
             <div>
               <label htmlFor="numPeople" className="block text-sm font-medium font-raleway text-gray-700">Number of People</label>
-              <input 
-                type="number" 
-                id="numPeople" 
-                name="numPeople" 
-                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                value={numPeople} 
-                onChange={(e) => setNumPeople(e.target.value)} 
-                min="1" 
+              <input
+                type="number"
+                id="numPeople"
+                name="numPeople"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={numPeople}
+                onChange={(e) => setNumPeople(e.target.value)}
+                min="1"
               />
             </div>
           </section>
@@ -249,7 +244,14 @@ const Order = () => {
             {orderType === "dine-in" ? (
               <div>
                 <label htmlFor="tableNumber" className="block text-sm font-medium font-raleway text-gray-700">Table Number</label>
-                <input type="text" id="tableNumber" name="tableNumber" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter your table number" />
+                <input
+                type="text" 
+                id="tableNumber" 
+                name="tableNumber" 
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                placeholder="Enter your table number" 
+                value={tableNumber}
+                onChange={(e) => setTableNumber(e.target.value)}/>
               </div>
             ) : (
               <div>
@@ -342,34 +344,38 @@ const Order = () => {
 
             {/* Add Voucher */}
             <section className="bg-white rounded-lg shadow p-4 mb-6 mt-6">
-        <h2 className="text-lg font-semibold font-raleway mb-2">Apply Your Voucher</h2>
-        <p className="text-sm text-gray-600 mb-3">Select your voucher</p>
-        <div className="flex space-x-4">
-          {redeemedVouchers.length > 0 ? (
-            <>
-              <select
-                className="flex-1 py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition"
-                value={selectedVoucher}
-                onChange={handleVoucherSelection}
-              >
-                <option value="">Select a voucher</option>
-                {vouchers
-                  .filter(voucher => redeemedVouchers.includes(voucher.code)) // Hanya tampilkan voucher yang telah diredeem
-                  .map((voucher) => (
-                    <option key={voucher._id} value={voucher.code}>
-                      {voucher.code} - {voucher.discount}% off
-                    </option>
-                  ))}
-              </select>
-              <button className="py-2 px-4 rounded-full text-white bg-[#21325E] hover:bg-[#4BC1D2] focus:outline-none focus:ring-2 focus:ring-[#4BC1D2] transition">
-                Apply
-              </button>
-            </>
-          ) : (
-            <p className="text-gray-500">No vouchers available to apply.</p>
-          )}
-        </div>
-      </section>
+              <h2 className="text-lg font-semibold font-raleway mb-2">Apply Your Voucher</h2>
+              <p className="text-sm text-gray-600 mb-3">Select your voucher</p>
+              <div className="flex space-x-4">
+                <select
+                  className="flex-1 py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition"
+                  value={selectedVoucher}
+                  onChange={handleVoucherSelection}
+                  disabled={redeemedVouchers.length === 0} // Pastikan ini tidak menyebabkan dropdown tidak bisa dipilih
+                >
+                  <option value="">Select a voucher</option>
+                  {redeemedVouchers.length > 0 ? (
+                    vouchers
+                      .filter(voucher => redeemedVouchers.includes(voucher._id))  // Show only redeemed vouchers
+                      .map(voucher => (
+                        <option key={voucher._id} value={voucher._id}>
+                          {voucher.name} - {voucher.discount}% off
+                        </option>
+                      ))
+                  ) : (
+                    <option value="" disabled>No vouchers available</option>
+                  )}
+                </select>
+                <button
+                  className="py-2 px-4 rounded-full text-white bg-[#21325E] hover:bg-[#4BC1D2] focus:outline-none focus:ring-2 focus:ring-[#4BC1D2] transition"
+                  disabled={redeemedVouchers.length === 0} // Disable apply button if no vouchers available
+                >
+                  Apply
+                </button>
+              </div>
+            </section>
+
+
 
             {/* Order Summary */}
             <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
@@ -383,12 +389,16 @@ const Order = () => {
                     </dl>
                     <dl className="flex items-center justify-between gap-4">
                       <dt className="text-base font-normal font-raleway text-gray-500 dark:text-gray-400">Tax (11%)</dt>
-                      <dd className="text-base font-medium font-raleway text-gray-900 dark:text-white">IDR {tax.toFixed(2).toLocaleString('id-ID')}</dd>
+                      <dd className="text-base font-medium font-raleway text-gray-900 dark:text-white">IDR {tax.toLocaleString('id-ID')}</dd>
+                    </dl>
+                    <dl className="flex items-center justify-between gap-4">
+                      <dt className="text-base font-normal font-raleway text-gray-500 dark:text-gray-400">Discount</dt>
+                      <dd className="text-base font-medium font-raleway text-gray-900 dark:text-white">IDR {discount.toLocaleString('id-ID')}</dd>
                     </dl>
                   </div>
                   <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
                     <dt className="text-base font-bold font-raleway text-gray-900 dark:text-white">Total</dt>
-                    <dd className="text-base font-bold font-raleway text-gray-900 dark:text-white">IDR {totalWithTax.toFixed(2).toLocaleString('id-ID')}</dd>
+                    <dd className="text-base font-bold font-raleway text-gray-900 dark:text-white">IDR {totalWithTax.toLocaleString('id-ID')}</dd>
                   </dl>
                 </div>
                 <button onClick={handleCheckout} className="flex w-full items-center justify-center rounded-lg bg-[#AAE8ED] hover:bg-[#3AA1B2] hover:text-white px-5 py-2.5 text-sm font-medium font-raleway text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Checkout</button>
