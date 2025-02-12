@@ -1,52 +1,53 @@
 const express = require("express");
 const orderRoute = express.Router();
 const protect = require("../middleware/Auth");
-const isAdmin = require("../middleware/isAdmin");
 const asyncHandler = require("express-async-handler");
-const Order = require("../models/Order");
+const Order = require("../Models/Order");
+const User = require("../Models/User");  // Mengimpor model User untuk menambahkan poin
 
 // Create a new order
 orderRoute.post(
   "/",
   protect,
   asyncHandler(async (req, res) => {
-    const {
-      orderItems,
-      paymentMethod,
-      taxPrice,
-      totalPrice,
-    } = req.body;
+    const { orderItems, paymentMethod, taxPrice, totalPrice, note, orderType, tableNumber } = req.body;
 
     if (orderItems && orderItems.length === 0) {
       res.status(400);
       throw new Error("No order items found");
-    } else {
-      const order = new Order({
-        orderItems,
-        paymentMethod,
-        taxPrice,
-        totalPrice,
-        user: req.user._id,
-        note: req.body.note,
-        isPaid: true,  // Set isPaid to true automatically after order is created
-        paidAt: Date.now(),
-      });
-
-      const createdOrder = await order.save();
-      res.status(201).json(createdOrder);
     }
+
+    // Validasi orderType untuk dine-in atau takeaway
+    if (!orderType || (orderType === 'dine-in' && !tableNumber)) {
+      res.status(400);
+      throw new Error("Table number is required for dine-in orders");
+    }
+
+    const order = new Order({
+      orderItems,
+      paymentMethod,
+      taxPrice,
+      totalPrice,
+      user: req.user._id,
+      note,
+      orderType, // Menyimpan jenis pesanan (takeaway/dine-in)
+      tableNumber, // Menyimpan nomor meja untuk dine-in
+      isPaid: false,  // Set isPaid menjadi false, jika belum dibayar
+      paidAt: null,
+    });
+
+    const createdOrder = await order.save();
+    res.status(201).json(createdOrder);
   })
 );
+
 
 // Get order by ID
 orderRoute.get(
   "/:id",
   protect,
   asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id).populate(
-      "user",
-      "name email"
-    );
+    const order = await Order.findById(req.params.id).populate("user", "name email");
     if (order) {
       res.status(200).json(order);
     } else {
@@ -62,9 +63,9 @@ orderRoute.put(
   protect,
   asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
-    
+
     if (order) {
-      // Set order as paid directly (no admin validation)
+      // Set order as paid
       order.isPaid = true;
       order.paidAt = Date.now();
       order.paymentResult = {
@@ -74,18 +75,19 @@ orderRoute.put(
         email_address: req.body.payer.email_address,
       };
 
-      // Add points to the user based on the order's totalPrice
-      const pointsEarned = Math.floor(order.totalPrice / 10); // Contoh, 1 poin untuk setiap 10 unit order
+      // Tambahkan poin ke pengguna berdasarkan totalPrice pesanan
+      const pointsEarned = Math.floor(order.totalPrice / 10);  // Misalnya, 1 poin untuk setiap 10 unit order
       const user = await User.findById(order.user);
+
       if (user) {
-        user.points += pointsEarned; // Tambahkan poin
+        user.points += pointsEarned;  // Tambahkan poin ke pengguna
         await user.save();
       } else {
         res.status(404);
         throw new Error("User Not Found");
       }
 
-      // Save the updated order and respond
+      // Simpan pesanan yang diperbarui dan kirim respons
       const updatedOrder = await order.save();
       res.status(200).json(updatedOrder);
     } else {
@@ -95,19 +97,17 @@ orderRoute.put(
   })
 );
 
-
-
 // Get logged in user orders
 orderRoute.get(
   "/",
   protect,
   asyncHandler(async (req, res) => {
     const orders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
-    if (orders) {
+    if (orders.length > 0) {
       res.status(200).json(orders);
     } else {
       res.status(404);
-      throw new Error("Orders Not Found");
+      throw new Error("No orders found");
     }
   })
 );
