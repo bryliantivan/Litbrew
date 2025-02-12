@@ -12,11 +12,12 @@ const Order = () => {
   const [vouchers, setVouchers] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState("");
   const [orderType, setOrderType] = useState("dine-in");
+  const [estimatedPickupTime, setEstimatedPickupTime] = useState(""); // Added state for pickup time
   const navigate = useNavigate();
 
   useEffect(() => {
     const savedOrder = JSON.parse(localStorage.getItem("cart"));
-    console.log("Saved Order:", savedOrder); 
+    console.log("Saved Order:", savedOrder);
 
     if (savedOrder) {
       setOrder(savedOrder);
@@ -80,9 +81,18 @@ const Order = () => {
     return total * 0.11;
   };
 
+  const calculateDiscount = () => {
+    if (selectedVoucher) {
+      const voucher = vouchers.find(v => v.code === selectedVoucher);
+      return voucher ? (calculateTotal() * (voucher.discount / 100)) : 0;
+    }
+    return 0;
+  };
+
   const total = calculateTotal();
   const tax = calculateTax(total);
-  const totalWithTax = total + tax;
+  const discount = calculateDiscount();
+  const totalWithTax = total + tax - discount;
 
   const handleCheckout = async () => {
     try {
@@ -109,6 +119,9 @@ const Order = () => {
         taxPrice: tax,
         totalPrice: totalWithTax,
         voucher: selectedVoucher,
+        orderType: orderType,  // Add orderType
+        tableNumber: orderType === "dine-in" ? document.getElementById("tableNumber").value : null,  // Include tableNumber for dine-in
+        estimatedPickupTime: orderType === "takeaway" ? estimatedPickupTime : null, // Only include for takeaway
       };
 
       console.log("Order Data:", orderData);
@@ -128,6 +141,7 @@ const Order = () => {
     }
   };
 
+
   return (
     <div className="container px-5 py-36 mx-auto">
       <div className="inset-0 flex items-center justify-center z-30">
@@ -144,14 +158,14 @@ const Order = () => {
           <h2 className="text-lg font-semibold font-raleway mb-2 text-[#21325E] content-center">Order Type</h2>
           <p className="text-sm text-gray-600 mb-3">Select your order type</p>
           <div className="flex space-x-4">
-            <button 
+            <button
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderType("dine-in")}
             >
               <img src={orderType === "dine-in" ? dineInWhite : dineInBlue} alt="Dine-in" className="w-12 h-12 mr-2 " />
               Dine-in
             </button>
-            <button 
+            <button
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "takeaway" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setOrderType("takeaway")}
             >
@@ -178,12 +192,11 @@ const Order = () => {
             ) : (
               <div>
                 <label htmlFor="estimatedArrival" className="block text-sm font-medium font-raleway text-gray-700">Estimated Arrival</label>
-                <input type="time" id="estimatedArrival" name="estimatedArrival" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter estimated arrival time" />
+                <input type="time" id="estimatedArrival" name="estimatedArrival" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter estimated arrival time" onChange={(e) => setEstimatedPickupTime(e.target.value)} />
               </div>
             )}
           </div>
         </section>
-
         <h2 className="text-xl font-semibold font-raleway text-gray-900 dark:text-white sm:text-2xl text-center">Selected Items</h2>
         <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
           <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
@@ -200,8 +213,8 @@ const Order = () => {
                       <label htmlFor={`counter-input-${index}`} className="sr-only">Choose quantity:</label>
                       <div className="flex items-center justify-between md:order-3 md:justify-end">
                         <div className="flex items-center">
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             onClick={() => handleDecrement(index)}
                             className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                           >
@@ -209,16 +222,16 @@ const Order = () => {
                               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h16" />
                             </svg>
                           </button>
-                          <input 
-                            type="text" 
-                            id={`counter-input-${index}`} 
-                            className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium font-raleway text-gray-900 focus:outline-none focus:ring-0 dark:text-white" 
-                            value={product.quantity} 
-                            readOnly 
-                            required 
+                          <input
+                            type="text"
+                            id={`counter-input-${index}`}
+                            className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium font-raleway text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+                            value={product.quantity}
+                            readOnly
+                            required
                           />
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             onClick={() => handleIncrement(index)}
                             className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                           >
@@ -245,10 +258,10 @@ const Order = () => {
                           </button>
                         </div>
                         <div>
-                          <input 
-                            type="text"  
-                            id={`note-${index}`} 
-                            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                          <input
+                            type="text"
+                            id={`note-${index}`}
+                            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Add a note for this item"
                             value={notes[index] || ""}
                             onChange={(e) => handleNoteChange(index, e.target.value)}
@@ -270,8 +283,8 @@ const Order = () => {
               <h2 className="text-lg font-semibold font-raleway mb-2">Apply Your Voucher</h2>
               <p className="text-sm text-gray-600 mb-3">Select your voucher</p>
               <div className="flex space-x-4">
-                <select 
-                  className="flex-1 py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition" 
+                <select
+                  className="flex-1 py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition"
                   value={selectedVoucher}
                   onChange={(e) => setSelectedVoucher(e.target.value)}
                 >

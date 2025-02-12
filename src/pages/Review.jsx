@@ -73,10 +73,8 @@ const Review = () => {
 
     return (
         <div>
-<<<<<<< HEAD
           <label htmlFor="rating" className="block text-sm font-medium text-gray-700">Rating</label>
           <StarRating rating={rating} setRating={setRating} />
-=======
             <h1 className='mt-24'>Review Page</h1>
             <p>This is the review page.</p>
 
@@ -147,7 +145,6 @@ const Review = () => {
                     Submit
                 </button>
             </div>
->>>>>>> 835dc578ae2bfc731130f78c10bfc9aee582ff2a
         </div>
     );
 };
