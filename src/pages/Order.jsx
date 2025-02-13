@@ -16,7 +16,7 @@ const Order = () => {
   const [vouchers, setVouchers] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState("");
   const [orderType, setOrderType] = useState("dine-in");
-  const [orderStatus, setOrderStatus] = useState("not-arrived");
+  const [location, setLocation] = useState("arrived");
   const [numPeople, setNumPeople] = useState(1);
   const [redeemedVouchers, setRedeemedVouchers] = useState([]); // Redeemed vouchers state
   const navigate = useNavigate();
@@ -55,6 +55,60 @@ const Order = () => {
 
     fetchUserAndVouchers();
   }, []);
+
+  const handleIncrement = (index) => {
+    const updatedOrder = [...order];
+    updatedOrder[index].quantity += 1;
+    setOrder(updatedOrder);
+  };
+
+  const handleDecrement = (index) => { 
+    const updatedOrder = [...order];
+    if (updatedOrder[index].quantity > 1) {
+      updatedOrder[index].quantity -= 1;
+      setOrder(updatedOrder);
+    }
+  };
+
+  const handleRemove = (index) => {
+    const updatedOrder = order.filter((_, i) => i !== index);
+    setOrder(updatedOrder);
+  }
+
+  const handleOrderTypeChange = (type) => {
+    if (type !== "dine-in" && type !== "takeaway") {
+      console.error("Invalid order type:", type);
+      return;
+    }
+    setOrderType(type);
+  };
+
+  const validateOrderBeforeSubmit = () => {
+    if (!orderType || !["dine-in", "takeaway"].includes(orderType)) {
+      alert("Invalid order type. Please select either dine-in or takeaway");
+      return false;
+    }
+
+    if (orderType === "dine-in" && !tableNumber) {
+      alert("Please enter a table number for dine-in orders");
+      return false;
+    }
+
+    if (orderType === "takeaway" && !estimatedPickupTime) {
+      alert("Please enter estimated pickup time for takeaway orders");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleLocationChange = (loc) => {
+    if (loc === "arrived" || loc === "not-arrived") {
+      setLocation(loc);
+    } else {
+      console.error("Invalid location:", loc);
+    }
+  };
 
   const handleVoucherSelection = (e) => {
     const selectedCode = e.target.value;
@@ -111,13 +165,24 @@ const Order = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-  
+
       // Ensure tableNumber is provided for dine-in orders
       if (orderType === "dine-in" && !tableNumber) {
         alert("Please enter a table number for dine-in orders.");
         return; // Stop the checkout process if table number is missing
       }
-  
+      if (orderType !== "dine-in" && orderType !== "takeaway") {
+        alert("Invalid order type. It must be either 'dine-in' or 'takeaway'.");
+        return; // Stop the checkout process if the order type is invalid
+      }
+
+      let estimatedPickUpDate = null;
+      if (location === "not-arrived" && orderType === "dine-in" && estimatedPickupTime) {
+        const today = new Date(); // Get today's date
+        const [hours, minutes] = estimatedPickupTime.split(':'); // Split the time string into hours and minutes
+        estimatedPickUpDate = new Date(today.setHours(hours, minutes, 0, 0)); // Set the time to the Date object
+      }
+
       const orderData = {
         orderItems: order.map((item, index) => ({
           product: item._id,
@@ -132,29 +197,31 @@ const Order = () => {
         paymentMethod: "cash",
         taxPrice: tax,
         totalPrice: totalWithTax,
-        voucher: selectedVoucher ||null,
-        orderStatus,
+        voucher: selectedVoucher || null,
+        location,
         numPeople: orderType === "dine-in" ? numPeople : undefined,
-        tableNumber: orderType === "dine-in" ? tableNumber : undefined, // Include table number if dine-in
+        tableNumber: orderType === "dine-in" ? tableNumber : undefined,
+        orderType, // Ensure this is correctly included
+        orderStatus: "confirm", // Ensure orderStatus is included
+        estimatedPickUpTime: estimatedPickUpDate, // Only for takeaway
       };
-  
-      console.log("Order Data:", orderData);    
-  
+      console.log("Order Data:", orderData);
+
       const response = await axios.post("http://localhost:3000/api/orders", orderData, config);
       console.log("Order saved:", response.data);
-  
+
       localStorage.removeItem("cart");
       setOrder([]);
-  
+
       alert("Your order has been processed successfully!");
-  
+
       navigate("/order-success");
     } catch (error) {
       console.error("Error saving order:", error);
       alert("There was an error processing your order. Please try again.");
     }
   };
-  
+
 
 
   return (
@@ -174,17 +241,17 @@ const Order = () => {
           <p className="text-sm text-gray-600 mb-3">Select your current location</p>
           <div className="flex space-x-4">
             <button
-              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderStatus === "arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
-              onClick={() => setOrderStatus("arrived")}
+              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${location === "arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
+              onClick={() => setLocation("arrived")}
             >
-              <img src={orderStatus === "arrived" ? arrivedWhite : arrivedblue} alt="Arrived" className="w-12 h-12 mr-2" />
+              <img src={location === "arrived" ? arrivedWhite : arrivedblue} alt="Arrived" className="w-12 h-12 mr-2" />
               Arrived
             </button>
             <button
-              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderStatus === "not-arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
-              onClick={() => setOrderStatus("not-arrived")}
+              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${location === "not-arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
+              onClick={() => setLocation("not-arrived")}
             >
-              <img src={orderStatus === "not-arrived" ? notarrivedWhite : notarrivedblue} alt="Not Arrived" className="w-12 h-12 mr-2" />
+              <img src={location === "not-arrived" ? notarrivedWhite : notarrivedblue} alt="Not Arrived" className="w-12 h-12 mr-2" />
               Not Arrived
             </button>
           </div>
@@ -196,24 +263,39 @@ const Order = () => {
           <p className="text-sm text-gray-600 mb-3">Select your order type</p>
           <div className="flex space-x-4">
             <button
-              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
+              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in"
+                ? "bg-[#3AA1B2] text-white"
+                : "bg-white text-[#21325E] border border-[#21325E]"
+                }`}
               onClick={() => setOrderType("dine-in")}
             >
-              <img src={orderType === "dine-in" ? dineInWhite : dineInBlue} alt="Dine-in" className="w-12 h-12 mr-2" />
+              <img
+                src={orderType === "dine-in" ? dineInWhite : dineInBlue}
+                alt="Dine-in"
+                className="w-12 h-12 mr-2"
+              />
               Dine-in
             </button>
+
             <button
-              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "takeaway" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
+              className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "takeaway"
+                ? "bg-[#3AA1B2] text-white"
+                : "bg-white text-[#21325E] border border-[#21325E]"
+                }`}
               onClick={() => setOrderType("takeaway")}
             >
-              <img src={orderType === "takeaway" ? takeawayWhite : takeawayBlue} alt="Takeaway" className="w-12 h-12 mr-2" />
+              <img
+                src={orderType === "takeaway" ? takeawayWhite : takeawayBlue}
+                alt="Takeaway"
+                className="w-12 h-12 mr-2"
+              />
               Takeaway
             </button>
           </div>
         </section>
 
         {/* Number of People */}
-        {orderStatus === "not-arrived" && orderType === "dine-in" && (
+        {location === "not-arrived" && orderType === "dine-in" && (
           <section className="bg-white rounded-lg shadow p-4 mb-6">
             <h2 className="text-lg font-semibold font-raleway mb-2">Reservation Details</h2>
             <p className="text-sm text-gray-600 mb-3">Enter the number of people for the reservation</p>
@@ -241,19 +323,28 @@ const Order = () => {
               <label htmlFor="customerName" className="block text-sm font-medium font-raleway text-gray-700">Customer Name</label>
               <input type="text" id="customerName" name="customerName" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter customer name" />
             </div>
+
             {orderType === "dine-in" ? (
               <div>
                 <label htmlFor="tableNumber" className="block text-sm font-medium font-raleway text-gray-700">Table Number</label>
                 <input
-                type="text" 
-                id="tableNumber" 
-                name="tableNumber" 
-                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                placeholder="Enter your table number" 
-                value={tableNumber}
-                onChange={(e) => setTableNumber(e.target.value)}/>
+                  type="text"
+                  id="tableNumber"
+                  name="tableNumber"
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Enter your table number"
+                  value={tableNumber}
+                  onChange={(e) => setTableNumber(e.target.value)} />
               </div>
             ) : (
+              <div>
+                <label htmlFor="estimatedArrival" className="block text-sm font-medium font-raleway text-gray-700">Estimated Arrival</label>
+                <input type="time" id="estimatedArrival" name="estimatedArrival" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter estimated arrival time" onChange={(e) => setEstimatedPickupTime(e.target.value)} />
+              </div>
+            )}
+
+            {/* Conditional input for estimated arrival time if location is "not-arrived" and orderType is "dine-in" */}
+            {location === "not-arrived" && orderType === "dine-in" && (
               <div>
                 <label htmlFor="estimatedArrival" className="block text-sm font-medium font-raleway text-gray-700">Estimated Arrival</label>
                 <input type="time" id="estimatedArrival" name="estimatedArrival" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter estimated arrival time" onChange={(e) => setEstimatedPickupTime(e.target.value)} />

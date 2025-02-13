@@ -126,7 +126,6 @@ const OrderTracking = () => {
                             </div>
                         </div>
                     </div>
-
                     <div className="w-full rounded-xl flex flex-col justify-start items-start gap-6 bg-white p-6 shadow-md">
                         <div className="w-full pb-6 border-b border-gray-200 flex flex-col justify-start items-start gap-6">
                             <div className="w-full flex justify-between items-start gap-6">

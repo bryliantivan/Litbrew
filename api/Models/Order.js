@@ -29,7 +29,8 @@ const orderSchema = new mongoose.Schema({
     },
     paidAt: {
         type: Date,
-    }, isDelivered: {
+    },
+    isDelivered: {
         type: Boolean,
         required: true,
         default: false,
@@ -37,23 +38,49 @@ const orderSchema = new mongoose.Schema({
     deliveredAt: {
         type: Date,
     },
-    orderItems: [{
-        name: { type: String, required: true },
-        qty: { type: Number, required: true },
-        price: { type: Number, required: true },
-        totalPrice: { type: Number, required: true },
-        note: { type: String },
-    }],
+    orderItems: [orderItemSchema],
     totalPrice: { type: Number, required: true },
-    voucher: { type: String, required: true },  // Ensure voucher is included
-    orderStatus: { type: String, enum: ['arrived', 'not-arrived'] },
-    numPeople: { type: Number, required: true },  // Ensure numPeople is included for dine-in
+    voucher: { type: String},  // Ensure voucher is included
+    location: { type: String, enum: ['arrived', 'not-arrived'] },
+    numPeople: {
+        type: Number,
+        required: function() {
+            return this.orderType === 'dine-in'; // Only required for dine-in
+        },
+    },
+    orderType: { 
+        type: String, 
+        required: true, 
+        enum: {
+            values: ['dine-in', 'takeaway'],
+            message: 'Invalid order type. It must be either "dine-in" or "takeaway"'
+        }
+    },
     tableNumber: {
         type: Number,
         required: function () {
             return this.orderType === 'dine-in'; // Ensure tableNumber is required for dine-in
         },
         min: 1,
+    },
+    orderStatus: {
+        type: String,
+        required: true,
+        enum: ['confirm', 'processing', 'delivered'],
+        default: 'confirm',
+    },
+    estimatedPickUpTime: {
+        type: Date,
+        validate: {
+            validator: function (value) {
+                // Only required if location is 'not-arrived'
+                if (this.location === 'not-arrived' && !value) {
+                    return false; // Return false if value is not provided
+                }
+                return true; // Otherwise, it's valid (no need for estimatedPickUpTime)
+            },
+            message: 'Estimated pickup time is required when location is not-arrived.',
+        },
     },
 }, { timestamps: true });
 
