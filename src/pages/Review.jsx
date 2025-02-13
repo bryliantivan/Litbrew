@@ -9,9 +9,9 @@ const Review = () => {
     const [orderItems, setOrderItems] = useState([]);
     const [productRatings, setProductRatings] = useState([]);
     const [rating, setRating] = useState(0);
+    const { orderId } = useParams();
 
     useEffect(() => {
-        const orderId = '67ad56891f41ad47e0e7fc4a'; // example order ID
         const fetchOrderDetails = async () => {
             try {
                 const token = localStorage.getItem('token');

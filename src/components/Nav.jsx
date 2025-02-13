@@ -102,7 +102,7 @@ const Nav = () => {
                     <p>XP Points: {user.points}</p>
                   </div>
                   <Link
-                    to="/myorder"
+                    to="/myorders"
                     className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
                   >
                     My Order
