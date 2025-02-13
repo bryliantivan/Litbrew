@@ -37,17 +37,5 @@ const productSchema = new mongoose.Schema(
     }
 );
 
-// Add method to calculate average rating
-productSchema.methods.calculateAverageRating = function () {
-    if (this.reviews.length === 0) {
-        this.rating = 0;
-        this.numReviews = 0;
-    } else {
-        this.rating =
-            this.reviews.reduce((sum, review) => sum + review.rating, 0) /
-            this.reviews.length;
-        this.numReviews = this.reviews.length;
-    }
-};
 
 module.exports = mongoose.model("Product", productSchema);

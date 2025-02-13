@@ -6,12 +6,15 @@ const BookDetail = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [reviews, setReviews] = useState([]); // To store reviews
 
     useEffect(() => {
+        // Fetch product details and reviews
         axios.get(`http://localhost:3000/api/products/${id}`)
             .then((response) => {
                 console.log("Data API:", response.data);
                 setProduct(response.data);
+                setReviews(response.data.reviews); // Set reviews from the product response
                 setLoading(false);
             })
             .catch((error) => {
@@ -57,46 +60,44 @@ const BookDetail = () => {
                             <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
                             <a href="#" className="text-sm font-medium text-gray-900 underline hover:no-underline dark:text-white">{product?.numReview} reviews</a>
                         </div>
-                        <div className="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
-                            <a
-                                href="#"
-                                className="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100"
-                            >
-                                Add to favorites
-                            </a>
-                            
-                            <a
-                                href="#"
-                                title=""
-                                class="text-white mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 flex items-center justify-center bg-[#4BC1D2]"
-                                role="button"
-                            >
-                                <svg
-                                    class="w-5 h-5 -ms-2 me-2"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
-                                    />
-                                </svg>
-                                Add to cart
-                            </a>
-                        </div>
 
                         <hr className="my-6 md:my-8 border-gray-200" />
 
                         <p className="mb-6 text-gray-500">
                             {product?.description}
                         </p>
+
+                        {/* Displaying Reviews */}
+                        <div className="mt-8">
+                            <h2 className="text-xl font-semibold text-gray-900">User Reviews</h2>
+                            {reviews.length === 0 ? (
+                                <p className="text-gray-500">No reviews yet.</p>
+                            ) : (
+                                <ul className="mt-4 space-y-4">
+                                    {reviews.map((review, index) => (
+                                        <li key={index} className="border-b pb-4">
+                                            <div className="flex items-center">
+                                                <div className="flex items-center">
+                                                    {[...Array(5)].map((star, starIndex) => (
+                                                        <svg
+                                                            key={starIndex}
+                                                            className={`w-5 h-5 ${starIndex < review.rating ? 'text-yellow-500' : 'text-gray-400'}`}
+                                                            fill="currentColor"
+                                                            viewBox="0 0 20 20"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.175 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
+                                                        </svg>
+                                                    ))}
+                                                </div>
+                                                <p className="ml-2 text-sm font-bold text-gray-900">{review.name}</p>
+                                            </div>
+                                            <p className="mt-2 text-sm text-gray-500">{review.comment}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

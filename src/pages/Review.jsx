@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import StarRating from '../components/StarRating';
 
 const Review = () => {
-    const [reviewText, setReviewText] = useState('');
     const [orderDetails, setOrderDetails] = useState(null);
     const [orderItems, setOrderItems] = useState([]);
     const [productRatings, setProductRatings] = useState([]);
-    const [rating, setRating] = useState(0);
+    const [comments, setComments] = useState([]);
     const { orderId } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOrderDetails = async () => {
@@ -19,17 +18,19 @@ const Review = () => {
                 const response = await axios.get(`http://localhost:3000/api/orders/${orderId}`, config);
                 setOrderDetails(response.data);
                 setOrderItems(response.data.orderItems);
-                
-                // Initialize product ratings with 0 for each item
+
+                // Initialize product ratings and comments with default values
                 const initialRatings = response.data.orderItems.map(() => 0);
+                const initialComments = response.data.orderItems.map(() => '');
                 setProductRatings(initialRatings);
+                setComments(initialComments);
             } catch (error) {
                 console.error('Error fetching order details:', error);
             }
         };
 
         fetchOrderDetails();
-    }, []);
+    }, [orderId]);
 
     const handleProductRating = (index, newRating) => {
         const updatedRatings = [...productRatings];
@@ -37,17 +38,34 @@ const Review = () => {
         setProductRatings(updatedRatings);
     };
 
+    const handleCommentChange = (index, event) => {
+        const updatedComments = [...comments];
+        updatedComments[index] = event.target.value;
+        setComments(updatedComments);
+    };
+
     const handleSubmit = async () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } };
-            
+
+            // Loop through all order items and submit reviews for each product
             for (let i = 0; i < orderItems.length; i++) {
-                const reviewData = { rating: productRatings[i], comment: reviewText };
-                await axios.post(`http://localhost:3000/api/products/${orderItems[i]._id}/reviews`, reviewData, config);
+                const reviewData = {
+                    rating: productRatings[i],
+                    comment: comments[i],
+                    user: orderDetails.user,
+                };
+                
+                await axios.post(
+                    `http://localhost:3000/api/products/${orderItems[i].product.toString()}/review`, 
+                    reviewData, 
+                    config
+                );
             }
 
             alert('Reviews submitted successfully!');
+            navigate('/'); // Redirect to home or another page after submission
         } catch (error) {
             console.error('Error submitting reviews:', error);
             alert('Failed to submit reviews.');
@@ -64,20 +82,6 @@ const Review = () => {
                 <div className="font-motter-corpus-std text-2xl font-bold">COMPLETED ORDER!<br />Order ID: {orderDetails._id}</div>
                 <div><span className='text-[#464646]'>Order date: </span>{new Date(orderDetails.createdAt).toLocaleDateString('en-GB')}</div>
                 <div><span className='text-[#464646]'>Order time: </span>{new Date(orderDetails.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div>
-            </div>
-
-            <div className="text-center bg-[#EFFCFF] border border-[#1F81B9] border-opacity-50 m-[5vw] rounded-lg p-4">
-                <h1 className='font-raleway font-bold text-3xl'>How Was It?</h1>
-                <p className='font-raleway text-xl'>Rate your experience & share your thoughts!</p>
-                <form className="mt-4 font-raleway">
-                    <textarea
-                        className="w-full resize-none bg-[#ffffff] p-2 border border-gray-300 rounded-md "
-                        rows="4"
-                        placeholder="Write your overall review!..."
-                        value={reviewText}
-                        onChange={(e) => setReviewText(e.target.value)}
-                    ></textarea>
-                </form>
             </div>
 
             <div className="flex flex-col text-center bg-[#FFFFFF] border-[#AAAAAA] border-[1px] m-[5vw] rounded-lg p-4">
@@ -102,10 +106,15 @@ const Review = () => {
                                                     {item.name}
                                                 </td>
                                                 <td className="pl-6 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 flex items-center">
-                                                    <textarea className='text-[rgb(178,178,178)] w-[45vw] border-[#bbbbbb] bg-[#dddddd] bg-opacity-80 rounded-md mr-[7.5vw] resize-none' placeholder='Write your comment...'></textarea>
+                                                    <textarea
+                                                        value={comments[index]} 
+                                                        onChange={(e) => handleCommentChange(index, e)} 
+                                                        className='text-[rgb(178,178,178)] w-[45vw] border-[#bbbbbb] bg-[#dddddd] bg-opacity-80 rounded-md mr-[7.5vw] resize-none'
+                                                        placeholder='Write your comment...'
+                                                    />
                                                 </td>
                                             </tr>
-                                                
+
                                             <td className="py-4 text-xl font-raleway dark:text-neutral-200">
                                                 <div className="flex justify-center mt-4">
                                                     {[...Array(5)].map((star, starIndex) => (
@@ -137,7 +146,6 @@ const Review = () => {
                     Submit
                 </button>
             </div>
-            
         </div>
     );
 };
