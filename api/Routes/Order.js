@@ -4,6 +4,7 @@ const protect = require("../middleware/Auth");
 const asyncHandler = require("express-async-handler");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
+const mongoose = require("mongoose");
 
 // Create a new order
 orderRoute.post(
@@ -81,6 +82,29 @@ orderRoute.post(
   })
 );
 
+// Get all orders for a user
+orderRoute.get(
+  "/myorders",
+  protect,
+  asyncHandler(async (req, res) => {
+    try {
+      const orders = await Order.find({ user: req.user._id })
+        .sort({ createdAt: -1 }) // Sort by newest first
+        .populate("user", "name email");
+
+      if (orders) {
+        res.status(200).json(orders);
+      } else {
+        res.status(404);
+        throw new Error("No orders found");
+      }
+    } catch (error) {
+      res.status(500);
+      throw new Error("Error fetching orders: " + error.message);
+    }
+  })
+);
+
 // Get order by ID
 orderRoute.get(
   "/:id",
@@ -107,6 +131,7 @@ orderRoute.put(
       // Set order as paid
       order.isPaid = true;
       order.paidAt = Date.now();
+      order.orderStatus = "processing"; // Update order status to processing
       order.paymentResult = {
         id: req.body.id,
         status: req.body.status,
@@ -135,5 +160,8 @@ orderRoute.put(
     }
   })
 );
+
+
+
 
 module.exports = orderRoute;

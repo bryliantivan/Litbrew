@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import dineInBlue from '../assets/images/dine-in blue.png';
 import dineInWhite from '../assets/images/dine-in white.png';
@@ -62,7 +63,7 @@ const Order = () => {
     setOrder(updatedOrder);
   };
 
-  const handleDecrement = (index) => { 
+  const handleDecrement = (index) => {
     const updatedOrder = [...order];
     if (updatedOrder[index].quantity > 1) {
       updatedOrder[index].quantity -= 1;
@@ -215,7 +216,7 @@ const Order = () => {
 
       alert("Your order has been processed successfully!");
 
-      navigate("/order-success");
+      navigate("/myorders");
     } catch (error) {
       console.error("Error saving order:", error);
       alert("There was an error processing your order. Please try again.");
@@ -492,7 +493,7 @@ const Order = () => {
                     <dd className="text-base font-bold font-raleway text-gray-900 dark:text-white">IDR {totalWithTax.toLocaleString('id-ID')}</dd>
                   </dl>
                 </div>
-                <button onClick={handleCheckout} className="flex w-full items-center justify-center rounded-lg bg-[#AAE8ED] hover:bg-[#3AA1B2] hover:text-white px-5 py-2.5 text-sm font-medium font-raleway text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Checkout</button>
+                  <button onClick={handleCheckout} className="flex w-full items-center justify-center rounded-lg bg-[#AAE8ED] hover:bg-[#3AA1B2] hover:text-white px-5 py-2.5 text-sm font-medium font-raleway text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Checkout</button>
               </div>
             </div>
           </div>
