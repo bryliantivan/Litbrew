@@ -40,9 +40,9 @@ const MyOrder = () => {
                     <p className="text-gray-600">Quantity: {item.qty}</p>
                     <p className="text-gray-600">Price: IDR {item.price.toLocaleString('id-ID')}</p>
                   </div>
-                  <Link to={`/review/${item.product}`} className="block bg-gray-400 w-[8vw] text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300">Rate!</Link>
                 </div>
               ))}
+              <Link to={'/review'} className="block bg-gray-400 w-[8vw] text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300">Rate!</Link>
             </div>
           </div>
         ))
