@@ -54,7 +54,7 @@ const BookDetail = () => {
                         </div>
                         <div className="flex items-center mt-4">
                             <svg className="w-6 h-6 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                             </svg>
                             <p className="ms-2 text-sm font-bold text-gray-900 dark:text-white">{product?.rating}</p>
                             <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
@@ -68,36 +68,111 @@ const BookDetail = () => {
                         </p>
 
                         {/* Displaying Reviews */}
-                        <div className="mt-8">
-                            <h2 className="text-xl font-semibold text-gray-900">User Reviews</h2>
-                            {reviews.length === 0 ? (
-                                <p className="text-gray-500">No reviews yet.</p>
-                            ) : (
-                                <ul className="mt-4 space-y-4">
-                                    {reviews.map((review, index) => (
-                                        <li key={index} className="border-b pb-4">
-                                            <div className="flex items-center">
-                                                <div className="flex items-center">
-                                                    {[...Array(5)].map((star, starIndex) => (
-                                                        <svg
-                                                            key={starIndex}
-                                                            className={`w-5 h-5 ${starIndex < review.rating ? 'text-yellow-500' : 'text-gray-400'}`}
-                                                            fill="currentColor"
-                                                            viewBox="0 0 20 20"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                        >
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.175 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
-                                                        </svg>
-                                                    ))}
-                                                </div>
-                                                <p className="ml-2 text-sm font-bold text-gray-900">{review.name}</p>
-                                            </div>
-                                            <p className="mt-2 text-sm text-gray-500">{review.comment}</p>
-                                        </li>
+                        <div className="mt-8 bg-white rounded-lg shadow">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Customer Reviews</h2>
+
+                            {/* Overall Rating Summary */}
+                            <div className="flex items-center mb-6 bg-gray-50 p-4 rounded-lg">
+                                <div className="flex items-center">
+                                    {[...Array(5)].map((_, index) => (
+                                        <svg
+                                            key={index}
+                                            className={`w-5 h-5 ${index < Math.round(product.rating)
+                                                    ? 'text-yellow-300'
+                                                    : 'text-gray-300'
+                                                }`}
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.175 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
+                                        </svg>
                                     ))}
-                                </ul>
+                                </div>
+                                <p className="ml-2 text-lg font-medium text-gray-900">
+                                    {product.rating?.toFixed(1) || '0'} out of 5
+                                </p>
+                                <div className="mx-4 h-5 w-px bg-gray-300"></div>
+                                <p className="text-sm text-gray-600">
+                                    Based on {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                                </p>
+                            </div>
+
+                            {/* Reviews List */}
+                            {reviews.length === 0 ? (
+                                <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                    <p className="text-gray-500">No reviews yet for this book.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-6">
+                                    {reviews.map((review, index) => (
+                                        <div
+                                            key={index}
+                                            className="border-b border-gray-200 pb-6 last:border-b-0"
+                                        >
+                                            <div className="flex items-start space-x-4">
+                                                {/* User Avatar */}
+                                                <div className="flex-shrink-0">
+                                                    <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
+                                                        <span className="text-sm font-medium text-white">
+                                                            {review.user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Review Content */}
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between">
+                                                        <p className="text-sm font-semibold text-gray-900">
+                                                            {review.user?.name || 'Anonymous'}
+                                                        </p>
+                                                        <time
+                                                            className="text-xs text-gray-500"
+                                                            dateTime={review.createdAt}
+                                                        >
+                                                            {new Date(review.createdAt).toLocaleDateString('en-GB', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric'
+                                                            })}
+                                                        </time>
+                                                    </div>
+
+                                                    {/* Star Rating */}
+                                                    <div className="flex items-center mt-1">
+                                                        {[...Array(5)].map((_, starIndex) => (
+                                                            <svg
+                                                                key={starIndex}
+                                                                className={`w-4 h-4 ${starIndex < review.rating
+                                                                        ? 'text-yellow-300'
+                                                                        : 'text-gray-300'
+                                                                    }`}
+                                                                fill="currentColor"
+                                                                viewBox="0 0 20 20"
+                                                            >
+                                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.175 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
+                                                            </svg>
+                                                        ))}
+                                                    </div>
+
+                                                    {/* Review Text */}
+                                                    <div className="mt-3">
+                                                        <p className="text-sm text-gray-700 whitespace-pre-line">
+                                                            {review.comment}
+                                                        </p>
+                                                        {review.overallReview && (
+                                                            <p className="mt-2 text-sm text-gray-500 italic">
+                                                                "{review.overallReview}"
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             )}
                         </div>
+
                     </div>
                 </div>
             </div>
