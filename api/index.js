@@ -16,7 +16,7 @@ moongose.connect(process.env.MONGOOSEDB_RUL).then(()=>console.log("db connected"
 })
 
 app.use(cors({
-    origin: "http://localhost:5173", // Ganti dengan URL frontend
+    origin: "http://localhost:5174", // Ganti dengan URL frontend
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
