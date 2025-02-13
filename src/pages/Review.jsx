@@ -8,22 +8,18 @@ const Review = () => {
     const [orderDetails, setOrderDetails] = useState(null);
     const [orderItems, setOrderItems] = useState([]);
     const [productRatings, setProductRatings] = useState([]);
+    const [rating, setRating] = useState(0);
 
     useEffect(() => {
-        // Ganti dengan ID pesanan yang sesuai
-        const orderId = '67a9f02ece3f9b43870cc9fd';
+        const orderId = '67ad56891f41ad47e0e7fc4a'; // example order ID
         const fetchOrderDetails = async () => {
             try {
-                const token = localStorage.getItem('token'); // Ambil token dari local storage
-                const config = {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                };
+                const token = localStorage.getItem('token');
+                const config = { headers: { Authorization: `Bearer ${token}` } };
                 const response = await axios.get(`http://localhost:3000/api/orders/${orderId}`, config);
                 setOrderDetails(response.data);
-                setOrderItems(response.data.orderItems); // Set order items
-
+                setOrderItems(response.data.orderItems);
+                
                 // Initialize product ratings with 0 for each item
                 const initialRatings = response.data.orderItems.map(() => 0);
                 setProductRatings(initialRatings);
@@ -43,20 +39,11 @@ const Review = () => {
 
     const handleSubmit = async () => {
         try {
-            const token = localStorage.getItem('token'); // Ambil token dari local storage
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            // Loop through each order item and submit review
+            const token = localStorage.getItem('token');
+            const config = { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } };
+            
             for (let i = 0; i < orderItems.length; i++) {
-                const reviewData = {
-                    rating: productRatings[i],
-                    comment: reviewText,
-                };
+                const reviewData = { rating: productRatings[i], comment: reviewText };
                 await axios.post(`http://localhost:3000/api/products/${orderItems[i]._id}/reviews`, reviewData, config);
             }
 
@@ -73,12 +60,7 @@ const Review = () => {
 
     return (
         <div>
-          <label htmlFor="rating" className="block text-sm font-medium text-gray-700">Rating</label>
-          <StarRating rating={rating} setRating={setRating} />
-            <h1 className='mt-24'>Review Page</h1>
-            <p>This is the review page.</p>
-
-            <div className='text-center'>
+            <div className='text-center pt-32'>
                 <div className="font-motter-corpus-std text-xl">COMPLETED ORDER!<br />Order ID: {orderDetails._id}</div>
                 <div><span className='text-[#464646]'>Order date: </span>{new Date(orderDetails.createdAt).toLocaleDateString('en-GB')}</div>
                 <div><span className='text-[#464646]'>Order time: </span>{new Date(orderDetails.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div>
