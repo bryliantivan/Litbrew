@@ -33,7 +33,7 @@ const Nav = () => {
     const handleCartUpdate = () => {
       setCart(JSON.parse(localStorage.getItem('cart')) || []);
     };
-  
+
     window.addEventListener('cartUpdated', handleCartUpdate);
     return () => window.removeEventListener('cartUpdated', handleCartUpdate);
   }, []);
@@ -80,7 +80,7 @@ const Nav = () => {
         <NavLink to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/logoLitbrew.svg" className="h-14" alt="Litbrew Logo" />
         </NavLink>
-        <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        <div className="flex md:order-2 space-x-4 rtl:space-x-reverse">
           {!isLoggedIn ? (
             <Link to="/login">
               <button
@@ -91,68 +91,71 @@ const Nav = () => {
               </button>
             </Link>
           ) : (
-            <div className="relative flex">
-              <div className="flex justify-center items-center">
-                <div className="relative py-2">
-                  {cart.length > 0 && (
-                    <div className="absolute top-4 left-5">
-                      {/* Real-time update: badge now reads directly from the cart state */}
-                      <p className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500 p-1 text-xs text-white">
-                        {cart.length}
-                      </p>
-                    </div>
-                  )}
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="mt-4 h-8 w-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                  </svg>
-                </div>
+            <>
+              <div className="relative flex">
+                <Link to="/order">
+                  <div className="relative py-2">
+                    {cart.length > 0 && (
+                      <div className="absolute top-4 left-5">
+                        <p className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500 p-1 text-xs text-white">
+                          {cart.length}
+                        </p>
+                      </div>
+                    )}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="mt-4 h-8 w-8">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                    </svg>
+                  </div>
+                </Link>
               </div>
-              <button
-                type="button"
-                onClick={toggleDropdown}
-                className="text-[#03151E] focus:ring-4 focus:outline-none focus:ring-blue-300 font-raleway font-semibold rounded-lg text-sm px-4 py-2 text-center transition-transform duration-300 ease-in-out transform hover:scale-105 flex items-center"
-              >
-                <div className="relative w-10 h-10 overflow-hidden rounded-full">
-                  <svg className="absolute w-12 h-12 -left-1" fill="#D1E9FF" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
-                  </svg>
-                </div>
-              </button>
-              {dropdownOpen && user && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-4 px-6 z-50 font-motter-corpus-std border border-gray-200">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-300">
-                      {/* Placeholder for user avatar */}
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-800 font-semibold">{user.name}</p>
-                      <p className="text-xs text-gray-500">{user.email}</p>
-                    </div>
+              <div>
+                <button
+                  type="button"
+                  onClick={toggleDropdown}
+                  className="text-[#03151E] focus:ring-4 focus:outline-none focus:ring-blue-300 font-raleway font-semibold rounded-lg text-sm px-4 py-2 text-center transition-transform duration-300 ease-in-out transform hover:scale-105 flex items-center"
+                >
+                  <div className="relative w-10 h-10 overflow-hidden rounded-full">
+                    <svg className="absolute w-12 h-12 -left-1" fill="#D1E9FF" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                    </svg>
                   </div>
-                  <div className="text-sm text-gray-800 mb-3">
-                    <p>XP Points: {user.points}</p>
+                </button>
+                {dropdownOpen && user && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-4 px-6 z-50 font-motter-corpus-std border border-gray-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-8 h-8 rounded-full bg-gray-300">
+                        {/* Placeholder for user avatar */}
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-800 font-semibold">{user.name}</p>
+                        <p className="text-xs text-gray-500">{user.email}</p>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-800 mb-3">
+                      <p>XP Points: {user.points}</p>
+                    </div>
+                    <Link
+                      to="/myorders"
+                      className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
+                    >
+                      My Order
+                    </Link>
+                    <Link
+                      to="/profile"
+                      className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
+                    >
+                      Profile Settings
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
+                    >
+                      Sign Out
+                    </button>
                   </div>
-                  <Link
-                    to="/myorders"
-                    className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
-                  >
-                    My Order
-                  </Link>
-                  <Link
-                    to="/profile"
-                    className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
-                  >
-                    Profile Settings
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            </>
           )}
         </div>
         <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">

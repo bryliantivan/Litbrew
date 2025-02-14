@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
+
 const Review = () => {
     const [orderDetails, setOrderDetails] = useState(null);
     const [orderItems, setOrderItems] = useState([]);
@@ -47,28 +48,47 @@ const Review = () => {
     const handleSubmit = async () => {
         try {
             const token = localStorage.getItem('token');
-            const config = { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } };
-
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+    
             // Loop through all order items and submit reviews for each product
             for (let i = 0; i < orderItems.length; i++) {
                 const reviewData = {
                     rating: productRatings[i],
-                    comment: comments[i],
-                    user: orderDetails.user,
+                    comment: comments[i]
                 };
-                
+    
                 await axios.post(
-                    `http://localhost:3000/api/products/${orderItems[i].product.toString()}/review`, 
-                    reviewData, 
+                    `http://localhost:3000/api/products/${orderItems[i].product.toString()}/review`,
+                    reviewData,
                     config
                 );
             }
-
+    
+            // After successfully submitting all product reviews, update the order's isReviewed flag
+            await axios.put(
+                `http://localhost:3000/api/orders/${orderId}/review`,
+                {},
+                config
+            );
+    
             alert('Reviews submitted successfully!');
             navigate('/'); // Redirect to home or another page after submission
         } catch (error) {
-            console.error('Error submitting reviews:', error);
-            alert('Failed to submit reviews.');
+            if (
+                error.response &&
+                error.response.data.message &&
+                error.response.data.message.includes("Product already reviewed")
+            ) {
+                alert("You have already reviewed one or more products in this order.");
+            } else {
+                console.error('Error submitting reviews:', error);
+                alert('Failed to submit reviews.');
+            }
         }
     };
 
@@ -107,8 +127,8 @@ const Review = () => {
                                                 </td>
                                                 <td className="pl-6 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 flex items-center">
                                                     <textarea
-                                                        value={comments[index]} 
-                                                        onChange={(e) => handleCommentChange(index, e)} 
+                                                        value={comments[index]}
+                                                        onChange={(e) => handleCommentChange(index, e)}
                                                         className='text-[rgb(178,178,178)] w-[45vw] border-[#bbbbbb] bg-[#dddddd] bg-opacity-80 rounded-md mr-[7.5vw] resize-none'
                                                         placeholder='Write your comment...'
                                                     />

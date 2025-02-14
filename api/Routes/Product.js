@@ -27,32 +27,35 @@ productRoute.post(
         const product = await Product.findById(req.params.id);
 
         if (product) {
-            // Check if user already reviewed
+            // Check if the user has already reviewed
             const alreadyReviewed = product.reviews.find(
                 (review) => review.user.toString() === req.user._id.toString()
             );
 
             if (alreadyReviewed) {
-                res.status(400);
-                throw new Error("Product already reviewed");
+                // If review exists, update the review
+                alreadyReviewed.rating = Number(rating);
+                alreadyReviewed.comment = comment;
+            } else {
+                // Otherwise add a new review
+                const review = {
+                    name: req.user.name,
+                    rating: Number(rating),
+                    comment,
+                    user: req.user._id,
+                };
+
+                product.reviews.push(review);
             }
 
-            const review = {
-                name: req.user.name,
-                rating: Number(rating),
-                comment,
-                user: req.user._id,
-            };
-
-            product.reviews.push(review);
             product.numReviews = product.reviews.length;
 
-            // Manually calculate average rating
+            // Recalculate average rating
             const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);
             product.rating = totalRating / product.reviews.length;
 
             await product.save();
-            res.status(201).json({ message: "Review added" });
+            res.status(201).json({ message: "Review submitted successfully" });
         } else {
             res.status(404);
             throw new Error("Product not found");

@@ -82,6 +82,11 @@ const orderSchema = new mongoose.Schema({
             message: 'Estimated pickup time is required when location is not-arrived.',
         },
     },
+    isReviewed: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

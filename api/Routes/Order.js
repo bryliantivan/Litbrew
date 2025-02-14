@@ -4,7 +4,6 @@ const protect = require("../middleware/Auth");
 const asyncHandler = require("express-async-handler");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
-const mongoose = require("mongoose");
 
 // Create a new order
 orderRoute.post(
@@ -74,6 +73,7 @@ orderRoute.post(
       paidAt: null, // Set waktu pembayaran menjadi null
       orderStatus,
       estimatedPickUpTime, // Ensure this is saved as well
+      isReviewed: false, // Set isReviewed menjadi false, jika belum direview
     });
 
     // Save the order
@@ -161,7 +161,32 @@ orderRoute.put(
   })
 );
 
-
+orderRoute.put(
+  "/:id/review",
+  protect,
+  asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      // Ensure the order belongs to the logged-in user
+      if (order.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error("Not authorized to review this order");
+      }
+      // Check if the order has already been reviewed
+      if (order.isReviewed) {
+        res.status(400);
+        throw new Error("Order already reviewed");
+      }
+      // Mark the order as reviewed
+      order.isReviewed = true;
+      const updatedOrder = await order.save();
+      res.status(200).json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order Not Found");
+    }
+  })
+);
 
 
 module.exports = orderRoute;
