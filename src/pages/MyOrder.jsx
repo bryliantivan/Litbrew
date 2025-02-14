@@ -27,7 +27,7 @@ const MyOrder = () => {
 
   return (
     <div className="container px-5 py-36 mx-auto font-raleway">
-      <h1 className="text-3xl font-semibold mb-6">My Orders</h1>
+      <h1 className="text-3xl font-semibold mb-6">Order History</h1>
       {paidOrders.length > 0 ? (
         paidOrders.map((order) => (
           <div key={order._id} className="mb-6 p-4 border rounded-lg shadow-sm">

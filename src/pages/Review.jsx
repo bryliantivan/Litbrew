@@ -135,7 +135,7 @@ const Review = () => {
                                                     <textarea
                                                         value={comments[index]}
                                                         onChange={(e) => handleCommentChange(index, e)}
-                                                        className='text-[rgb(178,178,178)] w-[45vw] border-[#bbbbbb] bg-[#dddddd] bg-opacity-80 rounded-md mr-[7.5vw] resize-none'
+                                                        className='text-[rgb(0,0,0)] w-[45vw] border-[#bbbbbb] bg-[#dddddd] bg-opacity-80 rounded-md mr-[7.5vw] resize-none'
                                                         placeholder='Write your comment...'
                                                     />
                                                 </td>
