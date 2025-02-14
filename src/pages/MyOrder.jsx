@@ -10,9 +10,7 @@ const MyOrder = () => {
       try {
         const token = localStorage.getItem("token");
         const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` }
         };
         const response = await axios.get("http://localhost:3000/api/orders/myorders", config);
         setOrders(response.data);
@@ -24,7 +22,7 @@ const MyOrder = () => {
     fetchOrders();
   }, []);
 
-  // Filter orders where isPaid is true
+  // Filter orders to display only those with isPaid === true
   const paidOrders = orders.filter(order => order.isPaid);
 
   return (

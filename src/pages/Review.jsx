@@ -46,6 +46,12 @@ const Review = () => {
     };
 
     const handleSubmit = async () => {
+        // Validate that every product has a rating greater than 0
+        if (productRatings.some(rating => rating === 0)) {
+            alert("Please provide a rating for every product.");
+            return;
+        }
+
         try {
             const token = localStorage.getItem('token');
             const config = {
@@ -54,28 +60,28 @@ const Review = () => {
                     'Content-Type': 'application/json'
                 }
             };
-    
+
             // Loop through all order items and submit reviews for each product
             for (let i = 0; i < orderItems.length; i++) {
                 const reviewData = {
                     rating: productRatings[i],
                     comment: comments[i]
                 };
-    
+
                 await axios.post(
                     `http://localhost:3000/api/products/${orderItems[i].product.toString()}/review`,
                     reviewData,
                     config
                 );
             }
-    
+
             // After successfully submitting all product reviews, update the order's isReviewed flag
             await axios.put(
                 `http://localhost:3000/api/orders/${orderId}/review`,
                 {},
                 config
             );
-    
+
             alert('Reviews submitted successfully!');
             navigate('/'); // Redirect to home or another page after submission
         } catch (error) {
