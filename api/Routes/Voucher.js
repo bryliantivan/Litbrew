@@ -1,6 +1,7 @@
 const express = require('express');
 const Voucher = require("../Models/Voucher")
 const asyncHandler = require('express-async-handler');
+const User = require('../Models/User');
 
 const voucherRoute = express.Router();
 

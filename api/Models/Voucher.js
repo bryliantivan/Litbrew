@@ -21,6 +21,9 @@ const voucherSchema = new mongoose.Schema({
         type: Boolean,
         default: true,  // Apakah voucher aktif untuk ditukarkan
     },
+    minSpend: {
+        type: Number,  // Jumlah minimum yang harus dihabiskan untuk menggunakan voucher
+    },
 });
 
 module.exports = mongoose.model('Vouchers', voucherSchema);

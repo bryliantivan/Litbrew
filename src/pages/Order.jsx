@@ -113,14 +113,26 @@ const Order = () => {
 
   const handleVoucherSelection = (e) => {
     const selectedCode = e.target.value;
-    setSelectedVoucher(selectedCode);
+    // Find the selected voucher details from the vouchers array
+    const voucherObj = vouchers.find(v => v._id === selectedCode); 
+    if (voucherObj) {
+        // Check if order total meets the voucher's minimum spend requirement
+        if (calculateTotal() < voucherObj.minSpend) {
+            alert(`Minimum spend for this voucher is IDR ${voucherObj.minSpend.toLocaleString('id-ID')}`);
+            setSelectedVoucher("");
+            return;
+        }
+    }
 
     // Only allow selecting a voucher that has been redeemed
     if (!redeemedVouchers.includes(selectedCode)) {
-      alert("This voucher has not been redeemed by you.");
-      setSelectedVoucher(""); // Reset voucher selection
+        alert("This voucher has not been redeemed by you.");
+        setSelectedVoucher("");
+        return;
     }
-  };
+
+    setSelectedVoucher(selectedCode);
+};
 
   // Calculate the total price
   const calculateTotal = () => {
