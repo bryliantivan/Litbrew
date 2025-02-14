@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const OrderTracking = () => {
     const [orderItems, setOrderItems] = useState([]);
     const [orderDetails, setOrderDetails] = useState({});
     const [loading, setLoading] = useState(true);
+    const { orderId } = useParams();
 
     useEffect(() => {
         const fetchOrderDetails = async () => {
@@ -15,7 +17,7 @@ const OrderTracking = () => {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                const response = await axios.get('http://localhost:3000/api/orders/67ad56891f41ad47e0e7fc4a', config); // Ganti dengan endpoint API yang sesuai
+                const response = await axios.get(`http://localhost:3000/api/orders/${orderId}`, config); // Ganti dengan endpoint API yang sesuai
                 const orderData = response.data;
                 setOrderDetails(orderData);
                 setOrderItems(orderData.orderItems);

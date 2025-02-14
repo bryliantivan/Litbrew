@@ -6,7 +6,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const [acceptTerms, setAcceptTerms] = useState(false); // State untuk checkbox
+    const [acceptTerms, setAcceptTerms] = useState(false); // State for checkbox
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -27,7 +27,13 @@ const Login = () => {
                 localStorage.setItem("token", response.data.token);
                 window.dispatchEvent(new Event("storage"));
                 setErrorMessage("");
-                navigate("/");
+
+                // Navigate to admin dashboard if the user is an admin
+                if (response.data.user && response.data.user.isAdmin) {
+                    navigate("/admin");
+                } else {
+                    navigate("/");
+                }
             }
         } catch (error) {
             if (error.response && error.response.data) {
@@ -117,7 +123,10 @@ const Login = () => {
                             className="appearance-none w-5 h-5 border-2 border-[#07779D] rounded-full checked:bg-[#07779D] cursor-pointer"
                         />
                         <label htmlFor="terms" className="ml-3 text-sm font-light text-gray-500 dark:text-gray-300">
-                            I accept the <a href="#" className="font-medium text-[#07779D] hover:underline">terms and privacy policy</a>
+                            I accept the{" "}
+                            <a href="#" className="font-medium text-[#07779D] hover:underline">
+                                terms and privacy policy
+                            </a>
                         </label>
                     </div>
 

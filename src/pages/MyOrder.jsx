@@ -51,18 +51,27 @@ const MyOrder = () => {
                 </div>
               ))}
             </div>
-            {/* Only allow one rate per order */}
-            {!order.isReviewed ? (
+            {/* Render Track button if orderStatus is 'processing', otherwise show review button */}
+            {order.orderStatus === "processing" ? (
               <Link
-                to={`/review/${order._id}`}
+                to={`/orderTracking/${order._id}`}
                 className="block bg-[#4BC1D2] rounded-full w-[8vw] text-center mt-4 px-4 py-2 text-sm text-white hover:bg-blue-300"
               >
-                Rate!
+                Track
               </Link>
             ) : (
-              <span className="block bg-gray-400 rounded-full w-[8vw] text-center mt-4 px-4 py-2 text-sm text-white">
-                Reviewed
-              </span>
+              !order.isReviewed ? (
+                <Link
+                  to={`/review/${order._id}`}
+                  className="block bg-[#4BC1D2] rounded-full w-[8vw] text-center mt-4 px-4 py-2 text-sm text-white hover:bg-blue-300"
+                >
+                  Rate!
+                </Link>
+              ) : (
+                <span className="block bg-gray-400 rounded-full w-[8vw] text-center mt-4 px-4 py-2 text-sm text-white">
+                  Reviewed
+                </span>
+              )
             )}
           </div>
         ))

@@ -21,8 +21,7 @@ const App = () => {
           <Route path="/myorders" element={<MyOrder />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/review/:orderId" element={<Review />} />
-          <Route path="/ordertracking" element={<OrderTracking/>}/>
-
+          <Route path="/ordertracking/:orderId" element={<OrderTracking/>}/>
         </Routes>
       </Router>
       <Footer />
