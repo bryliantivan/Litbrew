@@ -45,7 +45,6 @@ const Book = () => {
     return product.category === category && product.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
-  // Function to handle adding products to the cart
   const addToCart = (product) => {
     if (!isLoggedIn) {
       alert("Please log in to add items to your cart.");
@@ -61,30 +60,31 @@ const Book = () => {
       newCart = [...cart, { ...product, quantity: 1 }];
     }
     setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
-    setAddedProducts([...addedProducts, product._id]); // Add product to added products
-    setShowCartPopup(true); // Show cart popup
+    localStorage.setItem("cart", JSON.stringify(newCart));
+    setAddedProducts([...addedProducts, product._id]);
+    setShowCartPopup(true);
+    window.dispatchEvent(new Event("cartUpdated")); // Dispatch event here
     console.log("Cart:", newCart);
-
-    // Hide the popup after 3 seconds
   };
-
+  
   // Function to handle incrementing product quantity
   const incrementQuantity = (product) => {
     const newCart = cart.map(item =>
       item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
     );
     setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
+    localStorage.setItem("cart", JSON.stringify(newCart));
+    window.dispatchEvent(new Event("cartUpdated")); // Dispatch event here
   };
-
+  
   // Function to handle decrementing product quantity
   const decrementQuantity = (product) => {
     const newCart = cart.map(item =>
       item._id === product._id ? { ...item, quantity: item.quantity - 1 } : item
     ).filter(item => item.quantity > 0);
     setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
+    localStorage.setItem("cart", JSON.stringify(newCart));
+    window.dispatchEvent(new Event("cartUpdated")); // Dispatch event here
     if (newCart.find(item => item._id === product._id) === undefined) {
       setAddedProducts(addedProducts.filter(id => id !== product._id)); // Remove product from added products
     }
@@ -187,11 +187,11 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
 
   return (
     <div className="group flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-[#03151E] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
-      <Link to={`/menu/${product._id}`} className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
+      <Link to={`/book/${product._id}`} className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
         <img className="absolute top-0 right-0 h-full w-full object-cover bg-[#D1E9FF]" src={product.image} alt={product.name} />
       </Link>
       <div className="mt-4 px-5 pb-1">
-        <Link to={`/menu/${product._id}`}>
+        <Link to={`/book/${product._id}`}>
           <h4 className="text-xl tracking-tight text-white pb-3">{product.name}</h4>
         </Link>
         <p className="text-xs text-white sm:text-l pb-4">

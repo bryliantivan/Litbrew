@@ -12,6 +12,7 @@ const Menu = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State for user login status
   const [addedProducts, setAddedProducts] = useState([]); // State for tracking added products
   const [showCartPopup, setShowCartPopup] = useState(false); // State for controlling cart popup visibility
+  
 
   const navigate = useNavigate();
 

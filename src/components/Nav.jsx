@@ -3,36 +3,41 @@ import { navLinks } from '../constants';
 import { useState, useEffect } from 'react';
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
-import axios from 'axios'; // Import axios to make requests
+import axios from 'axios';
 
 const Nav = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [user, setUser] = useState(null);  // To store user data
+  const [user, setUser] = useState(null);
+  const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')) || []);
+
+  // Function to check the token in localStorage
+  const checkToken = () => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+    if (token) {
+      fetchUserData(token);
+    }
+  };
 
   useEffect(() => {
-    // Fungsi untuk memeriksa token di localStorage
-    const checkToken = () => {
-      const token = localStorage.getItem('token');
-      setIsLoggedIn(!!token);
-      if (token) {
-        fetchUserData(token);  // If logged in, fetch user data
-      }
-    };
-
-    // Cek token saat komponen dimount
     checkToken();
-
-    // Tambahkan event listener untuk mendeteksi perubahan localStorage
     window.addEventListener('storage', checkToken);
-
-    // Pastikan event listener dihapus saat komponen unmount
     return () => {
       window.removeEventListener('storage', checkToken);
     };
   }, []);
 
-  // Function to fetch user data from the API
+  // Synchronize cart with localStorage whenever it changes
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      setCart(JSON.parse(localStorage.getItem('cart')) || []);
+    };
+  
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+  }, []);
+
   const fetchUserData = async (token) => {
     try {
       const response = await axios.get('http://localhost:3000/api/users/profile', {
@@ -40,7 +45,7 @@ const Nav = () => {
           Authorization: `Bearer ${token}`,
         }
       });
-      setUser(response.data);  // Set the user data from the response
+      setUser(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -49,13 +54,24 @@ const Nav = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    setUser(null);  // Clear user data on logout
-    // Memicu event 'storage' secara manual agar komponen lain yang mendengarkan event ini (misalnya, Nav) ter-update
+    setUser(null);
+    setCart([]);
     window.dispatchEvent(new Event('storage'));
   };
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+
+  // Function to handle adding/removing products from the cart
+  const updateCart = (product, action) => {
+    let newCart;
+    if (action === "add") {
+      newCart = [...cart, product]; // Add product to cart
+    } else if (action === "remove") {
+      newCart = cart.filter(item => item._id !== product._id); // Remove product from cart
+    }
+    setCart(newCart); // Trigger re-render in real time
   };
 
   return (
@@ -75,7 +91,22 @@ const Nav = () => {
               </button>
             </Link>
           ) : (
-            <div className="relative">
+            <div className="relative flex">
+              <div className="flex justify-center items-center">
+                <div className="relative py-2">
+                  {cart.length > 0 && (
+                    <div className="absolute top-4 left-5">
+                      {/* Real-time update: badge now reads directly from the cart state */}
+                      <p className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500 p-1 text-xs text-white">
+                        {cart.length}
+                      </p>
+                    </div>
+                  )}
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="mt-4 h-8 w-8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  </svg>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={toggleDropdown}
