@@ -41,7 +41,7 @@ const Nav = () => {
         setLoadingUser(true); // Set loading to true
         setUserError(null);    // Reset error
         try {
-            const response = await axios.get('http://localhost:5173/api/users/profile', {
+            const response = await axios.get('http://localhost:3000/api/users/profile', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -164,7 +164,7 @@ const Nav = () => {
                                         </div>
                                         <div>
                                             <Link
-                                                to="/myorders"
+                                                to="/order"
                                                 className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
                                             >
                                                 My Order
