@@ -9,8 +9,9 @@ import Login from './Login';
 import Register from './Register';
 import MyOrder from './MyOrder';
 import Profile from './Profile';
-import Review from './Review'
-import OrderTracking from './OrderTracking'
+import Review from './Review';
+import OrderTracking from './OrderTracking';
+import AdminHome from './AdminHome';
 
 export {
     About,
@@ -25,5 +26,6 @@ export {
     MyOrder,
     Profile,
     Review,
-    OrderTracking
+    OrderTracking,
+    AdminHome
 };
