@@ -12,7 +12,8 @@ import Profile from './Profile';
 import Review from './Review';
 import OrderTracking from './OrderTracking';
 import AdminHome from './AdminHome';
-import AdminManageMenu from './AdminManageMenu';    
+import AdminManageMenu from './AdminManageMenu'; 
+import AdminAddMenu from './AdminAddMenu';   
 
 export {
     About,
@@ -29,5 +30,6 @@ export {
     Review,
     OrderTracking,
     AdminHome,
-    AdminManageMenu
+    AdminManageMenu,
+    AdminAddMenu
 };
