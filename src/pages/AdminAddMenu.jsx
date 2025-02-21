@@ -118,7 +118,7 @@ const AdminAddMenu = () => {
             </div>
 
         <div className="flex justify-center">
-            <button className="bg-gray-400 hover:bg-[#334147] text-white font-medium py-2 px-4 rounded-md mr-2">
+            <button className=" bg-gray-400 hover:bg-gray-500 text-white font-medium py-2 px-4 rounded-md mr-3">
             CANCEL
           </button>
           <button className="bg-[#334147] hover:bg-[#07779D] text-white font-medium py-2 px-4 rounded-md">
