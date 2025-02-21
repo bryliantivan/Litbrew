@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate();
-  const [activeSlide, setActiveSlide] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(1);
   const galleryImages = [
     homepage_galery1,
     homepage_galery2,
@@ -93,14 +93,22 @@ const Home = () => {
     },
   ];
   // Untuk Carrousel kedua Buddy Choice
-  const [currentIndex, setCurrentIndex] = useState(1);
-
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? homepage_drinks.length - 1 : prevIndex - 1));
-  };
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === homepage_drinks.length - 1 ? 0 : prevIndex + 1));
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % homepage_drinks.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + homepage_drinks.length) % homepage_drinks.length);
+  };
+
+  const handleNext2 = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % galleryImages.length);
+  };
+
+  const handlePrev2 = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + galleryImages.length) % galleryImages.length);
   };
 
   const sectionRefs = useRef([]);
@@ -185,32 +193,6 @@ const Home = () => {
               />
             ))}
           </div>
-
-          {/* Carousel controls */}
-          {/* <button 
-            type="button" 
-            className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" 
-            data-carousel-prev
-            onClick={() => setActiveSlide((prev) => (prev - 1 + welcome_slides.length) % welcome_slides.length)}
-          >
-            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm group-hover:bg-black/50 transition-all duration-300">
-              <svg className="w-5 h-5 text-white/80" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4"/>
-              </svg>
-            </span>
-          </button>
-          <button 
-            type="button" 
-            className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" 
-            data-carousel-next
-            onClick={() => setActiveSlide((prev) => (prev + 1) % welcome_slides.length)}
-          >
-            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm group-hover:bg-black/50 transition-all duration-300">
-              <svg className="w-5 h-5 text-white/80" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
-              </svg>
-            </span>
-          </button> */}
         </div>
       </div>
 
@@ -255,14 +237,14 @@ const Home = () => {
           {/* Header */}
           <h1 className="mt-16 text-4xl font-raleway md:text-5xl font-bold text-[#4a403a]">Litbrew's Buddy Choice</h1>
 
-          {/* Carousel */}
+          {/* Update the transform calculation for the Buddy Choice carousel */}
           <div className="relative h-[32rem] w-7/8 max-w-6xl overflow-hidden">
-            <div className="h-full mt-10 flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${(currentIndex - 1) * 33.33}%)` }}>
+            <div className="h-full mt-20 mb-24 flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentIndex === 0 ? 0 : (currentIndex - 1) * 33.33}%)` }}>
               {homepage_drinks.map((drink, index) => (
                 <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-105' : 'scale-75'}`}>
                   {currentIndex === index && (
-                    <div className="absolute bottom-56 transform translate-y-1/2 w-48 h-16 bg-[#CFF2F5] rounded-[50%] z-0"></div>
+                    <div className="absolute bottom-56 transform translate-y-1/3 w-48 h-16 bg-[#CFF2F5] rounded-[50%] z-0"></div>
                   )}
                   <img
                     src={drink.imgUrl}
@@ -290,7 +272,7 @@ const Home = () => {
             </button>
           </div>
 
-          {/* Dots Indicator */}
+          {/* Update the Dots Indicator for the Buddy Choice carousel */}
           <div className="flex justify-center space-x-2">
             {homepage_drinks.map((_, index) => (
               <button
@@ -448,17 +430,17 @@ const Home = () => {
           <h1 className="mt-16 mb-12 text-4xl font-raleway md:text-5xl font-bold text-[#4a403a]">Litbrew's Gallery</h1>
 
           {/* Carousel */}
-          <div className="relative h-[30vw] w-5/6 overflow-hidden">
-            <div className="h-full mt-32 flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${(currentIndex - 1) * 33.33}%)` }}>
+          <div className="relative h-[30vw] w-full overflow-hidden">
+            <div className="h-full mt-32 mx-[12vw] flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentIndex === 0 ? 0 : (currentIndex - 1) * 33.33}%)` }}>
               {galleryImages.map((image, index) => (
-                <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-150 z-50' : 'scale-80 z-10'}`}>
+                <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform  duration-500 ease-in-out ${currentIndex === index ? 'scale-150 mt-10 z-50' : 'scale-80 z-10'}`}>
                   {currentIndex === index && (
-                    <div className="absolute bottom-56 transform translate-y-1/2 w-48 h-16 bg-gradient-to-b from-[#FFFFFF] to-[#64b0b7] rounded-[50%] z-0"></div>
+                    <div></div>
                   )}
                   <img
                     src={image}
-                    className="relative z-20 w-[30w] object-fill mx-2"
+                    className="relative z-20 object-fill mx-2"
                   />
                 </div>
               ))}
@@ -466,13 +448,13 @@ const Home = () => {
 
             {/* Navigation Buttons */}
             <button
-              onClick={handlePrev}
+              onClick={handlePrev2}
               className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-[#EDEDED] text-black px-2 md:px-3 py-4 md:py-6 rounded-full hover:bg-[#2C4ACB] hover:text-white focus:outline-none"
             >
               ❮
             </button>
             <button
-              onClick={handleNext}
+              onClick={handleNext2}
               className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-[#EDEDED] text-black px-2 md:px-3 py-4 md:py-6 rounded-full hover:bg-[#2C4ACB] hover:text-white focus:outline-none"
             >
               ❯
@@ -481,7 +463,7 @@ const Home = () => {
 
           {/* Dots Indicator */}
           <div className="flex justify-center space-x-2">
-            {homepage_drinks.map((_, index) => (
+            {galleryImages.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
