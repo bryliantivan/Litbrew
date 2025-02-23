@@ -1,131 +1,64 @@
+// AdminAddMenu.js
 import React from 'react';
+import FormItem from '../components/FormItem';
 
 const AdminAddMenu = () => {
+  const handleSubmit = (formData) => {
+    console.log('Form Data Submitted:', formData);
+
+    // Example using fetch (POST request)
+    fetch('/api/menus', {  // Replace with your actual API endpoint
+      method: 'POST',
+      headers: {
+        // 'Content-Type': 'application/json', //  Use this for JSON data (without files)
+         'Content-Type': 'multipart/form-data' // Use this when sending files!
+      },
+      body: createFormData(formData), // Convert to FormData
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json(); // Parse JSON response
+    })
+    .then(data => {
+      console.log('Success:', data);
+      alert('Menu Added Successfully!');
+      // Redirect or clear form
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert(`Error adding menu: ${error.message}`);
+    });
+  };
+
+
+  const handleCancel = () => {
+    console.log('Form Cancelled');
+  };
+
+  // Helper function to create FormData for file uploads
+  const createFormData = (data) => {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('description', data.description);
+    formData.append('category', data.category);
+    formData.append('stock', data.stock);
+    formData.append('price', data.price);
+    formData.append('rating', data.rating);
+    formData.append('reviewCount', data.reviewCount);
+
+    // Append each image file
+    data.images.forEach((image, index) => {
+      formData.append(`image${index}`, image); // Use a consistent name (e.g., image0, image1)
+    });
+
+    return formData;
+  };
+
   return (
     <div className="container mx-auto p-6 mt-[7vw]">
-      <h1 className="text-lg font-raleway font-medium">ADD NEW MENU</h1>
-      <h2 className="text-3xl font-raleway font-bold mb-[1vw]">Menu Details</h2>
-      
-      <div>
-        <div className="mb-4">
-          <label htmlFor="menuName" className="block text-gray-700 font-medium mb-2">
-            Menu Name
-          </label>
-          <input 
-            type="text" 
-            id="menuName" 
-            className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
-          />
-        </div>
-
-        {/* Description */}
-        <div className="mb-4">
-          <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
-            Description
-          </label>
-          <textarea 
-            id="description" 
-            className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
-          />
-        </div>
-
-        {/* Category */}
-        <div className="mb-4">
-          <label htmlFor="category" className="block text-gray-700 font-medium mb-2">
-            Category
-          </label>
-          <input 
-            type="text" 
-            id="category" 
-            className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
-          />
-        </div>
-
-        <div className="flex">
-          {/* Stock */}
-          <div className="mb-4 mr-4">
-            <label htmlFor="stock" className="block text-gray-700 font-medium mb-2">
-              Stock
-            </label>
-            <input 
-              type="number" 
-              id="stock" 
-              className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            />
-          </div>
-
-          {/* Price */}
-          <div className="mb-4">
-            <label htmlFor="price" className="block text-gray-700 font-medium mb-2">
-              Price
-            </label>
-            <input 
-              type="number" 
-              id="price" 
-              className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            />
-          </div>
-        </div>
-
-        <div className="flex">
-          {/* Rating */}
-          <div className="mb-4 mr-4">
-            <label htmlFor="rating" className="block text-gray-700 font-medium mb-2">
-              Rating
-            </label>
-            <input 
-              type="number" 
-              id="rating" 
-              className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            />
-          </div>
-
-          {/* Review Count */}
-          <div className="mb-4">
-            <label htmlFor="reviewCount" className="block text-gray-700 font-medium mb-2">
-              Review Count
-            </label>
-            <input 
-              type="number" 
-              id="reviewCount" 
-              className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            />
-          </div>
-        </div>
-
-        {/* Add Images */}
-        <div className="mb-4">
-            <label htmlFor="images" className="block text-gray-700 font-medium mb-2">
-                Add Images
-            </label>
-            <div className="bg-gray-200 p-6 rounded-md flex flex-col items-center justify-center"> {/* Tambahkan flex-col */}
-                <svg 
-                className="w-12 h-12 text-gray-500" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24" 
-                xmlns="http://www.w3.org/2000/svg"
-                >
-                <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" 
-                />
-                </svg>
-                <p className="text-gray-600 mt-2 font-3xl font-bold">CHOOSE SCAN</p> {/* Tambahkan teks */}
-            </div>
-            </div>
-
-        <div className="flex justify-center">
-            <button className=" bg-gray-400 hover:bg-gray-500 text-white font-medium py-2 px-4 rounded-md mr-3">
-            CANCEL
-          </button>
-          <button className="bg-[#334147] hover:bg-[#07779D] text-white font-medium py-2 px-4 rounded-md">
-            SAVE
-          </button>
-        </div>
-      </div>
+      <FormItem onSubmit={handleSubmit} onCancel={handleCancel} title="ADD NEW MENU" />
     </div>
   );
 };
