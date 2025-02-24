@@ -44,36 +44,50 @@ const AdminManageMenu = () => {
   };
 
   useEffect(() => {
-      const filterItems = () => {
-        const filtered = menuItems.filter(item =>
+    const filterItems = () => {
+      const filtered = menuItems.filter(item =>
         (item.category === "Drink" || item.category === "Food") &&
         (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.description.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
-        setFilteredMenuItems(filtered);
+      );
+      setFilteredMenuItems(filtered);
     }
 
-     const debouncedFilter = debounce(filterItems, 300);
+    const debouncedFilter = debounce(filterItems, 300);
 
     if (searchTerm) {
-        debouncedFilter();
+      debouncedFilter();
     } else {
-          const initiallyFiltered = menuItems.filter(
-            item => item.category === "Drink" || item.category === "Food"
-        );
-        setFilteredMenuItems(initiallyFiltered);
+      const initiallyFiltered = menuItems.filter(
+        item => item.category === "Drink" || item.category === "Food"
+      );
+      setFilteredMenuItems(initiallyFiltered);
     }
   }, [searchTerm, menuItems]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this menu item?')) {
       try {
-        console.log("Deleting item with ID:", id);
-        console.log("Current menuItems:", menuItems);
-        await axios.delete(`http://localhost:3000/api/products/${id}`);
-        // Use _id here:
+        // Retrieve token from localStorage or wherever it's stored
+        const token = localStorage.getItem('token'); // Adjust if you're using a different method
+
+        // Check if the token exists
+        if (!token) {
+          alert("You must be logged in to delete a product.");
+          return;
+        }
+
+        // Send the delete request with Authorization header
+        await axios.delete(`http://localhost:3000/api/products/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}` // Add the token in the Authorization header
+          }
+        });
+
+        // Update the menuItems state to remove the deleted item
         setMenuItems(menuItems.filter(item => item._id !== id));
         setFilteredMenuItems(filteredMenuItems.filter(item => item._id !== id));
+
         alert('Menu item deleted successfully!');
       } catch (error) {
         setError(error);
@@ -82,6 +96,8 @@ const AdminManageMenu = () => {
       }
     }
   };
+
+
 
   const handleEdit = (item) => {
     // Use _id here:

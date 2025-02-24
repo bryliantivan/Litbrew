@@ -1,11 +1,10 @@
-// pages/AdminEditMenu.js
 import React, { useState, useEffect } from 'react';
 import FormItem from '../components/FormItem';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AdminEditMenu = () => {
-  const { id } = useParams();  // Keep this as 'id', it's a URL parameter
+  const { id } = useParams();  // Get the product ID from URL parameter
   const navigate = useNavigate();
   const [menu, setMenu] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,15 +13,11 @@ const AdminEditMenu = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        // No change needed here; 'id' from useParams is correct for the URL
         const response = await axios.get(`http://localhost:3000/api/products/${id}`);
         if (response.status < 200 || response.status >= 300) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = response.data;
-        // Make sure the initial values use _id, but setMenu uses the data as is.
-        setMenu({ ...data, images: data.images || [] });
-
+        setMenu(response.data);  // Set the menu to the data returned from the backend
       } catch (error) {
         setError(error);
         console.error("Error fetching menu:", error);
@@ -36,14 +31,17 @@ const AdminEditMenu = () => {
 
   const handleSubmit = async (formData) => {
     try {
-      // No change needed here, 'id' from useParams is correct
-      const response = await axios.put(`http://localhost:3000/api/products/${id}`, createFormData(formData), {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      const response = await axios.put(
+        `http://localhost:3000/api/products/${id}`,
+        createFormData(formData),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',  // Important for handling form data with files
+          },
         }
-      });
+      );
 
-       if (response.status < 200 || response.status >= 300) {
+      if (response.status < 200 || response.status >= 300) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -56,17 +54,18 @@ const AdminEditMenu = () => {
     }
   };
 
-  // createFormData doesn't need _id, it creates the data to *send* to the API
+
   const createFormData = (data) => {
     const formData = new FormData();
     formData.append('name', data.name);
     formData.append('description', data.description);
     formData.append('category', data.category);
     formData.append('countInStock', data.countInStock);
-    formData.append('price', data.price);
+    formData.append('price', data.price);  // Make sure price is included
     formData.append('rating', data.rating);
     formData.append('numReview', data.numReview);
-
+  
+    // Handle image files
     if (data.images && Array.isArray(data.images)) {
       data.images.forEach((image, index) => {
         if (image instanceof File) {
@@ -74,7 +73,12 @@ const AdminEditMenu = () => {
         }
       });
     }
-
+  
+    // Log FormData to ensure it's populated correctly
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
+  
     return formData;
   };
 
