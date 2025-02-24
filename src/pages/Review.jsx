@@ -142,7 +142,7 @@ const Review = () => {
                                             </tr>
 
                                             <td className="py-4 text-xl font-raleway dark:text-neutral-200">
-                                                <div className="flex justify-center mt-4">
+                                                <div className="flex justify-center mt-4 mr-4">
                                                     {[...Array(5)].map((star, starIndex) => (
                                                         <svg
                                                             key={starIndex}
