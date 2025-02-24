@@ -3,7 +3,7 @@ import FormItem from '../components/FormItem';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const AdminAddMenu = () => {
+const AdminAddMenuAndBook = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (formData) => {
@@ -62,4 +62,4 @@ const AdminAddMenu = () => {
   );
 };
 
-export default AdminAddMenu;
+export default AdminAddMenuAndBook;

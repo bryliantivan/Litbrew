@@ -1,10 +1,10 @@
-// pages/AdminManageMenu.js
+// pages/AdminManageBook.js
 import React, { useState, useEffect } from 'react';
 import TableItem from '../components/TableItem';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const AdminManageMenu = () => {
+const AdminManageBook = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ const AdminManageMenu = () => {
         const allItems = response.data;
         setMenuItems(allItems);
         const initiallyFiltered = allItems.filter(
-          item => item.category === "Drink" || item.category === "Food"
+          item => item.category === "Book"
         );
         setFilteredMenuItems(initiallyFiltered);
       } catch (error) {
@@ -46,7 +46,7 @@ const AdminManageMenu = () => {
   useEffect(() => {
     const filterItems = () => {
       const filtered = menuItems.filter(item =>
-        (item.category === "Drink" || item.category === "Food") &&
+        (item.category === "Book") &&
         (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.description.toLowerCase().includes(searchTerm.toLowerCase()))
       );
@@ -59,7 +59,7 @@ const AdminManageMenu = () => {
       debouncedFilter();
     } else {
       const initiallyFiltered = menuItems.filter(
-        item => item.category === "Drink" || item.category === "Food"
+        item => item.category === "Book"
       );
       setFilteredMenuItems(initiallyFiltered);
     }
@@ -149,4 +149,4 @@ const AdminManageMenu = () => {
   );
 };
 
-export default AdminManageMenu;
+export default AdminManageBook;

@@ -13,7 +13,8 @@ import Review from './Review';
 import OrderTracking from './OrderTracking';
 import AdminHome from './AdminHome';
 import AdminManageMenu from './AdminManageMenu'; 
-import AdminAddMenu from './AdminAddMenu';   
+import AdminManageBook from './AdminManageBook';
+import AdminAddMenuAndBook from './AdminAddMenuAndBook';   
 import AdminEditMenu from './AdminEditMenu';
 
 export {
@@ -32,6 +33,7 @@ export {
     OrderTracking,
     AdminHome,
     AdminManageMenu,
-    AdminAddMenu,
+    AdminManageBook,
+    AdminAddMenuAndBook,
     AdminEditMenu
 };
