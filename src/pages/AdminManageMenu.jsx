@@ -116,7 +116,7 @@ const AdminManageMenu = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  const tableTitles = ['No', 'Name', 'Description', 'Price', 'Stock', 'Rating', 'Review', 'Category', 'Actions'];
+  const tableTitles = ['No', 'Name', 'Description', 'Price', 'Stock', 'Rating', 'Count Review', 'Category', 'Actions'];
 
   return (
     <div className="container mx-auto mt-[8vw] p-7">
