@@ -27,7 +27,7 @@ const MyOrder = () => {
 
     return (
         <div className="container px-4 sm:px-5 py-12 sm:py-24 mx-auto font-raleway"> {/* Responsive padding and margin */}
-            <h1 className="mt-8 text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-center">Order History</h1> {/* Responsive text and margin, centered */}
+            <h1 className="mt-16 text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-center">Order History</h1> {/* Responsive text and margin, centered */}
             {paidOrders.length > 0 ? (
                 paidOrders.map((order) => (
                     <div key={order._id} className="mb-6 p-4 border rounded-lg shadow-sm bg-white"> {/* Added bg-white */}
