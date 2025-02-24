@@ -86,7 +86,7 @@ const OrderTracking = () => {
                                 <div className="sm:whitespace-nowrap z-10 flex flex-col items-center">
                                     <span className="w-6 h-6 bg-gray-400 rounded-full flex justify-center items-center mx-auto mb-1 text-white text-base font-bold lg:w-10 lg:h-10"></span>
                                     Completed
-                                    <span className="text-gray-500 text-base font-normal text-center">Estimated date: Feb 15,</span>
+                                    <span className="text-white text-base font-normal text-center "> .</span>
                                 </div>
                             </li>
                         </ol>
