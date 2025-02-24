@@ -87,7 +87,7 @@ productRoute.get("/:id", asyncHandler(async (req, res) => {
 }));
 
 productRoute.put("/:id", upload.array('images'), asyncHandler(async (req, res) => {
-    const { name, description, price, stock, category, rating, numReview } = req.body;
+    const { name, description, price, countInStock, category, rating, numReview } = req.body;
 
     // Find the product by ID
     const product = await Product.findById(req.params.id);
@@ -99,10 +99,10 @@ productRoute.put("/:id", upload.array('images'), asyncHandler(async (req, res) =
     product.name = name || product.name;
     product.description = description || product.description;
     product.price = price || product.price;
-    product.stock = stock || product.stock;
+    product.countInStock = countInStock || product.countInStock;
     product.category = category || product.category;
     product.rating = rating || product.rating;
-    product.numReview = numReview || product.numReview;
+    product.numReviews = numReview || product.numReviews;
 
     // Handle images via Cloudinary
     if (req.files && req.files.length > 0) {
