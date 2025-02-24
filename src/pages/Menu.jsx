@@ -99,14 +99,12 @@ const Menu = () => {
     <div className="container px-5 py-36 mx-auto">
       <div className="inset-0 flex items-center justify-center z-30">
         <div className="text-center max-w-4xl px-4">
-          <h1 className="text-[#03151E] font-motter-corpus-std text-8xl mb-6 animate-fade-in">
+          <h1 className="text-[#03151E] font-motter-corpus-std text-5xl sm:text-7xl lg:text-8xl mb-4 sm:mb-6 md:mb-8 animate-fade-in">
             SIPS & DIPS
           </h1>
-          <p className="text-white font-raleway font-semibold text-xl max-w-2xl mx-auto mb-8 animate-fade-in">
-            <h3 className="text-black font-raleway text-2xl mb-2 animate-fade-in">
-              Made by LitBrew’s Buddies for you
-            </h3>
-          </p>
+          <h3 className="text-black font-raleway font-semibold text-lg sm:text-xl md:text-2xl text-center mb-4 sm:mb-6 md:mb-8 animate-fade-in">
+            Made by LitBrew's Buddies for you
+          </h3>
         </div>
       </div>
       <form className="max-w-md mx-auto">
@@ -146,7 +144,7 @@ const Menu = () => {
       </form>
 
       {/* Filter Buttons */}
-      <div className="flex flex-wrap items-start gap-2 mb-6">
+      <div className="flex flex-wrap items-start gap-2 mb-6 mt-8">
         <Button className={`px-4 py-2 ${category === "All" ? "bg-blue-500 text-white" : "bg-[#4BC1D2] text-white hover:bg-blue-700"}`}
           size="l" onClick={() => setCategory("All")}>
           All

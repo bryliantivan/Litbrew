@@ -105,11 +105,11 @@ const Home = () => {
 
   const handleNext2 = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % galleryImages.length);
-  };
+};
 
-  const handlePrev2 = () => {
+const handlePrev2 = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + galleryImages.length) % galleryImages.length);
-  };
+};
 
   const sectionRefs = useRef([]);
   const scrollToSection = (index) => {
@@ -134,21 +134,21 @@ const Home = () => {
 
   return (
     <>
-      <div className="relative overflow-hidden">
+      <div className="w-full flex flex-col items-center justify-center">
         <div id="default-carousel" className="relative w-full h-screen" data-carousel="slide">
           {/* Carousel wrapper */}
-          <div className="relative h-full overflow-hidden w-full">
+          <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
             {welcome_slides.map((slide, index) => (
               <div
                 key={index}
-                className={`mt-8 absolute w-full h-full duration-700 ease-in-out transition-opacity ${
-                  activeSlide === index ? 'opacity-100 z-20' : 'opacity-0 z-10'
+                className={`absolute inset-0 duration-700 ease-in-out transition-opacity ${
+                  activeSlide === index ? 'opacity-100' : 'opacity-0'
                 }`}
                 data-carousel-item={activeSlide === index ? "active" : ""}
               >
                 <img 
                   src={slide.image} 
-                  className="absolute block w-full h-full object-cover" 
+                  className="w-full h-full object-cover" 
                   alt={slide.alt}
                   loading={slide.loading}
                 />
@@ -162,13 +162,13 @@ const Home = () => {
               <p className="text-white text-xl tracking-wider mb-4 animate-fade-in">
                 Our Summer Hot-takes!
               </p>
-              <h2 className="text-[#D1E9FF] font-raleway text-6xl font-bold mb-2 animate-fade-in">
+              <h2 className="text-[#D1E9FF] font-raleway text-4xl sm:text-5xl md:text-6xl font-bold mb-2 animate-fade-in">
                 WELCOME TO
               </h2>
-              <h1 className="text-[#D1E9FF] font-motter-corpus-std text-8xl mb-6 animate-fade-in">
+              <h1 className="text-[#D1E9FF] font-motter-corpus-std text-6xl sm:text-7xl md:text-8xl mb-6 animate-fade-in">
                 LITBREW
               </h1>
-              <p className="text-white font-raleway font-semibold text-xl max-w-2xl mx-auto mb-8 animate-fade-in">
+              <p className="text-white font-raleway font-semibold text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 animate-fade-in">
                 Discover boundless imagination in a library cafe designed for dreamers, thinkers, and creators.
               </p>
               <button onClick={() => scrollToSection(0)} className="bg-[#4BC1D2] font-raleway text-white font-bold px-10 py-4 rounded-full 
@@ -179,15 +179,15 @@ const Home = () => {
           </div>
 
           {/* Slider indicators */}
-          <div className="absolute z-30 flex space-x-2 -translate-x-1/2 bottom-10 left-1/2">
+          <div className="absolute z-30 flex space-x-2 -translate-x-1/2 bottom-5 sm:bottom-8 md:bottom-10 left-1/2">
             {[0, 1, 2].map((index) => (
               <button 
                 key={index}
                 type="button" 
                 className={`transition-all duration-300 ${
                   activeSlide === index 
-                    ? 'bg-[#3D5AF1] w-10 h-2.5 rounded-full' 
-                    : 'bg-white w-2.5 h-2.5 rounded-full'
+                    ? 'bg-[#3D5AF1] w-8 sm:w-10 h-2 rounded-full' 
+                    : 'bg-white w-2 h-2 rounded-full'
                 }`}
                 onClick={() => setActiveSlide(index)}
               />
@@ -197,33 +197,33 @@ const Home = () => {
       </div>
 
       {/* Statistic */}
-      <div ref={(el) => (sectionRefs.current[0] = el)} className="p-32 w-full flex flex-col justify-center items-center flex-wrap gap-5 mx-auto h-[58rem]] bg-gradient-to-b from-[#4BC1D2] to-[#fef9f6]">
-        <h2 className="font-raleway font-black text-5xl">About</h2>
-        <h1 className="font-motter-corpus-std text-[4.5rem]">Litbrew</h1>
-        <p className="text-center font-raleway w-3/4 font-semibold">
+      <div ref={(el) => (sectionRefs.current[0] = el)} className="py-16 sm:py-24 lg:py-32 w-full flex flex-col justify-center items-center flex-wrap gap-5 mx-auto bg-gradient-to-b from-[#4BC1D2] to-[#fef9f6]">
+        <h2 className="font-raleway font-black text-3xl sm:text-4xl md:text-5xl">About</h2>
+        <h1 className="text-[#000000] font-motter-corpus-std text-4xl sm:text-5xl md:text-6xl font-bold mb-2 animate-fade-in">Litbrew</h1>
+        <p className="text-center font-raleway text-base sm:text-lg md:text-xl w-full sm:w-3/4 px-4 font-semibold">
           Born out of a passion for both literature and exceptional coffee, Litbrew opened its doors in 2024 with a simple yet bold vision: to create a space that invites people to read, relax, and recharge.
         </p>
-        <div className="flex justify-center items-center flex-wrap w-full mt-10 gap-16">
+        <div className="flex justify-center items-center flex-wrap w-full mt-6 sm:mt-8 md:mt-10 gap-8 sm:gap-12 md:gap-16">
           {statistics.map((stat) => (
             <div key={stat.label}>
-              <p className="text-4xl font-palanquin font-bold">{stat.value}</p>
-              <p className="leading-7 font-raleway font-semibold text-slate-gray">{stat.label}</p>
+              <p className="text-3xl sm:text-4xl font-palanquin font-bold">{stat.value}</p>
+              <p className="leading-7 font-raleway font-semibold text-slate-gray text-sm sm:text-base">{stat.label}</p>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center mt-8 w-full max-w-lg mx-auto">
+        <div className="flex justify-center mt-6 sm:mt-8 md:mt-8 w-full max-w-lg mx-auto">
           <div className="flex items-center space-x-4 bg-gradient-to-r from-[#4BC1D2] to-[#4e555d] rounded-full shadow-lg w-full">
             <button
               onClick={() => scrollToSection(1)}
-              className="h-full w-1/2 font-raleway text-white font-bold px-6 py-3 rounded-l-full bg-transparent hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300"
+              className="h-full w-1/2 font-raleway text-white font-bold px-4 py-2 sm:px-6 sm:py-3 rounded-l-full bg-transparent hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300"
             >
               More
             </button>
-            <div className="w-px h-8 bg-white"></div> {/* Vertical line */}
+            <div className="w-px h-6 sm:h-8 bg-white"></div> {/* Vertical line */}
             <button
               onClick={() => navigate('/about')}
-              className="h-full w-1/2 font-raleway text-white font-bold px-6 py-3 rounded-r-full bg-transparent hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300"
+              className="h-full w-1/2 font-raleway text-white font-bold px-4 py-2 sm:px-6 sm:py-3 rounded-r-full bg-transparent hover:bg-[#3AA1B2] hover:scale-105 transition-all duration-300"
             >
               About Us
             </button>
@@ -233,18 +233,18 @@ const Home = () => {
 
       {/* Buddy Choice */}
       <div ref={(el) => (sectionRefs.current[1] = el)}>
-        <div className="bg-[#fef9f6] min-h-screen flex flex-col items-center py-12">
+        <div className="bg-[#fef9f6] w-full flex flex-col items-center py-12">
           {/* Header */}
           <h1 className="mt-16 text-4xl font-raleway md:text-5xl font-bold text-[#4a403a]">Litbrew's Buddy Choice</h1>
 
           {/* Update the transform calculation for the Buddy Choice carousel */}
-          <div className="relative h-[32rem] w-7/8 max-w-6xl overflow-hidden">
+          <div className="relative w-full overflow-hidden">
             <div className="h-full mt-20 mb-24 flex transition-transform duration-500 ease-in-out"
                 style={{ transform: `translateX(-${currentIndex === 0 ? 0 : (currentIndex - 1) * 33.33}%)` }}>
               {homepage_drinks.map((drink, index) => (
                 <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-105' : 'scale-75'}`}>
                   {currentIndex === index && (
-                    <div className="absolute bottom-56 transform translate-y-1/3 w-48 h-16 bg-[#CFF2F5] rounded-[50%] z-0"></div>
+                    <div className="absolute bottom-24 transform translate-y-1/3 w-48 h-16 bg-[#CFF2F5] rounded-[50%] z-0"></div>
                   )}
                   <img
                     src={drink.imgUrl}
@@ -308,7 +308,7 @@ const Home = () => {
             {dessert_slides.map((slide, index) => (
               <div
                 key={index}
-                className={`mt-8 absolute w-full h-full duration-700 ease-in-out transition-opacity ${
+                className={`absolute w-full h-full duration-700 ease-in-out transition-opacity ${
                   activeSlide === index ? 'opacity-100 z-20' : 'opacity-0 z-10'
                 }`}
                 data-carousel-item={activeSlide === index ? "active" : ""}
@@ -319,15 +319,15 @@ const Home = () => {
           </div>
 
           {/* Slider indicators */}
-          <div className="absolute z-30 flex space-x-2 -translate-x-1/2 bottom-10 left-1/2">
+          <div className="absolute z-30 flex space-x-2 -translate-x-1/2 bottom-5 sm:bottom-8 md:bottom-10 left-1/2">
             {[0, 1, 2].map((index) => (
               <button 
                 key={index}
                 type="button" 
                 className={`transition-all duration-300 ${
                   activeSlide === index 
-                    ? 'bg-[#3D5AF1] w-10 h-2.5 rounded-full' 
-                    : 'bg-white w-2.5 h-2.5 rounded-full'
+                    ? 'bg-[#3D5AF1] w-8 sm:w-10 h-2 rounded-full' 
+                    : 'bg-white w-2 h-2 rounded-full'
                 }`}
                 onClick={() => setActiveSlide(index)}
               />
@@ -341,8 +341,8 @@ const Home = () => {
             data-carousel-prev
             onClick={() => setActiveSlide((prev) => (prev - 1 + dessert_slides.length) % dessert_slides.length)}
           >
-            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm group-hover:bg-black/50 transition-all duration-300">
-              <svg className="w-5 h-5 text-white/80" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-black/30 backdrop-blur-sm group-hover:bg-black/50 transition-all duration-300">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4"/>
               </svg>
             </span>
@@ -353,8 +353,8 @@ const Home = () => {
             data-carousel-next
             onClick={() => setActiveSlide((prev) => (prev + 1) % dessert_slides.length)}
           >
-            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm group-hover:bg-black/50 transition-all duration-300">
-              <svg className="w-5 h-5 text-white/80" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-black/30 backdrop-blur-sm group-hover:bg-black/50 transition-all duration-300">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
               </svg>
             </span>
@@ -363,61 +363,60 @@ const Home = () => {
       </div>
 
 
-      <div className="p-48 w-full flex flex-col justify-center items-center flex-wrap gap-5 mx-auto h-[58rem]] bg-gradient-to-b from-[#4BC1D2] to-[#fef9f6]">
-        <h1 className='text-4xl text-center pt-32 font-motter-corpus-std text-[#07779D]'>The Book Lover's Dreamland Awaits!</h1>
-        <h4 className='text-xl mt-10 font-medium font-raleway text-[#06779D] text-center'>Welcome to the ultimate book lover's paradise! Join our community and contribute to the ever-evolving library of stories, where every book has a chance to inspire someone new.</h4>
+      <div className="py-16 sm:py-24 lg:py-32 w-full flex flex-col justify-center items-center gap-5 sm:gap-6 md:gap-8 mx-auto bg-gradient-to-b from-[#4BC1D2] to-[#fef9f6]">
+        <h1 className='text-2xl sm:text-3xl md:text-4xl text-center font-motter-corpus-std text-[#07779D]'>The Book Lover's Dreamland Awaits!</h1>
+        <h4 className='text-base sm:text-lg md:text-xl mt-4 sm:mt-6 md:mt-8 font-medium font-raleway text-[#06779D] text-center px-4 sm:px-8 md:px-16'>Welcome to the ultimate book lover's paradise! Join our community and contribute to the ever-evolving library of stories, where every book has a chance to inspire someone new.</h4>
       </div>
 
       {/* Favourite Reads */}
-      <div className="bg-[#fef9f6] flex w-full">
-        <div className="w-1/2 flex justify-center">
+      <div className="bg-[#fef9f6] flex w-full flex-col sm:flex-row">
+        <div className="w-full sm:w-1/2 flex justify-center">
           <img
             src={homepage_book}
             alt="homepage_book"
-            className="w-full"
+            className="w-full h-auto object-cover"
           />
         </div>
 
         <div className="relative flex bg-[#06779D] 
-        flex-col justify-center items-start w-1/2 pl-28 pr-12">
-          <h1 className="mt-10 font-motter-corpus-std text-white 
-          text-xl sm:text-[3vw] 
-          sm:leading-[1] font-bold">
+        flex-col justify-center items-start w-full sm:w-1/2 p-8 sm:p-12 md:p-16 lg:pl-28 lg:pr-12">
+          <h1 className="font-motter-corpus-std text-white 
+            text-2xl sm:text-3xl lg:text-4xl font-bold">
             Your Favourite <span className='text-[#D1E9FF]'>Reads<br/>Are Here!</span>
           </h1>
-          <p className="font-raleway text-white text-xl leading-8 mt-14 mb-10 ">
+          <p className="font-raleway text-white text-base sm:text-lg md:text-xl leading-relaxed mt-4 sm:mt-8 md:mt-10 mb-4 sm:mb-6 md:mb-8">
           Buy your favorite books online with ease! Enjoy exclusive offers and discounts on selected titles. Dive into our collection and find special deals that make reading more affordable. Shop now and unlock more savings with every purchase!
           </p>
 
-          <div className="flex text-white text-[1vw] justify-start items-start flex-wrap w-full mt-10 gap-16">
+          <div className="flex text-white text-sm sm:text-base justify-start items-start flex-wrap w-full gap-4 sm:gap-8 md:gap-12 lg:gap-16">
             {statistics2.map((stat) => (
               <div key={stat.label}>
-                <p className="text-4xl font-raleway font-bold">{stat.value}</p>
-                <p className="leading-7 font-raleway text-slate-gray">{stat.label}</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-raleway font-bold">{stat.value}</p>
+                <p className="leading-7 font-raleway text-slate-gray text-xs sm:text-sm md:text-base">{stat.label}</p>
               </div>
             ))}
           </div>
 
-          <button onClick={() => navigate('/book')} className="bg-[#4BC1D2] font-raleway text-white font-bold mt-16 py-4 rounded-full 
-            hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-lg animate-fade-in w-[12vw] text-center">
+          <button onClick={() => navigate('/book')} className="bg-[#4BC1D2] font-raleway text-white font-bold mt-4 sm:mt-8 md:mt-12 lg:mt-16 py-2 px-4 sm:py-3 sm:px-6 md:py-4 md:px-8 rounded-full 
+            hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-lg animate-fade-in w-auto text-center text-sm sm:text-base">
             ORDER NOW!
           </button>
         </div>
       </div>
 
       {/* Best Pick */}
-      <div>
-        <h1 className='font-motter-corpus-std text-center text-[2.5vw] text-[#06779D] mt-40 mb-10'>BEST PICKS THIS WEEKEND!</h1>
-        <div className='flex items-center justify-center w-full bg-[#fef9f6]'>
+      <div className='py-12 sm:py-16 md:py-20 lg:py-24 bg-[#fef9f6]'>
+        <h1 className='font-motter-corpus-std text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#06779D] mb-4 sm:mb-6 md:mb-8 lg:mb-10'>BEST PICKS THIS WEEKEND!</h1>
+        <div className='flex items-center justify-center w-full flex-wrap gap-4 sm:gap-6 md:gap-8'>
           {homepage_books.map((book, index) => (
-            <div key={index} className="flex flex-col items-center justify-center w-full">
+            <div key={index} className="flex flex-col items-center w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4">
               <img
                 src={book.imgUrl}
                 alt={book.title}
-                className="w-[20vw]"
+                className="w-full sm:w-48 md:w-56 lg:w-64 h-auto object-cover mb-2 sm:mb-4"
               />
-              <h1 className="text-[2vw] font-raleway font-bold text-[#4BC1D2]">{book.title}</h1>
-              <p className="text-[1vw] font-raleway font-semibold">{book.author}</p>
+              <h1 className="text-lg sm:text-xl md:text-2xl font-raleway font-bold text-[#4BC1D2] text-center">{book.title}</h1>
+              <p className="text-base sm:text-lg font-raleway font-semibold text-center">{book.author}</p>
             </div>
           ))}
         </div>
@@ -430,17 +429,17 @@ const Home = () => {
           <h1 className="mt-16 mb-12 text-4xl font-raleway md:text-5xl font-bold text-[#4a403a]">Litbrew's Gallery</h1>
 
           {/* Carousel */}
-          <div className="relative h-[30vw] w-full overflow-hidden">
-            <div className="h-full mt-32 mx-[12vw] flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${currentIndex === 0 ? 0 : (currentIndex - 1) * 33.33}%)` }}>
+          <div className="relative h-[30vw] w-5/6 overflow-hidden">
+            <div className="h-full mt-32 flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${(currentIndex - 1) * 33.33}%)` }}>
               {galleryImages.map((image, index) => (
-                <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform  duration-500 ease-in-out ${currentIndex === index ? 'scale-150 mt-10 z-50' : 'scale-80 z-10'}`}>
+                <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-150 z-50' : 'scale-80 z-10'}`}>
                   {currentIndex === index && (
-                    <div></div>
+                    <div className="absolute bottom-56 transform translate-y-1/2 w-48 h-16 bg-gradient-to-b from-[#FFFFFF] to-[#64b0b7] rounded-[50%] z-0"></div>
                   )}
                   <img
                     src={image}
-                    className="relative z-20 object-fill mx-2"
+                    className="relative z-20 w-[30w] object-fill mx-2"
                   />
                 </div>
               ))}
