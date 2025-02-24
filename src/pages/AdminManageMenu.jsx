@@ -1,67 +1,136 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+// pages/AdminManageMenu.js
+import React, { useState, useEffect } from 'react';
 import TableItem from '../components/TableItem';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const AdminManageMenu = () => {
-    const [menuItems, setMenuItems] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredMenuItems, setFilteredMenuItems] = useState([]);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        // Fetch product details and reviews
-        axios.get('http://localhost:3000/api/products')
-        .then((response) => {
-            console.log("Data API:", response.data);
-            
-            // Filter hanya kategori "Drink" dan "Food"
-            const filteredItems = response.data.filter(
-                item => item.category === "Drink" || item.category === "Food"
-            );
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/products');
+        const allItems = response.data;
+        setMenuItems(allItems);
+        const initiallyFiltered = allItems.filter(
+          item => item.category === "Drink" || item.category === "Food"
+        );
+        setFilteredMenuItems(initiallyFiltered);
+      } catch (error) {
+        setError(error);
+        console.error("Error fetching menus:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-            console.log("Filtered items:", filteredItems);
-            setMenuItems(filteredItems);
-            setLoading(false);
-        })
-        .catch((error) => {
-            console.error("Error fetching product details:", error);
-            setLoading(false);
-        });
-    }, []);
+    fetchMenuItems();
+  }, []);
 
-    if (loading) {
-        return <div>Loading...</div>;
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  useEffect(() => {
+      const filterItems = () => {
+        const filtered = menuItems.filter(item =>
+        (item.category === "Drink" || item.category === "Food") &&
+        (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+        setFilteredMenuItems(filtered);
     }
 
-    return (
-        <div className="container mx-auto mt-[8vw] p-7">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                    <h1 className="text-2xl font-bold font-raleway">MENUS</h1>
-                    <button className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4">
-                        + Add New
-                    </button>
-                </div>
+     const debouncedFilter = debounce(filterItems, 300);
 
-                <div className="relative ml-4 items-center">
-                    <input
-                        type="text"
-                        placeholder="Search Menu"
-                        className="border border-[#07779D] px-[1vw] py-[1vw] rounded-[0.5vw] focus:outline-none w-[30vw]"
-                    />
-                    <button className="absolute right-[0.5vw] top-[0.5vw] bg-[#07779D] text-white font-medium font-raleway py-2 px-2 rounded-full">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+    if (searchTerm) {
+        debouncedFilter();
+    } else {
+          const initiallyFiltered = menuItems.filter(
+            item => item.category === "Drink" || item.category === "Food"
+        );
+        setFilteredMenuItems(initiallyFiltered);
+    }
+  }, [searchTerm, menuItems]);
 
-            {/* Tampilkan tabel menggunakan TableItem */}
-            <TableItem 
-                items={menuItems} 
-                titles={["ID", "NAME", "DESCRIPTION", "PRICE", "STOCK", "RATING", "REVIEW COUNT", "CATEGORY", "MODIFY"]}
-            />
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this menu item?')) {
+      try {
+        console.log("Deleting item with ID:", id);
+        console.log("Current menuItems:", menuItems);
+        await axios.delete(`http://localhost:3000/api/products/${id}`);
+        // Use _id here:
+        setMenuItems(menuItems.filter(item => item._id !== id));
+        setFilteredMenuItems(filteredMenuItems.filter(item => item._id !== id));
+        alert('Menu item deleted successfully!');
+      } catch (error) {
+        setError(error);
+        console.error("Error deleting menu:", error);
+        alert(`Error deleting menu: ${error.message}`);
+      }
+    }
+  };
+
+  const handleEdit = (item) => {
+    // Use _id here:
+    navigate(`/AdminEditMenu/${item._id}`);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  const tableTitles = ['No', 'Name', 'Description', 'Price', 'Stock', 'Rating', 'Review', 'Category', 'Actions'];
+
+  return (
+    <div className="container mx-auto mt-[8vw] p-7">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <h1 className="text-2xl font-bold font-raleway">MENUS</h1>
+          <Link to="/AdminAddMenu" className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4">
+            + Add New
+          </Link>
         </div>
-    );
+
+        <div className="relative ml-4 items-center">
+          <input
+            type="text"
+            placeholder="Search Menu"
+            className="border border-[#07779D] px-[1vw] py-[1vw] rounded-[0.5vw] focus:outline-none w-[30vw]"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <button className="absolute right-[0.5vw] top-[0.5vw] bg-[#07779D] text-white font-medium font-raleway py-2 px-2 rounded-full">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <TableItem items={filteredMenuItems} titles={tableTitles} onEdit={handleEdit} onDelete={handleDelete} />
+    </div>
+  );
 };
 
 export default AdminManageMenu;

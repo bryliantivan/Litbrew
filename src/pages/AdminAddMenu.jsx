@@ -1,57 +1,54 @@
-// AdminAddMenu.js
+// pages/AdminAddMenu.js
 import React from 'react';
 import FormItem from '../components/FormItem';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AdminAddMenu = () => {
-  const handleSubmit = (formData) => {
-    console.log('Form Data Submitted:', formData);
+  const navigate = useNavigate();
 
-    // Example using fetch (POST request)
-    fetch('/api/menus', {  // Replace with your actual API endpoint
-      method: 'POST',
-      headers: {
-        // 'Content-Type': 'application/json', //  Use this for JSON data (without files)
-         'Content-Type': 'multipart/form-data' // Use this when sending files!
-      },
-      body: createFormData(formData), // Convert to FormData
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  const handleSubmit = async (formData) => {
+    try {
+      const response = await axios.post('http://localhost:3000/api/products', createFormData(formData), {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.status < 200 || response.status >= 300) {
+        throw new Error(`HTTP Error! Status: ${response.status}`);
       }
-      return response.json(); // Parse JSON response
-    })
-    .then(data => {
-      console.log('Success:', data);
+      console.log('Success:', response.data);
       alert('Menu Added Successfully!');
-      // Redirect or clear form
-    })
-    .catch(error => {
+      navigate('/AdminManageMenu');
+    } catch (error) {
       console.error('Error:', error);
       alert(`Error adding menu: ${error.message}`);
-    });
+    }
   };
-
 
   const handleCancel = () => {
-    console.log('Form Cancelled');
+    navigate('/AdminManageMenu');
   };
 
-  // Helper function to create FormData for file uploads
   const createFormData = (data) => {
     const formData = new FormData();
     formData.append('name', data.name);
     formData.append('description', data.description);
     formData.append('category', data.category);
-    formData.append('stock', data.stock);
+    formData.append('countInStock', data.countInStock);
     formData.append('price', data.price);
-    formData.append('rating', data.rating);
-    formData.append('reviewCount', data.reviewCount);
+    formData.append('rating', data.rating); // Send rating, but backend should handle user reviews
+    formData.append('numReview', data.numReview);  // Send numReview, but backend should handle
 
-    // Append each image file
-    data.images.forEach((image, index) => {
-      formData.append(`image${index}`, image); // Use a consistent name (e.g., image0, image1)
-    });
+    if (data.images && Array.isArray(data.images)) {
+        data.images.forEach((image, index) => {
+            // No need to check if it is a File object, because in Add Menu
+            // all images should be from the input file.
+            formData.append(`image${index}`, image);
+
+        });
+    }
 
     return formData;
   };

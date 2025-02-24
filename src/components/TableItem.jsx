@@ -1,53 +1,53 @@
-import React, { useState } from 'react';
+// components/TableItem.js
+import React from 'react';
+import { FaEdit, FaTrash } from 'react-icons/fa'; // Import ikon
 
-const TableItem = ({ items, titles }) => {
-    const [editingItem, setEditingItem] = useState(null);
-  
-    const handleEdit = (item) => setEditingItem(item);
-    const handleSave = () => setEditingItem(null);
-    const handleCancel = () => setEditingItem(null);
-  
-    return (
-      <table className="table-fixed w-full border-collapse mt-[2vw]">
-        <thead>
-          <tr className="bg-[#AAE8ED]">
-            {titles.map((title, index) => (
-              <th key={index} className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black">
-                {title}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <tr key={index} className="hover:bg-gray-200">
-              <td className="p-4 border text-center">{index + 1}</td>
-              <td className="p-4 border">{item.name}</td>
-              <td className="p-4 border">{item.description}</td>
-              <td className="p-4 border text-center">{item.price}</td>
-              <td className="p-4 border text-center">{item.countInStock}</td>
-              <td className="p-4 border text-center">{item.rating}</td>
-              <td className="p-4 border text-center">{item.numReview}</td>
-              <td className="p-4 border text-center">{item.category}</td>
-              <td className="p-4 border text-center">
-                {editingItem?.id === item.id ? (
-                  <div>
-                    <button onClick={handleSave} className="text-green-500 hover:text-green-700 mr-2">Save</button>
-                    <button onClick={handleCancel} className="text-gray-500 hover:text-gray-700">Cancel</button>
-                  </div>
-                ) : (
-                  <div>
-                    <button onClick={() => handleEdit(item)} className="text-blue-500 hover:text-blue-700 mr-2">Edit</button>
-                    <button className="text-red-500 hover:text-red-700">Delete</button>
-                  </div>
-                )}
-              </td>
-            </tr>
+const TableItem = ({ items, titles, onEdit, onDelete }) => {
+  return (
+    <table className="table-fixed w-full border-collapse mt-[2vw]">
+      <thead>
+        <tr className="bg-[#AAE8ED]">
+          {titles.map((title, index) => (
+            <th key={index} className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black">
+              {title}
+            </th>
           ))}
-        </tbody>
-      </table>
-    );
-  };
-  
-  export default TableItem;
-  
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((item, index) => (
+          <tr key={item.id} className="hover:bg-gray-200">
+            <td className="p-4 border text-center">{index + 1}</td>
+            <td className="p-4 border">{item.name}</td>
+            <td className="p-4 border">{item.description}</td>
+            <td className="p-4 border text-center">{item.price}</td>
+            <td className="p-4 border text-center">{item.countInStock}</td>
+            <td className="p-4 border text-center">{item.rating}</td>
+            <td className="p-4 border text-center">{item.numReview}</td>
+            <td className="p-4 border text-center">{item.category}</td>
+            <td className="p-4 border text-center">
+              <div className="flex justify-center items-center space-x-2"> {/* Use flexbox for layout */}
+                <button
+                  onClick={() => onEdit(item)}
+                  className="text-blue-500 hover:text-blue-700"
+                  title="Edit"  // Add title for tooltip
+                >
+                  <FaEdit /> {/* Edit icon */}
+                </button>
+                <button
+                  onClick={() => onDelete(item._id)}
+                  className="text-red-500 hover:text-red-700"
+                  title="Delete" // Add title for tooltip
+                >
+                  <FaTrash /> {/* Delete icon */}
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default TableItem;
