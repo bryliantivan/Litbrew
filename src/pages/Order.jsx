@@ -215,7 +215,7 @@ const Order = () => {
         numPeople: orderType === "dine-in" ? numPeople : undefined,
         tableNumber: orderType === "dine-in" ? tableNumber : undefined,
         orderType, // Ensure this is correctly included
-        orderStatus: "confirm", // Ensure orderStatus is included
+        orderStatus: "processing", // Ensure orderStatus is included
         estimatedPickUpTime: estimatedPickUpDate, // Only for takeaway
       };
       console.log("Order Data:", orderData);
