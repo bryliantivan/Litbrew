@@ -69,7 +69,7 @@ orderRoute.post(
       location, // Menyimpan status pesanan
       numPeople, // Menyimpan jumlah orang untuk dine-in
       voucher,
-      isPaid: false, // Set isPaid menjadi false, jika belum dibayar
+      isPaid: true, // Set isPaid menjadi false, jika belum dibayar
       paidAt: null, // Set waktu pembayaran menjadi null
       orderStatus,
       estimatedPickUpTime, // Ensure this is saved as well
