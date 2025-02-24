@@ -1,7 +1,7 @@
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
-  cloud_name: 'litbrew',
+  cloud_name: 'dhwvjtkyw',
   api_key: '538786723474765',
   api_secret: '_mD_4Kg-jtD6qKvKt6n3IP6bthU',
 });

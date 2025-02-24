@@ -5,18 +5,72 @@ const Product = require("../Models/Product");
 const protect = require("../middleware/Auth");
 const cloudinary = require("../cloudinaryConfig");
 const multer = require("multer");
+const fs = require('fs');
+const path = require('path');
+// Create uploads directory if it doesn't exist
+const uploadDirectory = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDirectory)) {
+    fs.mkdirSync(uploadDirectory);
+    console.log('Uploads directory created');
+}
 
+// Multer configuration for handling file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Specify where to store the uploaded files
+        cb(null, uploadDirectory);  // Save files in 'uploads/' folder temporarily
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); // Ensure unique filenames
-    },
+        cb(null, Date.now() + '-' + file.originalname);  // Ensure unique filenames
+    }
 });
 
-// Apply multer middleware for handling form data
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage });  // Multer middleware
+
+// Cloudinary Upload Function
+const uploadToCloudinary = async (filePath) => {
+    try {
+        const result = await cloudinary.uploader.upload(filePath, {
+            folder: "litbrew",  // Optional: Specify the folder in your Cloudinary account
+        });
+        return result.secure_url;  // Return the secure URL of the uploaded image
+    } catch (error) {
+        console.error("Error uploading image to Cloudinary:", error);
+        throw error;  // Handle error appropriately
+    }
+};
+
+// Route for adding a new product
+productRoute.post("/", upload.array('images'), asyncHandler(async (req, res) => {
+    const { name, description, price, category, countInStock, rating, numReview } = req.body;
+
+    // Upload images to Cloudinary and get URLs
+    const imageUrls = [];
+    for (let file of req.files) {
+        const imageUrl = await uploadToCloudinary(file.path);  // Upload each image
+        imageUrls.push(imageUrl);  // Push the Cloudinary URL to the array
+    }
+
+    // Store only the first image URL in the product document (or store all URLs if needed)
+    const image = imageUrls[0];  // Use the first image URL for the product's 'image'
+
+    // Create a new product with the Cloudinary URL
+    const newProduct = new Product({
+        name,
+        description,
+        price,
+        category,
+        countInStock,
+        rating,
+        numReview,
+        image,  // Store the image URL (first image)
+    });
+
+    await newProduct.save();
+    res.status(201).json({
+        message: 'Product added successfully!',
+        product: newProduct
+    });
+}));
 
 productRoute.get("/", asyncHandler(async (req, res) => {
     const products = await Product.find({});
@@ -31,27 +85,6 @@ productRoute.get("/:id", asyncHandler(async (req, res) => {
         res.status(404).json({ message: "Product not found" });
     }
 }));
-
-
-productRoute.post('/add', async (req, res) => {
-    const { name, price, description, stock, category, imageFilename } = req.body;
-
-    const newProduct = new Product({
-        name,
-        price,
-        description,
-        stock,
-        category,
-        image: imageFilename, // Store the filename from GridFS
-    });
-
-    try {
-        await newProduct.save();
-        res.status(201).json({ message: 'Product added successfully', product: newProduct });
-    } catch (error) {
-        res.status(500).json({ message: 'Error adding product', error });
-    }
-});
 
 productRoute.put("/:id", upload.array('images'), asyncHandler(async (req, res) => {
     const { name, description, price, stock, category, rating, numReview } = req.body;
