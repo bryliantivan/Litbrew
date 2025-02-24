@@ -161,6 +161,34 @@ orderRoute.put(
   })
 );
 
+// Get all orders (Admin or authorized user only)
+orderRoute.get(
+  "/",
+  protect, // Add authorization check here
+  asyncHandler(async (req, res) => {
+    try {
+      // Admin or authorized user check (Optional)
+      // You can check for an admin or other roles if needed here
+      // Example: if (!req.user.isAdmin) { ... } 
+      
+      const orders = await Order.find()
+        .sort({ createdAt: -1 }) // Sort by newest first
+        .populate("user", "name email");
+
+      if (orders.length) {
+        res.status(200).json(orders);
+      } else {
+        res.status(404);
+        throw new Error("No orders found");
+      }
+    } catch (error) {
+      res.status(500);
+      throw new Error("Error fetching orders: " + error.message);
+    }
+  })
+);
+
+
 orderRoute.put(
   "/:id/review",
   protect,
