@@ -175,7 +175,7 @@ const Profile = () => {
             </div>
 
             {/* Vouchers */}
-            <div className="flex items-center rounded-lg border border-blue-400 bg-[#CFF2F5] px-4 py-2 cursor-pointer hover:scale-105 transition-transform" onClick={toggleVouchers}>
+            <div className="flex items-center rounded-lg border border-blue-400 bg-[#CFF2F5] px-4 py-2 cursor-pointer transition-transform" onClick={toggleVouchers}>
                 <img src={voucher} alt="Voucher" className="w-6 h-6 mr-2" />
                 <p className="text-gray-700 text-sm sm:text-base">Vouchers</p>
                 {isOpen ? (

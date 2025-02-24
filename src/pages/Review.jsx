@@ -135,7 +135,7 @@ const Review = () => {
                                                     <textarea
                                                         value={comments[index]}
                                                         onChange={(e) => handleCommentChange(index, e)}
-                                                        className='text-[rgb(0,0,0)] w-[45vw] border-[#bbbbbb] bg-[#dddddd] bg-opacity-80 rounded-md mr-[7.5vw] resize-none'
+                                                        className='text-[rgb(0,0,0)] w-[45vw] mb-2 border-[#bbbbbb] bg-[#dddddd] bg-opacity-80 rounded-md mr-[7.5vw] resize-none'
                                                         placeholder='Write your comment...'
                                                     />
                                                 </td>
@@ -168,7 +168,7 @@ const Review = () => {
             </div>
 
             <div className='flex justify-center'>
-                <button onClick={handleSubmit} className="mt-[1vw] mb-[10vw] px-6 py-2 bg-teal-500 w-[10vw] text-white rounded-full shadow-xl hover:bg-teal-800 hover:scale-105 transition-transform">
+                <button onClick={handleSubmit} className="mt-[1vw] mb-[10vw] px-6 py-2 bg-teal-500 text-white rounded-full shadow-xl hover:bg-teal-800 hover:scale-105 transition-transform"> {/* Removed w-[10vw] */}
                     Submit
                 </button>
             </div>

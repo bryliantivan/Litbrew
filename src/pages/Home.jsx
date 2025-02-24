@@ -4,6 +4,7 @@ import { homepage_books, homepage_drinks } from "../constants";
 import { Carousel } from 'flowbite';
 import { statistics, statistics2 } from "../constants";
 import { useNavigate } from 'react-router-dom';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -105,11 +106,15 @@ const Home = () => {
 
   const handleNext2 = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % galleryImages.length);
-};
+  };
 
-const handlePrev2 = () => {
+  const handlePrev2 = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + galleryImages.length) % galleryImages.length);
-};
+  };
+
+  const handleDotClick = (index) => {
+    setCurrentIndex(index);
+  };
 
   const sectionRefs = useRef([]);
   const scrollToSection = (index) => {
@@ -157,7 +162,7 @@ const handlePrev2 = () => {
           </div>
 
           {/* Content overlay */}
-          <div className="absolute inset-0 flex items-center justify-center z-30 bg-black/30 backdrop-blur-[50px]">
+          <div className="absolute inset-0 flex items-center justify-center z-30 bg-[#4BC1D2]/30 backdrop-blur-[50px]">
             <div className="text-center max-w-4xl px-4">
               <p className="text-white text-xl tracking-wider mb-4 animate-fade-in">
                 Our Summer Hot-takes!
@@ -212,7 +217,7 @@ const handlePrev2 = () => {
           ))}
         </div>
 
-        <div className="flex justify-center mt-6 sm:mt-8 md:mt-8 w-full max-w-lg mx-auto">
+        <div className="flex justify-center mt-6 sm:mt-8 md:mt-8 w-full max-w-lg mx-auto px-4 sm:px-6"> {/* Add horizontal padding here */}
           <div className="flex items-center space-x-4 bg-gradient-to-r from-[#4BC1D2] to-[#4e555d] rounded-full shadow-lg w-full">
             <button
               onClick={() => scrollToSection(1)}
@@ -283,7 +288,7 @@ const handlePrev2 = () => {
             ))}
           </div>
 
-          <div className="flex justify-center mt-10 w-full max-w-lg mx-auto">
+          <div className="flex justify-center mt-10 w-full max-w-lg mx-auto px-4 sm:px-6"> {/* Added padding here */}
             <div className="flex items-center space-x-4 bg-gradient-to-r from-[#4BC1D2] to-[#7997b9] rounded-full shadow-lg w-full">
               <button
                 onClick={() => scrollToSection(2)}
@@ -423,55 +428,67 @@ const handlePrev2 = () => {
       </div>
       
       {/* Gallery */}
-      <div>
-        <div className="bg-[#fef9f6] min-h-screen flex flex-col items-center py-12">
-          {/* Header */}
-          <h1 className="mt-16 mb-12 text-4xl font-raleway md:text-5xl font-bold text-[#4a403a]">Litbrew's Gallery</h1>
+      <div className="bg-[#fef9f6] py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {/* Container for responsiveness */}
+        <h1 className="text-4xl sm:text-5xl font-raleway font-bold text-[#4a403a] text-center mb-8 sm:mb-12">
+          Litbrew's Gallery
+        </h1>
 
-          {/* Carousel */}
-          <div className="relative h-[30vw] w-5/6 overflow-hidden">
-            <div className="h-full mt-32 flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${(currentIndex - 1) * 33.33}%)` }}>
-              {galleryImages.map((image, index) => (
-                <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-150 z-50' : 'scale-80 z-10'}`}>
-                  {currentIndex === index && (
-                    <div className="absolute bottom-56 transform translate-y-1/2 w-48 h-16 bg-gradient-to-b from-[#FFFFFF] to-[#64b0b7] rounded-[50%] z-0"></div>
-                  )}
-                  <img
-                    src={image}
-                    className="relative z-20 w-[30w] object-fill mx-2"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={handlePrev2}
-              className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-[#EDEDED] text-black px-2 md:px-3 py-4 md:py-6 rounded-full hover:bg-[#2C4ACB] hover:text-white focus:outline-none"
+        <div className="relative h-[50vh] sm:h-[60vh] lg:h-[70vh] overflow-hidden"> {/* Responsive height */}
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${(currentIndex) * 33.33}%)`, width: `${galleryImages.length * 100}%`}} //Corrected width
             >
-              ❮
-            </button>
-            <button
-              onClick={handleNext2}
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-[#EDEDED] text-black px-2 md:px-3 py-4 md:py-6 rounded-full hover:bg-[#2C4ACB] hover:text-white focus:outline-none"
-            >
-              ❯
-            </button>
-          </div>
-
-          {/* Dots Indicator */}
-          <div className="flex justify-center space-x-2">
-            {galleryImages.map((_, index) => (
-              <button
+            {galleryImages.map((image, index) => (
+              <div
                 key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`h-3 rounded-full transition-all duration-300 ${currentIndex === index ? "bg-[#3D5AF1] w-10" : "bg-gray-300 w-3"}`}
-              ></button>
+                className={`relative w-1/3 flex-shrink-0 flex flex-col items-center justify-center transition-transform duration-500 ease-in-out ${
+                  currentIndex === index ? 'scale-110 sm:scale-125 z-20' : 'scale-90 sm:scale-95 z-10'
+                }`}
+              >
+                 {/* Gradient Overlay (removed absolute positioning) */}
+                {currentIndex === index && (
+                    <div className="w-full h-full bg-gradient-to-t from-black/50 to-transparent rounded-[1rem] absolute"></div>
+                )}
+
+                <img
+                  src={image}
+                  alt={`Gallery Image ${index + 1}`}
+                  className="w-full h-full object-cover rounded-[1rem]" // Use object-cover and responsive height
+                />
+              </div>
             ))}
           </div>
+
+          {/* Navigation Buttons */}
+          <button
+            onClick={handlePrev2}
+            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-200/50 text-gray-700 hover:bg-blue-500 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none"
+          >
+            <FaChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" /> {/* Use icon */}
+          </button>
+          <button
+            onClick={handleNext2}
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-200/50 text-gray-700 hover:bg-blue-500 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none"
+          >
+            <FaChevronRight className="w-4 h-4 sm:w-6 sm:h-6" /> {/* Use icon */}
+          </button>
+        </div>
+
+        {/* Dots Indicator */}
+        <div className="flex justify-center mt-4 space-x-2">
+          {galleryImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              className={`h-2 w-2 sm:h-3 sm:w-3 rounded-full transition-all duration-300 ${
+                currentIndex === index ? 'bg-[#3D5AF1] sm:w-8 sm:h-3' : 'bg-gray-300'
+              }`}
+            ></button>
+          ))}
         </div>
       </div>
+    </div>
       
     </>
   );
