@@ -28,9 +28,11 @@ const Login = () => {
                 localStorage.setItem('isAdmin', response.data.isAdmin);
                 window.dispatchEvent(new Event("storage"));
                 setErrorMessage(""); // Reset error message on successful login
+                console.log(response.data);
+                console.log(response.data.isAdmin);
 
                 // Check if the user is an admin and redirect accordingly
-                if (response.data.user && response.data.user.isAdmin) {
+                if (response.data.isAdmin) {
                     // If the user is an admin, redirect to admin page
                     navigate("/AdminHome");
                 } else {
