@@ -3,9 +3,80 @@ import React, { useState, useEffect } from 'react';
 
 const AdminManageOrders = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [orders, setOrders] = useState([]); // State untuk menyimpan data pesanan
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+  };
+
+  useEffect(() => {
+    // Dummy data
+    const dummyOrders = [
+      {
+        orderId: 'ORD123',
+        user: 'John Doe',
+        items: 'Latte, Croissant',
+        discount: '$5',
+        totalPrice: '$25',
+        orderType: 'Delivery',
+        paidStatus: 'Paid',
+        status: 'Order Confirmed',
+      },
+      {
+        orderId: 'ORD456',
+        user: 'Jane Smith',
+        items: 'Cappuccino, Muffin',
+        discount: '$2',
+        totalPrice: '$18',
+        orderType: 'Pickup',
+        paidStatus: 'Paid',
+        status: 'In Processing',
+      },
+      {
+        orderId: 'ORD789',
+        user: 'Alice Johnson',
+        items: 'Espresso, Donut',
+        discount: '$0',
+        totalPrice: '$10',
+        orderType: 'Dine-in',
+        paidStatus: 'Unpaid',
+        status: 'Completed',
+      },
+      {
+        orderId: 'ORD101',
+        user: 'Bob Williams',
+        items: 'Americano, Bagel',
+        discount: '$3',
+        totalPrice: '$20',
+        orderType: 'Delivery',
+        paidStatus: 'Paid',
+        status: 'Order Confirmed',
+      },
+      {
+        orderId: 'ORD112',
+        user: 'Eva Brown',
+        items: 'Mocha, Scone',
+        discount: '$1',
+        totalPrice: '$15',
+        orderType: 'Pickup',
+        paidStatus: 'Paid',
+        status: 'In Processing',
+      },
+    ];
+
+    setOrders(dummyOrders);
+  }, []);
+
+  const handlePaidStatusChange = (orderId, value) => {
+    setOrders(orders.map(order => 
+      order.orderId === orderId ? { ...order, paidStatus: value } : order
+    ));
+  };
+
+  const handleStatusChange = (orderId, value) => {
+    setOrders(orders.map(order => 
+      order.orderId === orderId ? { ...order, status: value } : order
+    ));
   };
 
   return (
@@ -72,9 +143,39 @@ const AdminManageOrders = () => {
                     </th>
                 </tr>
             </thead>
-              <tbody>
-                
-              </tbody>
+                <tbody>
+                    {orders.map((order, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
+                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.orderId}</td>
+                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.user}</td>
+                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.items}</td>
+                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.discount}</td>
+                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.totalPrice}</td>
+                        <td className="px-[0.05vw] py-[1vw] border text-center">{order.orderType}</td>
+                        <td className="px-[0.5vw] py-[1vw] border text-center">
+                        <select 
+                            value={order.paidStatus} 
+                            onChange={(e) => handlePaidStatusChange(order.orderId, e.target.value)}
+                            className="border rounded p-1"
+                        >
+                            <option value="Paid">Paid</option>
+                            <option value="Unpaid">Unpaid</option>
+                        </select>
+                        </td>
+                        <td className="px-[0.5vw] py-[1vw] border text-center">
+                        <select 
+                            value={order.status} 
+                            onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
+                            className="border rounded p-1"
+                        >
+                            <option value="Order Confirmed">Order Confirmed</option>
+                            <option value="In Processing">In Processing</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
             </table>
           </div>
     </div>
