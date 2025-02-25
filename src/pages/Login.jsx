@@ -7,7 +7,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [acceptTerms, setAcceptTerms] = useState(false); // State for checkbox
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // useNavigate hook to redirect after login
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,13 +25,16 @@ const Login = () => {
 
             if (response.data.token) {
                 localStorage.setItem("token", response.data.token);
+                localStorage.setItem('isAdmin', response.data.isAdmin);
                 window.dispatchEvent(new Event("storage"));
-                setErrorMessage("");
+                setErrorMessage(""); // Reset error message on successful login
 
-                // Navigate to admin dashboard if the user is an admin
+                // Check if the user is an admin and redirect accordingly
                 if (response.data.user && response.data.user.isAdmin) {
-                    navigate("/admin");
+                    // If the user is an admin, redirect to admin page
+                    navigate("/AdminHome");
                 } else {
+                    // If the user is not an admin, redirect to home page
                     navigate("/");
                 }
             }
@@ -51,18 +54,18 @@ const Login = () => {
                     <Link
                         to="/login"
                         className={`w-1/2 text-center py-2 rounded-full transition-all ${window.location.pathname === "/login"
-                                ? "bg-[#07779D] text-[#CFF2F5]"
-                                : "text-[#07779D]"
-                            }`}
+                            ? "bg-[#07779D] text-[#CFF2F5]"
+                            : "text-[#07779D]"}`
+                        }
                     >
                         Log In
                     </Link>
                     <Link
                         to="/register"
                         className={`w-1/2 text-center py-2 rounded-full transition-all ${window.location.pathname === "/register"
-                                ? "bg-[#07779D] text-[#CFF2F5]"
-                                : "text-[#07779D]"
-                            }`}
+                            ? "bg-[#07779D] text-[#CFF2F5]"
+                            : "text-[#07779D]"}`
+                        }
                     >
                         Sign Up
                     </Link>
