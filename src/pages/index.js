@@ -14,7 +14,8 @@ import OrderTracking from './OrderTracking';
 import AdminHome from './AdminHome';
 import AdminManageMenu from './AdminManageMenu'; 
 import AdminManageBook from './AdminManageBook';
-import AdminAddMenuAndBook from './AdminAddMenuAndBook';   
+import AdminManageOrders from './AdminManageOrders';
+import AdminAddItem from './AdminAddItem';   
 import AdminEditMenu from './AdminEditMenu';
 
 export {
@@ -34,6 +35,7 @@ export {
     AdminHome,
     AdminManageMenu,
     AdminManageBook,
-    AdminAddMenuAndBook,
+    AdminManageOrders,
+    AdminAddItem,
     AdminEditMenu
 };

@@ -123,7 +123,7 @@ const AdminManageMenu = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <h1 className="text-2xl font-bold font-raleway">MENUS</h1>
-          <Link to="/AdminAddMenuAndBook" className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4">
+          <Link to="/AdminAddItem" className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4">
             + Add New
           </Link>
         </div>

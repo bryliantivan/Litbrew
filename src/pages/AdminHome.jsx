@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 // Reusable component untuk kotak
-const Card = ({ title, description, buttonText }) => {
+const Card = ({ title, description, buttonText, navigateTo }) => {
   return (
     <div className="bg-[#EFFCFF] border-light-blue rounded-md p-6 w-[30%] shadow-md">
       <h3 className="font-raleway font-bold text-[1.3vw] text-[#07779D]">{title}</h3>
       <p className="font-raleway text-[1vw]">{description}</p>
       <div className="flex justify-end mt-[1vw]">
-        <button className="font-bold font-raleway rounded-md bg-[#AAE8ED] px-[1vw] py-[0.3vw]
-                  transition-transform duration-300 ease-in-out 
-                  hover:scale-105 hover:bg-[#07779D] hover:text-white">
+        <Link
+          to={navigateTo}
+          className="font-bold font-raleway rounded-md bg-[#AAE8ED] px-[1vw] py-[0.3vw]
+                     transition-transform duration-300 ease-in-out 
+                     hover:scale-105 hover:bg-[#07779D] hover:text-white"
+        >
           {buttonText}
-        </button>
+        </Link>
       </div>
     </div>
   );
@@ -52,7 +57,6 @@ const AdminHome = () => {
     fetchTotalIncome();
   }, []);
 
-
   return (
     <div className="mt-[10vw] mx-[5vw] mb-[3vw]">
       <div className="mb-[3.5vw]">
@@ -67,28 +71,26 @@ const AdminHome = () => {
       <div className="justify-center">
         <h2 className="font-raleway font-bold text-[2vw]">Content & Orders Management</h2>
         <div className="flex justify-around mt-[0.5vw]">
-
           <Card
             title="MANAGE MENU"
             description="Add, Edit, or Remove Menu Items"
             buttonText="GO!"
-            navigateTo="/adminManageMenu"
+            navigateTo="/AdminManageMenu"
           />
 
           <Card
             title="MANAGE BOOK"
             description="Add, Edit, or Remove Books"
             buttonText="GO!"
-            navigateTo="/adminManageBook"
+            navigateTo="/AdminManageBook"
           />
 
           <Card
             title="MANAGE ORDERS"
             description="Order tracking, review & rating management"
             buttonText="GO!"
-            navigateTo="/adminManageOrders"
+            navigateTo="/AdminManageOrders"
           />
-
         </div>
       </div>
     </div>
