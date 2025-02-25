@@ -213,15 +213,23 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
             <p><span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. {product.price}</span></p>
           </div>
           {added ? (
-            <div className="flex items-center space-x-4 ml-[1.5vw] mb-[0.68vw]">
-              <button type="button" className="text-white w-[2vw] h-[2vw] font-bold font-raleway bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 rounded-full text-xl py-auto text-center" onClick={() => decrementQuantity(product)}>
-                -
-              </button>
-              <span className="text-white">{quantity}</span>
-              <button type="button" className="text-white w-[2vw] h-[2vw] font-bold font-raleway bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 rounded-full text-xl text-center" onClick={() => incrementQuantity(product)}>
-                +
-              </button>
-            </div>
+          <div className="flex items-center space-x-4"> {/* Container Flexbox */}
+          <button
+            type="button"
+            className="text-white w-8 h-8 font-bold font-raleway bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 rounded-full text-xl text-center"
+            onClick={() => decrementQuantity(product)}
+          >
+            -
+          </button>
+          <span className="text-white text-lg">{quantity}</span> {/* Ukuran teks lebih besar */}
+          <button
+            type="button"
+            className="text-white w-8 h-8 font-bold font-raleway bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 rounded-full text-xl text-center"
+            onClick={() => incrementQuantity(product)}
+          >
+            +
+          </button>
+        </div>
           ) : (
             <button type="button" className="text-white bg-[#4BC1D2] hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => { addToCart(product); setShowCartPopup(true); }}>
               BUY

@@ -250,9 +250,9 @@ const Order = () => {
       <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
         {/* Order Status */}
         <section className="bg-white rounded-lg shadow p-6 mb-4">
-          <h2 className="text-lg font-semibold font-raleway mb-2 text-[#21325E] content-center">Order Location</h2>
+          <h2 className="text-base font-normal font-raleway mb-2 text-[#21325E] content-center">Order Location</h2>
           <p className="text-sm text-gray-600 mb-3">Select your current location</p>
-          <div className="flex space-x-4">
+          <div className="flex justify-center space-x-4">
             <button
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${location === "arrived" ? "bg-[#3AA1B2] text-white" : "bg-white text-[#21325E] border border-[#21325E]"} hover:bg-[#3AA1B2] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#3AA1B2] transition`}
               onClick={() => setLocation("arrived")}
@@ -272,9 +272,9 @@ const Order = () => {
 
         {/* Order Type */}
         <section className="bg-white rounded-lg shadow p-6 mb-4">
-          <h2 className="text-lg font-semibold font-raleway mb-2 text-[#21325E] content-center">Order Type</h2>
+          <h2 className="text-base font-normal font-raleway mb-2 text-[#21325E] content-center">Order Type</h2>
           <p className="text-sm text-gray-600 mb-3">Select your order type</p>
-          <div className="flex space-x-4">
+          <div className="flex justify-center space-x-4">
             <button
               className={`flex items-center justify-center flex-1 py-2 px-4 rounded-full font-raleway font-semibold ${orderType === "dine-in"
                 ? "bg-[#3AA1B2] text-white"
