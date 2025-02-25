@@ -23,6 +23,7 @@ orderRoute.post(
       voucher,
       location,
       estimatedPickUpTime,  // Make sure this is included in the request body
+      customerName
     } = req.body;
 
     // Validation
@@ -69,11 +70,12 @@ orderRoute.post(
       location, // Menyimpan status pesanan
       numPeople, // Menyimpan jumlah orang untuk dine-in
       voucher,
-      isPaid: true, // Set isPaid menjadi false, jika belum dibayar
+      isPaid: false, // Set isPaid menjadi false, jika belum dibayar
       paidAt: null, // Set waktu pembayaran menjadi null
       orderStatus,
       estimatedPickUpTime, // Ensure this is saved as well
       isReviewed: false, // Set isReviewed menjadi false, jika belum direview
+      customerName
     });
 
     // Save the order
@@ -120,38 +122,24 @@ orderRoute.get(
   })
 );
 
-// Update order to paid (no admin validation needed)
+// Update order status (orderStatus)
 orderRoute.put(
-  "/:id/pay",
-  protect,
+  "/:id/status",
+  protect,  // Pastikan hanya pengguna terotorisasi yang bisa mengubah status
   asyncHandler(async (req, res) => {
+    const { orderStatus } = req.body;  // Ambil status baru dari body request
+    
+    // Validasi status yang valid
+    if (!["confirm", "processing", "delivered"].includes(orderStatus)) {
+      res.status(400);
+      throw new Error("Invalid order status. It must be 'confirm', 'processing', or 'delivered'.");
+    }
+
     const order = await Order.findById(req.params.id);
 
     if (order) {
-      // Set order as paid
-      order.isPaid = true;
-      order.paidAt = Date.now();
-      order.orderStatus = "processing"; // Update order status to processing
-      order.paymentResult = {
-        id: req.body.id,
-        status: req.body.status,
-        update_time: req.body.update_time,
-        email_address: req.body.payer.email_address,
-      };
-
-      // Add points to the user based on the total price of the order
-      const pointsEarned = Math.floor(order.totalPrice / 10); // Example: 1 point for every 10 units of the order
-      const user = await User.findById(order.user);
-
-      if (user) {
-        user.points += pointsEarned; // Add points to the user
-        await user.save();
-      } else {
-        res.status(404);
-        throw new Error("User Not Found");
-      }
-
-      // Save the updated order and send the response
+      // Perbarui status pesanan
+      order.orderStatus = orderStatus;
       const updatedOrder = await order.save();
       res.status(200).json(updatedOrder);
     } else {
@@ -160,6 +148,39 @@ orderRoute.put(
     }
   })
 );
+
+// Update order paid status (isPaid)
+orderRoute.put(
+  "/:id/pay",
+  protect, // Pastikan hanya pengguna terotorisasi yang bisa melakukan pembayaran
+  asyncHandler(async (req, res) => {
+    const { isPaid } = req.body; // Ambil status pembayaran (true/false) dari body request
+    
+    if (typeof isPaid !== "boolean") {
+      res.status(400);
+      throw new Error("Invalid payment status. It must be a boolean (true/false).");
+    }
+
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+      // Perbarui status pembayaran pesanan
+      order.isPaid = isPaid;
+      if (isPaid) {
+        order.paidAt = Date.now(); // Tentukan waktu pembayaran jika sudah dibayar
+      } else {
+        order.paidAt = null; // Reset waktu pembayaran jika belum dibayar
+      }
+      
+      const updatedOrder = await order.save();
+      res.status(200).json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order Not Found");
+    }
+  })
+);
+
 
 // Get all orders (Admin or authorized user only)
 orderRoute.get(
