@@ -101,7 +101,7 @@ const AdminManageMenu = () => {
 
   const handleEdit = (item) => {
     // Use _id here:
-    navigate(`/AdminEditMenu/${item._id}`);
+    navigate(`/AdminEditItem/${item._id}`);
   };
 
   const handleSearchChange = (event) => {

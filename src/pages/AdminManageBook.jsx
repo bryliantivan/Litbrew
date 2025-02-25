@@ -24,7 +24,7 @@ const AdminManageBook = () => {
         setFilteredMenuItems(initiallyFiltered);
       } catch (error) {
         setError(error);
-        console.error("Error fetching menus:", error);
+        console.error("Error fetching books:", error);
       } finally {
         setLoading(false);
       }
@@ -66,14 +66,14 @@ const AdminManageBook = () => {
   }, [searchTerm, menuItems]);
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this menu item?')) {
+    if (window.confirm('Are you sure you want to delete this book item?')) {
       try {
         // Retrieve token from localStorage or wherever it's stored
         const token = localStorage.getItem('token'); // Adjust if you're using a different method
 
         // Check if the token exists
         if (!token) {
-          alert("You must be logged in to delete a product.");
+          alert("You must be logged in to delete a book.");
           return;
         }
 
@@ -88,11 +88,11 @@ const AdminManageBook = () => {
         setMenuItems(menuItems.filter(item => item._id !== id));
         setFilteredMenuItems(filteredMenuItems.filter(item => item._id !== id));
 
-        alert('Menu item deleted successfully!');
+        alert('Book item deleted successfully!');
       } catch (error) {
         setError(error);
-        console.error("Error deleting menu:", error);
-        alert(`Error deleting menu: ${error.message}`);
+        console.error("Error deleting book:", error);
+        alert(`Error deleting book: ${error.message}`);
       }
     }
   };
@@ -101,7 +101,7 @@ const AdminManageBook = () => {
 
   const handleEdit = (item) => {
     // Use _id here:
-    navigate(`/AdminEditMenu/${item._id}`);
+    navigate(`/AdminEditItem/${item._id}`);
   };
 
   const handleSearchChange = (event) => {
@@ -122,7 +122,7 @@ const AdminManageBook = () => {
     <div className="container mx-auto mt-[8vw] p-7">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold font-raleway">MENUS</h1>
+          <h1 className="text-2xl font-bold font-raleway">BOOKS</h1>
           <Link to="/AdminAddItem" className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4">
             + Add New
           </Link>
@@ -131,7 +131,7 @@ const AdminManageBook = () => {
         <div className="relative ml-4 items-center">
           <input
             type="text"
-            placeholder="Search Menu"
+            placeholder="Search Book"
             className="border border-[#07779D] px-[1vw] py-[1vw] rounded-[0.5vw] focus:outline-none w-[30vw]"
             value={searchTerm}
             onChange={handleSearchChange}
