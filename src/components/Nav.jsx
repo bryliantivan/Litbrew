@@ -73,7 +73,7 @@ const Nav = () => {
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
-        console.log("test");
+        console.log("dropdown activated!");
     };
 
     // Function to handle adding/removing products from the cart
@@ -92,7 +92,7 @@ const Nav = () => {
         } else if (action === "remove") {
             newCart = cart.filter(item => item._id !== product._id); // Remove product from cart
         }
-        setCart(newCart); // Set the new cart state.  useEffect will handle localStorage.
+        setCart(newCart);
     };
 
     return (
@@ -113,6 +113,7 @@ const Nav = () => {
                         </Link>
                     ) : (
                         <>
+                            {console.log("User is logged in")}
                             <div className="relative flex">
                                 <Link to="/order">
                                     <div className="relative py-2">
