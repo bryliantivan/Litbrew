@@ -12,56 +12,45 @@ const AdminManageOrders = () => {
   useEffect(() => {
     // Dummy data
     const dummyOrders = [
-      {
-        orderId: 'ORD123',
-        user: 'John Doe',
-        items: 'Latte, Croissant',
-        discount: '$5',
-        totalPrice: '$25',
-        orderType: 'Delivery',
-        paidStatus: 'Paid',
-        status: 'Order Confirmed',
-      },
-      {
-        orderId: 'ORD456',
-        user: 'Jane Smith',
-        items: 'Cappuccino, Muffin',
-        discount: '$2',
-        totalPrice: '$18',
-        orderType: 'Pickup',
-        paidStatus: 'Paid',
-        status: 'In Processing',
-      },
-      {
-        orderId: 'ORD789',
-        user: 'Alice Johnson',
-        items: 'Espresso, Donut',
-        discount: '$0',
-        totalPrice: '$10',
-        orderType: 'Dine-in',
-        paidStatus: 'Unpaid',
-        status: 'Completed',
-      },
-      {
-        orderId: 'ORD101',
-        user: 'Bob Williams',
-        items: 'Americano, Bagel',
-        discount: '$3',
-        totalPrice: '$20',
-        orderType: 'Delivery',
-        paidStatus: 'Paid',
-        status: 'Order Confirmed',
-      },
-      {
-        orderId: 'ORD112',
-        user: 'Eva Brown',
-        items: 'Mocha, Scone',
-        discount: '$1',
-        totalPrice: '$15',
-        orderType: 'Pickup',
-        paidStatus: 'Paid',
-        status: 'In Processing',
-      },
+        {
+          orderId: 'ORD123',
+          user: 'John Doe',
+          items: 'Latte, Croissant',
+          totalPrice: '$25',
+          orderType: 'Delivery',
+          paidStatus: 'Paid',
+          status: 'Order Confirmed',
+          location: 'Not In Litbrew',
+          tableNumber: '-',
+          peopleCount: '-',
+          estimatedArrivalTime: '-',
+        },
+        {
+          orderId: 'ORD456',
+          user: 'Jane Smith',
+          items: 'Cappuccino, Muffin',
+          totalPrice: '$18',
+          orderType: 'Pickup',
+          paidStatus: 'Paid',
+          status: 'In Processing',
+          location: 'Not In Litbrew',
+          tableNumber: '-',
+          peopleCount: '-',
+          estimatedArrivalTime: '-',
+        },
+        {
+          orderId: 'ORD789',
+          user: 'Alice Johnson',
+          items: 'Espresso, Donut',
+          totalPrice: '$10',
+          orderType: 'Dine-in',
+          paidStatus: 'Unpaid',
+          status: 'Completed',
+          location: 'In Litbrew',
+          tableNumber: '5',
+          peopleCount: '2',
+          estimatedArrivalTime: '12:00 PM',
+        },
     ];
 
     setOrders(dummyOrders);
@@ -108,73 +97,94 @@ const AdminManageOrders = () => {
       <div className="overflow-x-auto"> {/* Add this for horizontal scrolling on small screens */}
             <table className="min-w-full border-collapse mt-[2vw] "> {/* Use min-w-full */}
             <thead>
-                <tr className="bg-[#AAE8ED]">
-                    {/* ORDER ID */}
-                    <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[10%]">
-                        ORDER ID
-                    </th>
-                    {/* USER */}
-                    <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[10%]">
-                        USER
-                    </th>
-                    {/* ITEMS */}
-                    <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[25%]">
-                        ITEMS
-                    </th>
-                    {/* DISCOUNT */}
-                    <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[12%]">
-                        DISCOUNT
-                    </th>
-                    {/* TOTAL PRICE */}
-                    <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[13%]">
-                        TOTAL PRICE
-                    </th>
-                    {/* ORDER TYPE */}
-                    <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[10%]">
-                        ORDER TYPE
-                    </th>
-                    {/* PAID STATUS */}
-                    <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[10%]">
-                        PAID STATUS
-                    </th>
-                    {/* STATUS */}
-                    <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[12%]">
-                        STATUS
-                    </th>
-                </tr>
-            </thead>
-                <tbody>
-                    {orders.map((order, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
-                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.orderId}</td>
-                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.user}</td>
-                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.items}</td>
-                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.discount}</td>
-                        <td className="px-[0.5vw] py-[1vw] border text-center">{order.totalPrice}</td>
-                        <td className="px-[0.05vw] py-[1vw] border text-center">{order.orderType}</td>
-                        <td className="px-[0.5vw] py-[1vw] border text-center">
-                        <select 
-                            value={order.paidStatus} 
-                            onChange={(e) => handlePaidStatusChange(order.orderId, e.target.value)}
-                            className="border rounded p-1"
-                        >
-                            <option value="Paid">Paid</option>
-                            <option value="Unpaid">Unpaid</option>
-                        </select>
-                        </td>
-                        <td className="px-[0.5vw] py-[1vw] border text-center">
-                        <select 
-                            value={order.status} 
-                            onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
-                            className="border rounded p-1"
-                        >
-                            <option value="Order Confirmed">Order Confirmed</option>
-                            <option value="In Processing">In Processing</option>
-                            <option value="Completed">Completed</option>
-                        </select>
-                        </td>
+                    <tr className="bg-[#AAE8ED]">
+                        {/* ORDER ID */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            ORDER ID
+                        </th>
+                        {/* USER */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            USER
+                        </th>
+                        {/* ITEMS */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[18%]">
+                            ITEMS
+                        </th>
+                        {/* TOTAL PRICE */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[10%]">
+                            TOTAL PRICE
+                        </th>
+                        {/* ORDER TYPE */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            ORDER TYPE
+                        </th>
+                        {/* LOCATION */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            LOCATION
+                        </th>
+                        {/* TABLE */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            NO.TABLE
+                        </th>
+                        {/* NUMBER PEOPLE */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            NO.PEOPLE
+                        </th>
+                        {/* ESTIMATED ARRIVE TIME */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            EST.ARRIVE TIME
+                        </th>
+                        {/* PAID STATUS */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            PAID STATUS
+                        </th>
+                        {/* STATUS */}
+                        <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[8%]">
+                            STATUS
+                        </th>
                     </tr>
-                    ))}
+                </thead>
+                <tbody>
+                {orders.map((order, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
+                    <td className="px-[0.5vw] py-[1vw] border text-center">{order.orderId}</td>
+                    <td className="px-[0.5vw] py-[1vw] border text-center">{order.user}</td>
+                    <td className="px-[0.5vw] py-[1vw] border text-center">{order.items}</td>
+                    <td className="px-[0.5vw] py-[1vw] border text-center">{order.totalPrice}</td>
+                    <td className="px-[0.05vw] py-[1vw] border text-center">{order.orderType}</td>
+                    <td className="px-[0.5vw] py-[1vw] border text-center">{order.location}</td> {/* LOCATION */}
+                    <td className="px-[0.5vw] py-[1vw] border text-center">{order.tableNumber}</td> {/* NO.TABLE */}
+                    <td className="px-[0.5vw] py-[1vw] border text-center">{order.peopleCount}</td> {/* NO.PEOPLE */}
+                    <td className="px-[0.5vw] py-[1vw] border text-center">{order.estimatedArrivalTime}</td> {/* EST.ARRIVE TIME */}
+                    <td className="px-[0.5vw] py-[1vw] border text-center">
+                        <select
+                        value={order.paidStatus}
+                        onChange={(e) => handlePaidStatusChange(order.orderId, e.target.value)}
+                        className={`border rounded p-1 ${order.paidStatus === 'Paid' ? 'bg-green-200' : 'bg-red-200'}`}
+                        >
+                        <option value="Paid">Paid</option>
+                        <option value="Unpaid">Unpaid</option>
+                        </select>
+                    </td>
+                    <td className="px-[0.5vw] py-[1vw] border text-center">
+                        <select
+                        value={order.status}
+                        onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
+                        className={`border rounded p-1 ${
+                            order.status === 'Order Confirmed'
+                            ? 'bg-blue-200'
+                            : order.status === 'In Processing'
+                            ? 'bg-yellow-200'
+                            : 'bg-green-200'
+                        }`}
+                        >
+                        <option value="Order Confirmed">Order Confirmed</option>
+                        <option value="In Processing">In Processing</option>
+                        <option value="Completed">Completed</option>
+                        </select>
+                    </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
           </div>
