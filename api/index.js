@@ -6,17 +6,12 @@ const port = process.env.PORT;
 const moongose = require("mongoose");
 const cors = require("cors");
 
-// connect DB
-// 3EJzdJXsFbkSFKGa
-// paundrarangga31
-// mongodb+srv://paundrarangga31:3EJzdJXsFbkSFKGa@data.y3hz3.mongodb.net/litbrewdatabase    
-
 moongose.connect(process.env.MONGOOSEDB_RUL).then(()=>console.log("db connected")).then((err)=>{
     err;
 })
 
 app.use(cors({
-    origin: "http://localhost:5173", // Ganti dengan URL frontend
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
@@ -46,6 +41,6 @@ app.use('/api/orders', orderRoute);
 
 app.use('/api/vouchers', voucherRoute);
 
-app.listen(port, ()=>{
+app.listen(port, '0.0.0.0', ()=>{
     console.log(`server running in port ${port}`)
 })

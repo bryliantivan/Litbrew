@@ -189,25 +189,33 @@ const Order = () => {
         },
       };
 
+      // Validate if customerName is provided
+      if (!customerName) {
+        alert("Please enter your name.");
+        return; // Stop the checkout process if name is missing
+      }
+
       // Ensure tableNumber is provided for dine-in orders
       if (orderType === "dine-in" && !tableNumber) {
         alert("Please enter a table number for dine-in orders.");
         return; // Stop the checkout process if table number is missing
       }
-      if (orderType !== "dine-in" && orderType !== "takeaway") {
-        alert("Invalid order type. It must be either 'dine-in' or 'takeaway'.");
-        return; // Stop the checkout process if the order type is invalid
-      }
 
       // Ensure estimatedPickUpTime is set if the location is 'not-arrived' and orderType is 'takeaway'
       let estimatedPickUpDate = null;
-      if (location === "not-arrived" && orderType === "takeaway" && estimatedPickupTime) {
+      if (location === "not-arrived" && orderType === "takeaway" && !estimatedPickupTime) {
+        alert("Estimated pickup time is required for takeaway orders.");
+        return; // Stop the checkout process if pickup time is missing
+      } else if (location === "not-arrived" && orderType === "takeaway" && estimatedPickupTime) {
         const today = new Date(); // Get today's date
         const [hours, minutes] = estimatedPickupTime.split(':'); // Split the time string into hours and minutes
         estimatedPickUpDate = new Date(today.setHours(hours, minutes, 0, 0)); // Set the time to the Date object
-      } else if (location === "not-arrived" && orderType === "takeaway" && !estimatedPickUpTime) {
-        res.status(400);
-        throw new Error("Estimated pickup time is required when location is 'not-arrived' and orderType is 'takeaway'.");
+      }
+
+      // Check if there are any items in the cart
+      if (order.length === 0) {
+        alert("Please add items to your order.");
+        return;
       }
 
       const orderData = {
@@ -248,6 +256,7 @@ const Order = () => {
       alert("There was an error processing your order. Please try again.");
     }
   };
+
 
   return (
     <div className="container px-5 py-36 mx-auto">
