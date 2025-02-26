@@ -79,7 +79,7 @@ const OrderTracking = () => {
                                 <div className="sm:whitespace-nowrap z-10 flex flex-col items-center">
                                     <span className="w-6 h-6 bg-[#4BC1D2] rounded-full flex justify-center items-center mx-auto mb-1 text-white text-base font-bold lg:w-10 lg:h-10"></span>
                                     In Processing
-                                    <span className="text-gray-500 text-base font-normal text-center">Pesanan sedang disiapkan oleh kasir</span>
+                                    <span className="text-gray-500 text-base font-normal text-center">Pesanan sedang disiapkan oleh koki</span>
                                 </div>
                             </li>
                             <li className="flex w-full relative justify-center text-gray-500 text-base font-semibold">
