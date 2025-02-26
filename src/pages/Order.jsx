@@ -71,7 +71,7 @@ const Order = () => {
       setOrder(updatedOrder);
     }
   };
-  
+
   const handleNoteChange = (index, value) => {
     setNotes((prevNotes) => {
       return {
@@ -124,25 +124,25 @@ const Order = () => {
   const handleVoucherSelection = (e) => {
     const selectedCode = e.target.value;
     // Find the selected voucher details from the vouchers array
-    const voucherObj = vouchers.find(v => v._id === selectedCode); 
+    const voucherObj = vouchers.find(v => v._id === selectedCode);
     if (voucherObj) {
-        // Check if order total meets the voucher's minimum spend requirement
-        if (calculateTotal() < voucherObj.minSpend) {
-            alert(`Minimum spend for this voucher is IDR ${voucherObj.minSpend.toLocaleString('id-ID')}`);
-            setSelectedVoucher("");
-            return;
-        }
+      // Check if order total meets the voucher's minimum spend requirement
+      if (calculateTotal() < voucherObj.minSpend) {
+        alert(`Minimum spend for this voucher is IDR ${voucherObj.minSpend.toLocaleString('id-ID')}`);
+        setSelectedVoucher("");
+        return;
+      }
     }
 
     // Only allow selecting a voucher that has been redeemed
     if (!redeemedVouchers.includes(selectedCode)) {
-        alert("This voucher has not been redeemed by you.");
-        setSelectedVoucher("");
-        return;
+      alert("This voucher has not been redeemed by you.");
+      setSelectedVoucher("");
+      return;
     }
 
     setSelectedVoucher(selectedCode);
-};
+  };
 
   // Calculate the total price
   const calculateTotal = () => {
@@ -199,11 +199,15 @@ const Order = () => {
         return; // Stop the checkout process if the order type is invalid
       }
 
+      // Ensure estimatedPickUpTime is set if the location is 'not-arrived' and orderType is 'takeaway'
       let estimatedPickUpDate = null;
-      if (location === "not-arrived" && orderType === "dine-in" && estimatedPickupTime) {
+      if (location === "not-arrived" && orderType === "takeaway" && estimatedPickupTime) {
         const today = new Date(); // Get today's date
         const [hours, minutes] = estimatedPickupTime.split(':'); // Split the time string into hours and minutes
         estimatedPickUpDate = new Date(today.setHours(hours, minutes, 0, 0)); // Set the time to the Date object
+      } else if (location === "not-arrived" && orderType === "takeaway" && !estimatedPickUpTime) {
+        res.status(400);
+        throw new Error("Estimated pickup time is required when location is 'not-arrived' and orderType is 'takeaway'.");
       }
 
       const orderData = {
@@ -229,7 +233,6 @@ const Order = () => {
         estimatedPickUpTime: estimatedPickUpDate, // Only for takeaway
         customerName,
       };
-      console.log("Order Data:", orderData);
 
       const response = await axios.post("http://localhost:3000/api/orders", orderData, config);
       console.log("Order saved:", response.data);
@@ -245,8 +248,6 @@ const Order = () => {
       alert("There was an error processing your order. Please try again.");
     }
   };
-
-
 
   return (
     <div className="container px-5 py-36 mx-auto">
@@ -363,7 +364,14 @@ const Order = () => {
             ) : (
               <div>
                 <label htmlFor="estimatedArrival" className="block text-sm font-medium font-raleway text-gray-700">Estimated Arrival</label>
-                <input type="time" id="estimatedArrival" name="estimatedArrival" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter estimated arrival time" onChange={(e) => setEstimatedPickupTime(e.target.value)} />
+                <input
+                  type="time"
+                  id="estimatedArrival"
+                  name="estimatedArrival"
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"
+                  value={estimatedPickupTime}
+                  onChange={(e) => setEstimatedPickupTime(e.target.value)}
+                />
               </div>
             )}
 
@@ -516,7 +524,7 @@ const Order = () => {
                     <dd className="text-base font-bold font-raleway text-gray-900 dark:text-white">IDR {totalWithTax.toLocaleString('id-ID')}</dd>
                   </dl>
                 </div>
-                  <button onClick={handleCheckout} className="flex w-full items-center justify-center rounded-lg bg-[#AAE8ED] hover:bg-[#3AA1B2] hover:text-white px-5 py-2.5 text-sm font-medium font-raleway text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Checkout</button>
+                <button onClick={handleCheckout} className="flex w-full items-center justify-center rounded-lg bg-[#AAE8ED] hover:bg-[#3AA1B2] hover:text-white px-5 py-2.5 text-sm font-medium font-raleway text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Checkout</button>
               </div>
             </div>
           </div>

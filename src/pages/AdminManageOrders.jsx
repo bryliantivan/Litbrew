@@ -147,7 +147,20 @@ const AdminManageOrders = () => {
                 <td className="px-[0.5vw] py-[1vw] border text-center">{order.location}</td>
                 <td className="px-[0.5vw] py-[1vw] border text-center">{order.tableNumber || '-'}</td>
                 <td className="px-[0.5vw] py-[1vw] border text-center">{order.numPeople || '-'}</td>
-                <td className="px-[0.5vw] py-[1vw] border text-center">{order.estimatedPickUpTime || '-'}</td>
+                <td className="px-[0.5vw] py-[1vw] border text-center">
+                  {order.estimatedPickUpTime
+                    ? new Date(order.estimatedPickUpTime).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: 'short',  // Optional: Short month name (e.g., Feb)
+                      day: 'numeric',  // Show day (e.g., 26)
+                      hour: '2-digit', // Hour with leading zero
+                      minute: '2-digit', // Minute with leading zero
+                      hour12: true, // Use 12-hour clock
+                    })
+                    : '-'
+                  }
+                </td>
+
                 <td className="px-[0.5vw] py-[1vw] border text-center">
                   <select
                     value={order.isPaid ? 'Paid' : 'Unpaid'}
@@ -163,10 +176,10 @@ const AdminManageOrders = () => {
                     value={order.orderStatus}
                     onChange={(e) => handleStatusChange(order._id, e.target.value)}
                     className={`border rounded p-1 ${order.orderStatus === 'confirm'
-                        ? 'bg-blue-200'
-                        : order.orderStatus === 'processing'
-                          ? 'bg-yellow-200'
-                          : 'bg-green-200'
+                      ? 'bg-blue-200'
+                      : order.orderStatus === 'processing'
+                        ? 'bg-yellow-200'
+                        : 'bg-green-200'
                       }`}
                   >
                     <option value="confirm">Order Confirmed</option>
