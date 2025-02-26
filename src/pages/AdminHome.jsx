@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-// Reusable component untuk kotak
+// Reusable component for the card
 const Card = ({ title, description, buttonText, navigateTo }) => {
   return (
     <div className="bg-[#EFFCFF] border-light-blue rounded-md p-6 w-[30%] shadow-md">
@@ -47,7 +47,11 @@ const AdminHome = () => {
           throw new Error('Invalid data format received from API');
         }
 
-        const total = data.reduce((acc, order) => acc + (order.totalPrice || 0), 0);
+        // Calculate total income for orders where isPaid is true
+        const total = data
+          .filter((order) => order.isPaid) // Only consider orders that are paid
+          .reduce((acc, order) => acc + (order.totalPrice || 0), 0);
+
         setTotalIncome(total);
       } catch (error) {
         setError(error.message);
