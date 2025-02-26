@@ -1,22 +1,22 @@
 import { Link, NavLink } from 'react-router-dom';
-import { navLinks } from '../constants';
+import { navLinks, navLinksAdmin } from '../constants'; // Pastikan path ke constants.js benar
 import { useState, useEffect } from 'react';
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { xp } from '../assets/images';  // Pastikan path ini benar
+import { xp } from '../assets/images';
 import axios from 'axios';
+
 
 const Nav = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')) || []);
-    const [loadingUser, setLoadingUser] = useState(false); // State untuk loading indicator
-    const [userError, setUserError] = useState(null); // State untuk error message
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for hamburger menu
+    const [loadingUser, setLoadingUser] = useState(false);
+    const [userError, setUserError] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-    // Function to check the token in localStorage
     const checkToken = () => {
         const token = localStorage.getItem('token');
         setIsLoggedIn(!!token);
@@ -33,15 +33,13 @@ const Nav = () => {
         };
     }, []);
 
-    // useEffect to synchronize cart with localStorage.  This is now simpler.
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
     }, [cart]);
 
-
     const fetchUserData = async (token) => {
-        setLoadingUser(true); // Set loading to true
-        setUserError(null);    // Reset error
+        setLoadingUser(true);
+        setUserError(null);
         try {
             const response = await axios.get('http://localhost:3000/api/users/profile', {
                 headers: {
@@ -49,17 +47,17 @@ const Nav = () => {
                 }
             });
             setUser(response.data);
+            // console.log("User data fetched:", response.data); // Untuk debugging, lihat data user di console
         } catch (error) {
             console.error('Error fetching user data:', error);
             if (error.response && error.response.status === 401) {
-                // Token expired or invalid
-                handleLogout(); // Log the user out
+                handleLogout();
                 setUserError("Your session has expired. Please log in again.");
             } else {
-                setUserError("Failed to load user data. Please try again."); // Set error message
+                setUserError("Failed to load user data. Please try again.");
             }
         } finally {
-            setLoadingUser(false); // Set loading to false
+            setLoadingUser(false);
         }
     };
 
@@ -68,31 +66,28 @@ const Nav = () => {
         setIsLoggedIn(false);
         setUser(null);
         setCart([]);
-        localStorage.setItem('cart', JSON.stringify([])); // Clear cart in localStorage
-        window.dispatchEvent(new Event('storage')); // Trigger storage event
-        setDropdownOpen(false); //close dropdown
+        localStorage.setItem('cart', JSON.stringify([]));
+        window.dispatchEvent(new Event('storage'));
+        setDropdownOpen(false);
     };
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
-        console.log("dropdown activated!");
+        // console.log("dropdown activated!"); // Untuk debugging dropdown
     };
 
-    // Function to handle adding/removing products from the cart
     const updateCart = (product, action) => {
         let newCart;
         if (action === "add") {
             const existingProductIndex = cart.findIndex(item => item._id === product._id);
             if (existingProductIndex > -1) {
-                // Product already exists, update quantity
                 newCart = [...cart];
                 newCart[existingProductIndex].quantity = (newCart[existingProductIndex].quantity || 1) + 1;
             } else {
-                // New product, add to cart with quantity 1
                 newCart = [...cart, { ...product, quantity: 1 }];
             }
         } else if (action === "remove") {
-            newCart = cart.filter(item => item._id !== product._id); // Remove product from cart
+            newCart = cart.filter(item => item._id !== product._id);
         }
         setCart(newCart);
     };
@@ -116,7 +111,7 @@ const Nav = () => {
                         </Link>
                     ) : (
                         <>
-                            {console.log("User is logged in")}
+                            {/* {console.log("User is logged in")} */}
                             <div className="relative flex">
                                 <Link to="/order">
                                     <div className="relative py-2">
@@ -174,7 +169,6 @@ const Nav = () => {
                                                         My Order
                                                     </Link>
                                                 </div>
-
                                                 <div>
                                                     <Link
                                                         to="/profile"
@@ -183,13 +177,14 @@ const Nav = () => {
                                                         Profile Settings
                                                     </Link>
                                                 </div>
-
-                                                <button
-                                                    onClick={handleLogout}
-                                                    className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
-                                                >
-                                                    Sign Out
-                                                </button>
+                                                <div>
+                                                    <button
+                                                        onClick={handleLogout}
+                                                        className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
+                                                    >
+                                                        Sign Out
+                                                    </button>
+                                                </div>
                                             </>
                                         )}
                                     </div>
@@ -198,7 +193,7 @@ const Nav = () => {
                         </>
                     )}
                 </div>
-                
+
                 {/* Hamburger button for mobile view */}
                 <button
                     onClick={toggleMobileMenu}
@@ -216,20 +211,37 @@ const Nav = () => {
                 {/* Navigation links, conditionally rendered based on mobile menu state */}
                 <div className={`${isMobileMenuOpen ? '' : 'hidden'} items-center justify-between w-full md:flex md:w-auto md:order-1`} id="navbar-sticky">
                     <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-800 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-[#07779D]">
-                        {navLinks.map((link) => (
-                            <li key={link.label}>
-                                <NavLink
-                                    to={link.href}
-                                    className={({ isActive }) =>
-                                        isActive
-                                            ? 'text-[#D1E9FF] font-bold font-raleway hover:text-white border-b-2 border-white'
-                                            : 'text-[#D1E9FF] font-raleway hover:text-white'
-                                    }
-                                >
-                                    {link.label}
-                                </NavLink>
-                            </li>
-                        ))}
+                        {user && user.isAdmin ? (
+                            navLinksAdmin.map((link) => (
+                                <li key={link.label}>
+                                    <NavLink
+                                        to={link.href}
+                                        className={({ isActive }) =>
+                                            isActive
+                                                ? 'text-[#D1E9FF] font-bold font-raleway hover:text-white border-b-2 border-white'
+                                                : 'text-[#D1E9FF] font-raleway hover:text-white'
+                                        }
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                </li>
+                            ))
+                        ) : (
+                            navLinks.map((link) => (
+                                <li key={link.label}>
+                                    <NavLink
+                                        to={link.href}
+                                        className={({ isActive }) =>
+                                            isActive
+                                                ? 'text-[#D1E9FF] font-bold font-raleway hover:text-white border-b-2 border-white'
+                                                : 'text-[#D1E9FF] font-raleway hover:text-white'
+                                        }
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                </li>
+                            ))
+                        )}
                     </ul>
                 </div>
             </div>

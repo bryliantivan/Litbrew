@@ -1,3 +1,4 @@
+import { DropdownDivider } from "flowbite-react";
 import { instagram, twitter, linkedin, tiktok } from "../assets/images";
 import {  oreo_cheesecake, chocolate_cake, dark_chocolate_chip_cookies, mint_cupcake, apple_pie, oreo_cupcake, misberries_pie, brown_sugar_cookies, almond_croissant, chocolate_chips_croissants } from "../assets/images";
 import { classic_americano, milk_bubble_tea, matcha_tea, coffe_milk, oreo_smoothies, caramel_macchiato } from "../assets/images";
@@ -9,6 +10,13 @@ export const navLinks = [
     { href: "Book", label: "BOOKS" },
     { href: "myorders", label: "HISTORY" },
     { href: "About", label: "ABOUT US" }
+];
+
+export const navLinksAdmin = [
+    { href: "AdminHome", label: "DASHBOARD" },
+    { href: "AdminManageMenus", label: "PRODUCT" },
+    { href: "AdminManageBook", label: "BOOKS" },
+    { href: "AdminManageOrders", label: "ORDERS" },
 ];
 
 export const footerLinks = [
