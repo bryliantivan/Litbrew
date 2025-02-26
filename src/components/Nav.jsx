@@ -203,7 +203,7 @@ const Nav = () => {
                 <button
                     onClick={toggleMobileMenu}
                     type="button"
-                    className="inline-flex items-center mr-[3vw] p-2 w-10 h-10 justify-center mt-2 text-sm text-blue-200 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 text-xl focus:ring-gray-200 dark:text-gray-400"
+                    className="inline-flex items-center mr-[3vw] p-2 w-10 h-10 justify-center mt-2 text-blue-200 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 text-xl focus:ring-gray-200 dark:text-gray-400"
                     aria-controls="navbar-sticky"
                     aria-expanded={isMobileMenuOpen}
                 >

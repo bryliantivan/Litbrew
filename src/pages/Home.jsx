@@ -59,10 +59,10 @@ const Home = () => {
     {
       content: (
         <div className="flex flex-col items-end justify-center h-full text-center text-white bg-cover bg-center bg-no-repeat font" style={{ backgroundImage: `url(${homepage_dessert1})` }}>
-          <div className='mr-20'>
-            <h2 className="text-5xl text-center font-motter-corpus-std">FIND YOUR DESSERT</h2>
-            <p className="mt-6 text-xl text-center font-raleway">Indulge in our freshly brewed coffee and now,<br/>a delightful selection of desserts. </p>
-            <button onClick={() => navigate('/menu')} className="bg-[#4BC1D2] font-raleway text-white font-bold mt-8 px-10 py-4 rounded-full 
+          <div className='mr-20 max-xl:mx-auto'>
+            <h2 className="text-5xl max-sm:text-xl max-md:text-3xl text-center font-motter-corpus-std">FIND YOUR DESSERT</h2>
+            <p className="mt-6 text-xl max-sm:text-sm text-center font-raleway">Indulge in our freshly brewed coffee and now,<br/>a delightful selection of desserts. </p>
+            <button onClick={() => navigate('/menu')} className="bg-[#4BC1D2] font-raleway text-white max-sm:text-sm max-sm:px-8 max-sm:py-2 font-bold mt-8 px-10 py-4 rounded-full 
               hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-lg animate-fade-in">
               ORDER NOW!
             </button>
@@ -72,20 +72,20 @@ const Home = () => {
     },
     {
       content: (
-        <div className="flex flex-col items-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert2})` }}>
-          <h2 className="text-7xl mt-48 text-center font-motter-corpus-std text-[#4BC1D2]">NEW MENU</h2>
-          <p className="text-5xl self-end text-center font-raleway font-extrabold mr-44 mt-[8.5rem]">Chocolate Cake<br/>ONLY 20k!<br/>GRAB IT FAST</p>
+        <div className="flex max-xl:mx-auto flex-col items-center h-full text-center text-white bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${homepage_dessert2})` }}>
+          <h2 className="text-7xl mt-48 max-md:mt-16 max-sm:text-4xl text-center font-motter-corpus-std text-[#4BC1D2]">NEW MENU</h2>
+          <p className="text-5xl self-end max-sm:text-2xl max-xl:self-center text-center font-raleway font-extrabold mr-44 max-xl:mr-0 mt-[8.5rem] max-md:mt-8">Chocolate Cake<br/>ONLY 20k!<br/>GRAB IT FAST</p>
         </div>
       ),
     },
     {
       content: (
         <div className="flex flex-col items-end justify-center h-full text-center bg-cover bg-center bg-no-repeat font" style={{ backgroundImage: `url(${homepage_dessert3})` }}>
-          <div className='mr-32'>
-            <h2 className="text-8xl text-right font-raleway font-extrabold text-[#583123]">ICE<br/>CREAM</h2>
-            <p className="mt-6 text-3xl font-extrabold text-right font-raleway text-[#583123]">Only on site</p>
+          <div className='mr-32 max-xl:mx-auto'>
+            <h2 className="text-8xl max-md:text-6xl max-sm:text-4xl text-right font-raleway font-extrabold text-[#583123] max-md:self-center max-xl:mr-0 max-xl:text-center">ICE<br/>CREAM</h2>
+            <p className="mt-6 max-md:mt-0 text-3xl max-sm:text-xl font-extrabold max-xl:text-center text-right font-raleway text-[#583123]">Only on site</p>
             <button onClick={() => navigate('/menu')} className="bg-[#583123] font-raleway text-white font-bold mt-8 px-10 py-4 rounded-full 
-              hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-2xl animate-fade-in">
+              hover:bg-blue-800 hover:scale-105 transition-all duration-300 shadow-2xl animate-fade-in max-sm:text-sm max-sm:px-8 max-sm:py-2">
               LITBREW NEW PICK
             </button>
           </div>
@@ -138,7 +138,7 @@ const Home = () => {
   };
 
   return (
-    <>
+    <div className="w-full">
       <div className="w-full flex flex-col items-center justify-center">
         <div id="default-carousel" className="relative w-full h-screen" data-carousel="slide">
           {/* Carousel wrapper */}
@@ -240,7 +240,7 @@ const Home = () => {
       <div ref={(el) => (sectionRefs.current[1] = el)}>
         <div className="bg-[#fef9f6] w-full flex flex-col items-center py-12">
           {/* Header */}
-          <h1 className="mt-16 text-4xl font-raleway md:text-5xl font-bold text-[#4a403a]">Litbrew's Buddy Choice</h1>
+          <h1 className="mt-16 text-4xl font-raleway md:text-5xl font-bold text-center text-[#4a403a]">Litbrew's Buddy Choice</h1>
 
           {/* Update the transform calculation for the Buddy Choice carousel */}
           <div className="relative w-full overflow-hidden">
@@ -249,15 +249,15 @@ const Home = () => {
               {homepage_drinks.map((drink, index) => (
                 <div key={index} className={`relative w-1/3 flex-shrink-0 flex flex-col items-center transition-transform duration-500 ease-in-out ${currentIndex === index ? 'scale-105' : 'scale-75'}`}>
                   {currentIndex === index && (
-                    <div className="absolute bottom-24 transform translate-y-1/3 w-48 h-16 bg-[#CFF2F5] rounded-[50%] z-0"></div>
+                    <div className="absolute bottom-24 transform translate-y-1/3 w-48 h-16 max-sm:bottom-[12vh] max-md:w-36 max-md:h-12 max-sm:w-24 max-sm:h-8 bg-[#CFF2F5] rounded-[50%] z-0"></div>
                   )}
                   <img
                     src={drink.imgUrl}
                     alt={drink.name}
-                    className="relative z-10 w-48 h-64 md:w-64 md:h-80 object-fill mx-2"
+                    className="relative z-10 w-48 h-64 max-sm:h-[70%] max-sm:w-[80%] md:w-64 md:h-80 object-fill mx-2 max-sm:mx-0"
                   />
-                  <p className="text-xl font-semibold text-[#4a403a] mt-4">{drink.name}</p>
-                  <p className="text-lg text-[#6b6b6b]">{drink.price}</p>
+                  <p className="text-xl max-md:text-lg max-sm:text-sm font-semibold text-center text-[#4a403a] mt-4">{drink.name}</p>
+                  <p className="text-lg max-md:text-sm text-center text-[#6b6b6b]">{drink.price}</p>
                 </div>
               ))}
             </div>
@@ -308,7 +308,7 @@ const Home = () => {
         </div>
 
         {/* Find Your Dessert Carousel */}
-        <div ref={(el) => (sectionRefs.current[2] = el)} id="default-carousel" className="relative w-full h-screen" data-carousel="slide">
+        <div ref={(el) => (sectionRefs.current[2] = el)} id="default-carousel" className="relative w-full h-screen max-xl:h-[80vw]" data-carousel="slide">
           <div className="relative h-full overflow-hidden w-full">
             {dessert_slides.map((slide, index) => (
               <div
@@ -393,7 +393,7 @@ const Home = () => {
           Buy your favorite books online with ease! Enjoy exclusive offers and discounts on selected titles. Dive into our collection and find special deals that make reading more affordable. Shop now and unlock more savings with every purchase!
           </p>
 
-          <div className="flex text-white text-sm sm:text-base justify-start items-start flex-wrap w-full gap-4 sm:gap-8 md:gap-12 lg:gap-16">
+          <div className="flex text-white text-sm sm:text-base justify-start items-start flex-wrap w-full gap-3 sm:gap-7 md:gap-11 lg:gap-15">
             {statistics2.map((stat) => (
               <div key={stat.label}>
                 <p className="text-2xl sm:text-3xl md:text-4xl font-raleway font-bold">{stat.value}</p>
@@ -429,68 +429,68 @@ const Home = () => {
       
       {/* Gallery */}
       <div className="bg-[#fef9f6] py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {/* Container for responsiveness */}
-        <h1 className="text-4xl sm:text-5xl font-raleway font-bold text-[#4a403a] text-center mb-8 sm:mb-12">
-          Litbrew's Gallery
-        </h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {/* Container for responsiveness */}
+          <h1 className="text-4xl sm:text-5xl font-raleway font-bold text-[#4a403a] text-center mb-8 sm:mb-12">
+            Litbrew's Gallery
+          </h1>
 
-        <div className="relative h-[50vh] sm:h-[60vh] lg:h-[70vh] overflow-hidden"> {/* Responsive height */}
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${(currentIndex) * 33.33}%)`, width: `${galleryImages.length * 100}%`}} //Corrected width
-            >
-            {galleryImages.map((image, index) => (
-              <div
-                key={index}
-                className={`relative w-1/3 flex-shrink-0 flex flex-col items-center justify-center transition-transform duration-500 ease-in-out ${
-                  currentIndex === index ? 'scale-110 sm:scale-125 z-20' : 'scale-90 sm:scale-95 z-10'
-                }`}
+          <div className="relative h-[50vh] sm:h-[60vh] lg:h-[70vh] overflow-hidden rounded-2xl"> {/* Responsive height */}
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${(currentIndex) * 33.33}%)`, width: `${galleryImages.length * 100}%`}} //Corrected width
               >
-                 {/* Gradient Overlay (removed absolute positioning) */}
-                {currentIndex === index && (
-                    <div className="w-full h-full bg-gradient-to-t from-black/50 to-transparent rounded-[1rem] absolute"></div>
-                )}
+              {galleryImages.map((image, index) => (
+                <div
+                  key={index}
+                  className={`relative w-1/3 flex-shrink-0 flex flex-col items-center justify-center transition-transform duration-500 ease-in-out ${
+                    currentIndex === index ? 'scale-110 sm:scale-125 z-20' : 'scale-90 sm:scale-95 z-10'
+                  }`}
+                >
+                  {/* Gradient Overlay (removed absolute positioning) */}
+                  {currentIndex === index && (
+                      <div className="w-full h-full bg-gradient-to-t from-black/50 to-transparent rounded-[1rem] absolute"></div>
+                  )}
 
-                <img
-                  src={image}
-                  alt={`Gallery Image ${index + 1}`}
-                  className="w-full h-full object-cover rounded-[1rem]" // Use object-cover and responsive height
-                />
-              </div>
-            ))}
+                  <img
+                    src={image}
+                    alt={`Gallery Image ${index + 1}`}
+                    className="w-full object-cover rounded-[1rem]" // Use object-cover and responsive height
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={handlePrev2}
+              className="absolute top-1/2 text-center left-4 transform -translate-y-1/2 bg-gray-200/50 text-gray-700 hover:bg-blue-500 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none"
+            >
+              <FaChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" /> {/* Use icon */}
+            </button>
+            <button
+              onClick={handleNext2}
+              className="absolute top-1/2 text-center right-4 transform -translate-y-1/2 bg-gray-200/50 text-gray-700 hover:bg-blue-500 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none"
+            >
+              <FaChevronRight className="w-4 h-4 sm:w-6 sm:h-6" /> {/* Use icon */}
+            </button>
           </div>
 
-          {/* Navigation Buttons */}
-          <button
-            onClick={handlePrev2}
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-200/50 text-gray-700 hover:bg-blue-500 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none"
-          >
-            <FaChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" /> {/* Use icon */}
-          </button>
-          <button
-            onClick={handleNext2}
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-200/50 text-gray-700 hover:bg-blue-500 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none"
-          >
-            <FaChevronRight className="w-4 h-4 sm:w-6 sm:h-6" /> {/* Use icon */}
-          </button>
-        </div>
-
-        {/* Dots Indicator */}
-        <div className="flex justify-center mt-4 space-x-2">
-          {galleryImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handleDotClick(index)}
-              className={`h-2 w-2 sm:h-3 sm:w-3 rounded-full transition-all duration-300 ${
-                currentIndex === index ? 'bg-[#3D5AF1] sm:w-8 sm:h-3' : 'bg-gray-300'
-              }`}
-            ></button>
-          ))}
+          {/* Dots Indicator */}
+          <div className="flex justify-center mt-4 space-x-2">
+            {galleryImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handleDotClick(index)}
+                className={`h-2 w-2 sm:h-3 sm:w-3 rounded-full transition-all duration-300 ${
+                  currentIndex === index ? 'bg-[#3D5AF1] sm:w-8 sm:h-3' : 'bg-gray-300'
+                }`}
+              ></button>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
       
-    </>
+    </div>
   );
 };
 export default Home;
