@@ -33,24 +33,35 @@ const AdminEditItem = () => {
 
   const handleSubmit = async (formData) => {
     try {
+      const form = new FormData();
+      form.append('name', formData.name);
+      form.append('description', formData.description);
+      form.append('price', formData.price);
+      form.append('countInStock', formData.countInStock);
+      form.append('category', formData.category);
+      form.append('rating', formData.rating);
+      form.append('numReview', formData.numReview);
+      if (formData.images) {
+        form.append('image', formData.images[0]); // Assuming only one image
+      }
+  
       const response = await axios.put(
         `http://localhost:3000/api/products/${id}`,
-        createFormData(formData),
+        form,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         }
       );
-
+  
       if (response.status < 200 || response.status >= 300) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+  
       alert("Item Updated Successfully!");
       navigateToPreviousPage(); // Navigasi ke halaman sebelumnya setelah berhasil
     } catch (error) {
-      setError(error);
       console.error("Error updating item:", error);
       alert(`Error updating item: ${error.message}`);
     }

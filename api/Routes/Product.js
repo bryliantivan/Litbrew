@@ -7,6 +7,7 @@ const cloudinary = require("../cloudinaryConfig");
 const multer = require("multer");
 const fs = require('fs');
 const path = require('path');
+
 // Create uploads directory if it doesn't exist
 const uploadDirectory = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDirectory)) {
@@ -24,7 +25,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });  // Multer middleware
+const upload = multer({ storage: storage }).single('image');  // Expect a single 'image' field
 
 // Cloudinary Upload Function
 const uploadToCloudinary = async (filePath) => {
@@ -40,18 +41,18 @@ const uploadToCloudinary = async (filePath) => {
 };
 
 // Route for adding a new product
-productRoute.post("/", upload.array('images'), asyncHandler(async (req, res) => {
+productRoute.post("/", upload, asyncHandler(async (req, res) => {
     const { name, description, price, category, countInStock, rating, numReview } = req.body;
 
-    // Upload images to Cloudinary and get URLs
-    const imageUrls = [];
-    for (let file of req.files) {
-        const imageUrl = await uploadToCloudinary(file.path);  // Upload each image
-        imageUrls.push(imageUrl);  // Push the Cloudinary URL to the array
+    // Upload the image to Cloudinary and get URL
+    let imageUrl = '';
+    if (req.file) {
+        try {
+            imageUrl = await uploadToCloudinary(req.file.path); // Upload the image and get the URL
+        } catch (error) {
+            return res.status(500).json({ message: "Image upload failed", error });
+        }
     }
-
-    // Store only the first image URL in the product document (or store all URLs if needed)
-    const image = imageUrls[0];  // Use the first image URL for the product's 'image'
 
     // Create a new product with the Cloudinary URL
     const newProduct = new Product({
@@ -62,7 +63,7 @@ productRoute.post("/", upload.array('images'), asyncHandler(async (req, res) => 
         countInStock,
         rating,
         numReview,
-        image,  // Store the image URL (first image)
+        image: imageUrl,  // Store the image URL (first image)
     });
 
     await newProduct.save();
@@ -86,7 +87,7 @@ productRoute.get("/:id", asyncHandler(async (req, res) => {
     }
 }));
 
-productRoute.put("/:id", upload.array('images'), asyncHandler(async (req, res) => {
+productRoute.put("/:id", upload, asyncHandler(async (req, res) => {
     const { name, description, price, countInStock, category, rating, numReview } = req.body;
 
     // Find the product by ID
@@ -104,13 +105,21 @@ productRoute.put("/:id", upload.array('images'), asyncHandler(async (req, res) =
     product.rating = rating || product.rating;
     product.numReviews = numReview || product.numReviews;
 
-    // Handle images via Cloudinary
-    if (req.files && req.files.length > 0) {
+    // Handle image via Cloudinary
+    if (req.file) {
         try {
-            const uploadResponse = await cloudinary.uploader.upload(req.files[0].path, {
+            // Delete the old image from Cloudinary (if it exists)
+            if (product.image) {
+                const imagePublicId = product.image.split('/').pop().split('.')[0]; // Get the public ID of the image
+                await cloudinary.uploader.destroy(imagePublicId); // Delete old image
+            }
+
+            // Upload new image to Cloudinary
+            const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
                 folder: 'product_images', // Store in the 'product_images' folder on Cloudinary
             });
 
+            // Store the new image URL in the product document
             product.image = uploadResponse.secure_url;  // Store Cloudinary image URL
         } catch (error) {
             console.error("Error uploading to Cloudinary:", error);
@@ -123,8 +132,6 @@ productRoute.put("/:id", upload.array('images'), asyncHandler(async (req, res) =
 
     res.status(200).json({ message: "Product updated successfully", product });
 }));
-
-
 
 productRoute.delete(
     "/:id",

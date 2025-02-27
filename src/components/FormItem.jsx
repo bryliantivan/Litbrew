@@ -1,62 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const FormItem = ({ onSubmit, onCancel, initialValues, title }) => {
+const FormItem = ({ onSubmit, onCancel, initialValues, title, onChange }) => {
   const [name, setName] = useState(initialValues?.name || '');
   const [description, setDescription] = useState(initialValues?.description || '');
-  const [category, setCategory] = useState(initialValues?.category || '');  // Use dropdown value
-  const [stock, setStock] = useState(initialValues?.countInStock || 0); // Use countInStock
+  const [category, setCategory] = useState(initialValues?.category || '');  
+  const [stock, setStock] = useState(initialValues?.countInStock || 0); 
   const [price, setPrice] = useState(initialValues?.price || 0);
   const [rating, setRating] = useState(initialValues?.rating || 0);
-  const [reviewCount, setReviewCount] = useState(initialValues?.numReview || 0); // Use numReview
-  const [images, setImages] = useState([]);
+  const [reviewCount, setReviewCount] = useState(initialValues?.numReview || 0); 
+  const [images, setImages] = useState(initialValues?.images || []); // Store selected images
+  const [imagePreview, setImagePreview] = useState(initialValues?.image || ''); // Preview URL for images
+
+  useEffect(() => {
+    // If initialValues contains an existing image URL, we can set it as preview
+    if (initialValues?.image) {
+      setImagePreview(initialValues.image);  // Set initial image URL if available
+    }
+  }, [initialValues]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSubmit({ name, description, category, countInStock: stock, price, rating, numReview: reviewCount, images }); // Use countInStock and numReview
+    onSubmit({ name, description, category, countInStock: stock, price, rating, numReview: reviewCount, images });
   };
 
   const handleImageChange = (event) => {
-    setImages([...event.target.files]);
+    const files = event.target.files;
+    if (files && files[0]) {
+      const file = files[0];
+      setImages([file]); // Store the selected file in state
+
+      // Create a URL for the image file to show preview
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl); // Update preview URL
+    }
   };
 
   const handleCategoryChange = (event) => {
-    setCategory(event.target.value);  // Set the selected category
+    setCategory(event.target.value);  
+  };
+
+  // Handle cancel image preview
+  const handleCancelImage = () => {
+    setImagePreview('');  // Clear the image preview
+    setImages([]);  // Clear the selected image (this will prevent submitting a new image)
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1 className="text-lg font-raleway font-medium">{title}</h1> {/* Use the title prop */}
+      <h1 className="text-lg font-raleway font-medium">{title}</h1>
       <h2 className="text-3xl font-raleway font-bold mb-[1vw]">Menu Details</h2>
 
       <div className="mb-4">
-        <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
-          Name
-        </label>
+        <label htmlFor="name" className="block text-gray-700 font-medium mb-2">Name</label>
         <input
           type="text"
           id="name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            onChange(); // Trigger onChange for dirty checking
+          }}
           className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
       <div className="mb-4">
-        <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
-          Description
-        </label>
+        <label htmlFor="description" className="block text-gray-700 font-medium mb-2">Description</label>
         <textarea
           id="description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) => {
+            setDescription(e.target.value);
+            onChange();
+          }}
           className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
       <div className="mb-4">
-        <label htmlFor="category" className="block text-gray-700 font-medium mb-2">
-          Category
-        </label>
+        <label htmlFor="category" className="block text-gray-700 font-medium mb-2">Category</label>
         <select
           id="category"
           value={category}
@@ -72,9 +94,7 @@ const FormItem = ({ onSubmit, onCancel, initialValues, title }) => {
 
       <div className="flex">
         <div className="mb-4 mr-4">
-          <label htmlFor="stock" className="block text-gray-700 font-medium mb-2">
-            Stock
-          </label>
+          <label htmlFor="stock" className="block text-gray-700 font-medium mb-2">Stock</label>
           <input
             type="number"
             id="stock"
@@ -85,9 +105,7 @@ const FormItem = ({ onSubmit, onCancel, initialValues, title }) => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="price" className="block text-gray-700 font-medium mb-2">
-            Price
-          </label>
+          <label htmlFor="price" className="block text-gray-700 font-medium mb-2">Price</label>
           <input
             type="number"
             id="price"
@@ -99,18 +117,13 @@ const FormItem = ({ onSubmit, onCancel, initialValues, title }) => {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="images" className="block text-gray-700 font-medium mb-2">
-          Add Images
-        </label>
-        {/* Use a file input */}
+        <label htmlFor="images" className="block text-gray-700 font-medium mb-2">Add Image</label>
         <input
           type="file"
           id="images"
-          multiple // Allow multiple file selection
           onChange={handleImageChange}
-          className="hidden" // Hide the default file input
+          className="hidden"
         />
-        {/* Custom file input styling */}
         <label htmlFor="images" className="bg-gray-200 p-6 rounded-md flex flex-col items-center justify-center cursor-pointer">
           <svg
             className="w-12 h-12 text-gray-500"
@@ -126,16 +139,45 @@ const FormItem = ({ onSubmit, onCancel, initialValues, title }) => {
               d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
             />
           </svg>
-          <p className="text-gray-600 mt-2 font-3xl font-bold">CHOOSE SCAN</p>
-          {/* Display selected file names */}
-          {images.length > 0 && (
-            <div className="mt-2">
-              {images.map((file, index) => (
-                <p key={index} className="text-gray-600 text-sm">{file.name}</p>
-              ))}
-            </div>
-          )}
+          <p className="text-gray-600 mt-2 font-3xl font-bold">CHOOSE IMAGE</p>
         </label>
+
+        {/* Display selected image preview */}
+        {imagePreview && (
+          <div className="mt-2">
+            <img
+              src={imagePreview}
+              alt="Selected Preview"
+              className="w-48 h-48 object-cover border rounded-md"
+            />
+            {/* Cancel Button for image */}
+            <button
+              type="button"
+              onClick={handleCancelImage}
+              className="mt-2 bg-red-500 text-white font-medium py-1 px-4 rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+
+        {/* Display existing image if available */}
+        {images.length > 0 && !imagePreview && (
+          <div className="mt-2 flex justify-center relative">
+            <img
+              src={images[0]}  // Display the existing image from the server
+              alt="Existing Image"
+              className="w-48 h-48 object-cover border rounded-md"
+            />
+            <button
+              type="button"
+              onClick={handleCancelImage}
+              className="mt-2 bg-red-500 text-white font-medium py-1 px-4 rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-center">
