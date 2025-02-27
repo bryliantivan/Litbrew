@@ -1,10 +1,11 @@
 // import { copyrightSign } from "../assets/icons"
-
+// import { useLocation } from 'react-router-dom'; // Tambahkan import ini
 import { footerLinks, socialMedia } from "../constants"
 import logoLitbrew from "../assets/images/logoLitbrew.svg";
 
 const Footer = () => {
-  return (
+    
+    return (
     <footer className="bg-[#03151E] p-16">
       <div className="flex justify-between items-start gap-20 flex-wrap max-lg:flex-col">
         <div className="flex flex-col items-start">

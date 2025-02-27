@@ -14,7 +14,7 @@ export const navLinks = [
 
 export const navLinksAdmin = [
     { href: "AdminHome", label: "DASHBOARD" },
-    { href: "AdminManageMenus", label: "PRODUCT" },
+    { href: "AdminManageMenu", label: "PRODUCT" },
     { href: "AdminManageBook", label: "BOOKS" },
     { href: "AdminManageOrders", label: "ORDERS" },
 ];
