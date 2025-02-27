@@ -100,6 +100,16 @@ const Order = () => {
       return false;
     }
 
+    if (orderType === "dine-in" && !numPeople) {
+      alert("Please enter the number of people for dine-in orders");
+      return false;
+    }
+
+    if (customerName.trim() === "") {
+      alert("Please enter a customer name");
+      return false;
+    }
+
     if (orderType === "dine-in" && !tableNumber) {
       alert("Please enter a table number for dine-in orders");
       return false;

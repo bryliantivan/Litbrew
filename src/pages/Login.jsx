@@ -50,8 +50,8 @@ const Login = () => {
     };
 
     return (
-        <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
-            <div className="w-full max-w-md bg-[#CFF2F5] rounded-lg shadow-md p-6">
+        <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center px-4">
+            <div className="w-full sm:max-w-md bg-[#CFF2F5] rounded-lg shadow-md p-6">
                 <div className="flex justify-between bg-blue-200 p-1 rounded-full mb-6">
                     <Link
                         to="/login"
@@ -83,7 +83,7 @@ const Login = () => {
                 )}
 
                 <form className="space-y-6" onSubmit={handleSubmit}>
-                    <div className="relative z-0 w-full group">
+                    <div className="relative z-0 w-full group mb-4">
                         <input
                             type="email"
                             value={email}
@@ -101,7 +101,7 @@ const Login = () => {
                         </label>
                     </div>
 
-                    <div className="relative z-0 w-full group">
+                    <div className="flex items-start mb-4">
                         <input
                             type="password"
                             value={password}

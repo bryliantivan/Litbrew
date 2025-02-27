@@ -57,9 +57,9 @@ const Register = () => {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col items-center justify-center">
-      <div className="w-full max-w-md bg-[#CFF2F5] rounded-lg shadow-md p-6 dark:bg-gray-800">
-        <div className="w-full max-w-md bg-blue-200 p-1 rounded-full mb-6 flex justify-between">
+    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center px-4">
+      <div className="w-full sm:max-w-md bg-[#CFF2F5] rounded-lg shadow-md p-6 dark:bg-gray-800">
+        <div className="flex justify-between bg-blue-200 p-1 rounded-full mb-6">
           <Link
             to="/login"
             className={`w-1/2 text-center py-2 rounded-full transition-all ${
@@ -83,7 +83,7 @@ const Register = () => {
         </h1>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="relative z-0 w-full group">
+          <div className="relative z-0 w-full group mb-4">
             <input
               type="text"
               id="username"
@@ -101,7 +101,7 @@ const Register = () => {
             </label>
           </div>
 
-          <div className="relative z-0 w-full group">
+          <div className="relative z-0 w-full group mb-4">
             <input
               type="email"
               id="email"
@@ -119,7 +119,7 @@ const Register = () => {
             </label>
           </div>
 
-          <div className="relative z-0 w-full group">
+          <div className="relative z-0 w-full group mb-4">
             <input
               type="password"
               id="password"
@@ -137,7 +137,7 @@ const Register = () => {
             </label>
           </div>
 
-          <div className="relative z-0 w-full group">
+          <div className="relative z-0 w-full group mb-4">
             <input
               type="password"
               id="confirmPassword"
