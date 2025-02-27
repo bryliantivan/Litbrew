@@ -101,14 +101,14 @@ const Login = () => {
                         </label>
                     </div>
 
-                    <div className="flex items-start mb-4">
+                    <div className="flex items-start text-[#07779D] mb-4">
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             id="password"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-[#07779D] focus:outline-none focus:ring-0 focus:border-[#07779D] peer"
-                            placeholder=" "
+                            className="block py-2.5 px-0 w-full text-sm text-[#07779D] bg-transparent border-0 border-b-2 border-[#07779D] focus:outline-none focus:ring-0 focus:border-[#07779D] peer placeholder-[#07779D]"
+                            placeholder="Password"
                             required
                         />
                         <label
