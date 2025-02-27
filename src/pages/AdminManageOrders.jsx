@@ -90,32 +90,32 @@ const AdminManageOrders = () => {
 
   return (
     <div className="container mx-auto mt-[8vw] p-7">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <h1 className="text-2xl font-bold font-raleway">ORDERS</h1>
-          <button
+      <div className="flex flex-col md:flex-row items-center justify-between mb-4 mt-7">
+    <div className="flex items-center mb-4 md:mb-0">
+        <h1 className="text-2xl font-bold font-raleway">ORDERS</h1>
+        <button
             className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4"
-            onClick={handleSaveChanges} // Menambahkan event handler untuk tombol
-          >
+            onClick={handleSaveChanges}
+        >
             SAVE CHANGES
-          </button>
-        </div>
+        </button>
+    </div>
 
-        <div className="relative ml-4 items-center">
-          <input
+    <div className="relative ml-0 md:ml-4 w-full md:w-[300px]">
+        <input
             type="text"
             placeholder="Search Order"
-            className="border border-[#07779D] px-[1vw] py-[1vw] rounded-[0.5vw] focus:outline-none w-[30vw]"
+            className="border border-[#07779D] px-4 py-2 rounded-md focus:outline-none w-full pr-10"
             value={searchTerm}
             onChange={handleSearchChange}
-          />
-          <button className="absolute right-[0.5vw] top-[0.5vw] bg-[#07779D] text-white font-medium font-raleway py-2 px-2 rounded-full">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        />
+        <button className="absolute right-2 top-2 bg-[#07779D] text-white font-medium font-raleway p-2 rounded-full">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-          </button>
-        </div>
-      </div>
+        </button>
+    </div>
+</div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse mt-[2vw]">

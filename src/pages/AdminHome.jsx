@@ -1,104 +1,100 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 
 // Reusable component for the card
 const Card = ({ title, description, buttonText, navigateTo }) => {
-  return (
-    <div className="bg-[#EFFCFF] border-light-blue rounded-md p-6 w-[30%] shadow-md">
-      <h3 className="font-raleway font-bold text-[1.3vw] text-[#07779D]">{title}</h3>
-      <p className="font-raleway text-[1vw]">{description}</p>
-      <div className="flex justify-end mt-[1vw]">
-        <Link
-          to={navigateTo}
-          className="font-bold font-raleway rounded-md bg-[#AAE8ED] px-[1vw] py-[0.3vw]
-                     transition-transform duration-300 ease-in-out 
-                     hover:scale-105 hover:bg-[#07779D] hover:text-white"
-        >
-          {buttonText}
-        </Link>
-      </div>
-    </div>
-  );
+    return (
+        <div className="bg-[#EFFCFF] border-light-blue rounded-md p-4 w-full sm:w-1/2 md:w-1/3 shadow-md mb-4 md:mb-0">
+            <h3 className="font-raleway font-bold text-lg text-[#07779D]">{title}</h3>
+            <p className="font-raleway text-sm">{description}</p>
+            <div className="flex justify-end mt-4">
+                <Link
+                    to={navigateTo}
+                    className="font-bold font-raleway rounded-md bg-[#AAE8ED] px-4 py-2 transition-transform duration-300 ease-in-out hover:scale-105 hover:bg-[#07779D] hover:text-white"
+                >
+                    {buttonText}
+                </Link>
+            </div>
+        </div>
+    );
 };
 
 const AdminHome = () => {
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [error, setError] = useState(null);
+    const [totalIncome, setTotalIncome] = useState(0);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchTotalIncome = async () => {
-      try {
-        const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
-        const response = await fetch('http://localhost:3000/api/orders/', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Add Authorization header
-          }
-        });
+    useEffect(() => {
+        const fetchTotalIncome = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:3000/api/orders/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch orders: ${response.status} ${response.statusText}`);
-        }
-        const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch orders: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
 
-        if (!Array.isArray(data)) {
-          throw new Error('Invalid data format received from API');
-        }
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid data format received from API');
+                }
 
-        // Calculate total income for orders where isPaid is true
-        const total = data
-          .filter((order) => order.isPaid) // Only consider orders that are paid
-          .reduce((acc, order) => acc + (order.totalPrice || 0), 0);
+                const total = data
+                    .filter((order) => order.isPaid)
+                    .reduce((acc, order) => acc + (order.totalPrice || 0), 0);
 
-        setTotalIncome(total);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
+                setTotalIncome(total);
+            } catch (error) {
+                setError(error.message);
+            }
+        };
 
-    fetchTotalIncome();
-  }, []);
+        fetchTotalIncome();
+    }, []);
 
-  return (
-    <div className="mt-[10vw] mx-[5vw] mb-[3vw]">
-      <div className="mb-[3.5vw]">
-        <h1 className="font-raleway font-bold text-[2vw]">In the last 7 days</h1>
-        {error ? (
-          <p className="text-red-500">Error: {error}</p>
-        ) : (
-          <p className="font-motter-corpus-std text-red-500">Total Income: ${totalIncome.toLocaleString('id-ID')}</p>
-        )}
-      </div>
+    return (
+        <div className="mt-32 mx-4 mb-8 md:mx-8 lg:mx-16">
+            <div className="mb-8">
+                <h1 className="font-raleway font-bold text-2xl">In the last 7 days</h1>
+                {error ? (
+                    <p className="text-red-500">Error: {error}</p>
+                ) : (
+                    <p className="font-motter-corpus-std text-red-500">Total Income: ${totalIncome.toLocaleString('id-ID')}</p>
+                )}
+            </div>
 
-      <div className="justify-center">
-        <h2 className="font-raleway font-bold text-[2vw]">Content & Orders Management</h2>
-        <div className="flex justify-around mt-[0.5vw]">
-          <Card
-            title="MANAGE MENU"
-            description="Add, Edit, or Remove Menu Items"
-            buttonText="GO!"
-            navigateTo="/AdminManageMenu"
-          />
+            <div>
+                <h2 className="font-raleway font-bold text-2xl">Content & Orders Management</h2>
+                <div className="flex flex-wrap justify-around mt-4">
+                    <Card
+                        title="MANAGE MENU"
+                        description="Add, Edit, or Remove Menu Items"
+                        buttonText="GO!"
+                        navigateTo="/AdminManageMenu"
+                    />
 
-          <Card
-            title="MANAGE BOOK"
-            description="Add, Edit, or Remove Books"
-            buttonText="GO!"
-            navigateTo="/AdminManageBook"
-          />
+                    <Card
+                        title="MANAGE BOOK"
+                        description="Add, Edit, or Remove Books"
+                        buttonText="GO!"
+                        navigateTo="/AdminManageBook"
+                    />
 
-          <Card
-            title="MANAGE ORDERS"
-            description="Order tracking, review & rating management"
-            buttonText="GO!"
-            navigateTo="/AdminManageOrders"
-          />
+                    <Card
+                        title="MANAGE ORDERS"
+                        description="Order tracking, review & rating management"
+                        buttonText="GO!"
+                        navigateTo="/AdminManageOrders"
+                    />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default AdminHome;
