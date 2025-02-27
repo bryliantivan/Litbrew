@@ -76,8 +76,6 @@ const AdminAddItem = () => {
     formData.append('category', data.category);
     formData.append('countInStock', data.countInStock);
     formData.append('price', data.price);
-    formData.append('rating', data.rating);
-    formData.append('numReview', data.numReview);
 
     if (data.images && Array.isArray(data.images)) {
       data.images.forEach((image, index) => {
