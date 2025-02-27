@@ -51,7 +51,7 @@ const Login = () => {
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center px-4">
-            <div className="w-full sm:max-w-md bg-[#CFF2F5] rounded-lg shadow-md p-6">
+            <div className="w-full top-[10%] sm:max-w-md bg-[#CFF2F5] rounded-lg shadow-md p-6">
                 <div className="flex justify-between bg-blue-200 p-1 rounded-full mb-6">
                     <Link
                         to="/login"
