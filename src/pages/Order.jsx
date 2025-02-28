@@ -120,6 +120,8 @@ const Order = () => {
       return false;
     }
 
+
+
     return true;
   };
 
@@ -219,6 +221,11 @@ const Order = () => {
       } else if (location === "not-arrived" && orderType === "takeaway" && estimatedPickupTime) {
         const today = new Date(); // Get today's date
         const [hours, minutes] = estimatedPickupTime.split(':'); // Split the time string into hours and minutes
+        estimatedPickUpDate = new Date(today.setHours(hours, minutes, 0, 0)); // Set the time to the Date object
+      } else if (location === "not-arrived" && orderType === "dine-in" && estimatedPickupTime) {
+        // For dine-in, you can handle the estimated pickup time similarly if needed
+        const today = new Date();
+        const [hours, minutes] = estimatedPickupTime.split(':');
         estimatedPickUpDate = new Date(today.setHours(hours, minutes, 0, 0)); // Set the time to the Date object
       }
 
