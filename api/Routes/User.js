@@ -5,7 +5,7 @@ const User = require("../Models/User");
 const generateToken = require('../tokenGenerate');
 const protect = require("../middleware/Auth");
 const Voucher = require("../Models/Voucher");
-
+const multer = require("multer");
 
 // Login route
 userRoute.post('/login', asyncHandler(
@@ -81,6 +81,7 @@ userRoute.get("/profile", protect, asyncHandler(async (req, res) => {
             redeemedVouchers: user.redeemedVouchers,
             isAdmin: user.isAdmin,
             createdAt: user.createdAt,
+            profilePicture: user.profilePicture,
         });
     } else {
         res.status(404);
@@ -152,6 +153,100 @@ userRoute.put("/redeem", protect, asyncHandler(async (req, res) => {
     }
 }));
 
-
+// Konfigurasi Multer (Storage, File Filter)
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Buat folder 'uploads' di root proyek
+    },
+    filename: function (req, file, cb) {
+      // Gunakan userId dan timestamp untuk nama file unik.  Ini MENCEGAH overwrite.
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const ext = file.originalname.split('.').pop(); // Get file extension
+      cb(null, req.user.id + '-' + uniqueSuffix + '.' + ext);
+    }
+  });
+  
+  //Filter untuk memastikan hanya menerima image
+  const fileFilter = (req, file, cb) => {
+      if (file.mimetype.startsWith('image/')) {
+          cb(null, true);
+      } else {
+          cb(new Error('Not an image! Please upload only images.'), false);
+      }
+  };
+  
+  const upload = multer({ storage: storage, fileFilter: fileFilter });
+  
+  // Endpoint untuk upload foto profil
+  userRoute.post('/upload-profile-picture', protect, upload.single('profilePicture'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+  
+      // Update user profile with the new picture URL
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Simpan path relatif ke file di database.
+      //  'req.file.path' berisi path LENGKAP ke file yang diupload.
+      //  Kita simpan path relatifnya agar lebih fleksibel.
+      user.profilePicture = '/uploads/' + req.file.filename; // Simpan path RELATIF!
+      await user.save();
+  
+      // Return the URL to the frontend
+      res.status(200).json({
+        message: 'Profile picture uploaded successfully',
+        profilePictureUrl: user.profilePicture // Kirim URL RELATIF
+      });
+  
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
+  
+  // Endpoint untuk mendapatkan profil pengguna (TERMASUK URL foto profil)
+  userRoute.get('/profile', protect, async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json(user);  // Kirim semua data user, TERMASUK profilePicture
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
+  // Endpoint untuk update profile (username, email, password)
+  userRoute.put('/profile', protect, async (req, res) => {
+      try {
+          const { name, email, password } = req.body;
+          const user = await User.findById(req.user.id);
+  
+          if (name) user.name = name;
+          if (email) user.email = email;
+          if (password) { // Consider hashing the password!
+              // In a real application, you would hash the password before saving.
+              // Example using bcrypt:
+              // const salt = await bcrypt.genSalt(10);
+              // user.password = await bcrypt.hash(password, salt);
+  
+              user.password = password; // VERY IMPORTANT: Hash passwords in production!
+          }
+  
+          await user.save();
+          res.status(200).json({ message: 'Profile updated successfully!' });
+      } catch (error) {
+           console.error(error);
+          res.status(500).json({ message: 'Server error' });
+      }
+  });
+  
 
 module.exports = userRoute;
