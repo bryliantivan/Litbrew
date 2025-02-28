@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import dineInBlue from '../assets/images/dine-in blue.png';
-import dineInWhite from '../assets/images/dine-in white.png';
-import takeawayBlue from '../assets/images/takeaway blue.png';
-import takeawayWhite from '../assets/images/takeaway white.png';
-import arrivedblue from '../assets/images/arrived blue.png';
-import arrivedWhite from '../assets/images/arrived white.png';
-import notarrivedblue from '../assets/images/not arrived blue.png';
-import notarrivedWhite from '../assets/images/not arrived white.png';
+import dineInBlue from "../assets/images/Dine-in blue.png";
+import dineInWhite from '../assets/images/Dine-in white.png';
+import takeawayBlue from '../assets/images/Takeaway blue.png';
+import takeawayWhite from '../assets/images/Takeaway white.png';
+import arrivedblue from '../assets/images/Arrived blue.png';
+import arrivedWhite from '../assets/images/Arrived white.png';
+import notarrivedblue from '../assets/images/Not Arrived blue.png';
+import notarrivedWhite from '../assets/images/Not Arrived white.png';
 
 const Order = () => {
   const [order, setOrder] = useState([]);
