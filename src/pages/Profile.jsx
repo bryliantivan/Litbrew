@@ -4,7 +4,6 @@ import { FaTimes, FaChevronDown } from 'react-icons/fa';
 import { cup_profile, Badge_01, Badge_02, Badge_03, Badge_04, Badge_05, Badge_06, Badge_07, xp, voucher } from '../assets/images';
 import cecep_ganteng from '../assets/images/cecep_ganteng.png'; // Placeholder image
 
-
 const Profile = () => {
   const badges = [
     { name: 'Litbrew Einstein', image: Badge_01 },
@@ -26,11 +25,10 @@ const Profile = () => {
   const [point, setPoint] = useState(0);
   const [level, setLevel] = useState(0);
   const [levelProgress, setLevelProgress] = useState(0);
-  const [profilePictureUrl, setProfilePictureUrl] = useState(''); // URL to profile picture
+  const [profilePictureUrl, setProfilePictureUrl] = useState(cecep_ganteng); // Default to placeholder image
   const [profilePictureFile, setProfilePictureFile] = useState(null); // File object for upload
 
-
-    useEffect(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -40,11 +38,9 @@ const Profile = () => {
         setEmail(data.email || '');
         setPoint(data.points || 0);
         setLevel(data.level || 0);
-        // Set profile picture URL.  Handle cases where it might be null/undefined.
         setProfilePictureUrl(data.profilePicture || cecep_ganteng); // Use placeholder if no picture
         const nextLevelThreshold = 1000;
         setLevelProgress((data.points % nextLevelThreshold) / nextLevelThreshold * 100);
-
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -68,59 +64,45 @@ const Profile = () => {
     setIsOpen(!isOpen);
   };
 
-
-
-    const handleProfilePictureUpload = async (event) => {
+  const handleProfilePictureUpload = (event) => {
     const file = event.target.files[0];
-    if (!file) return; // No file selected
+    if (!file) return;
 
-    setProfilePictureFile(file); // Store the file object
-
-    const formData = new FormData();
-    formData.append('profilePicture', file);
-
-    try {
-      const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data' // VERY IMPORTANT for file uploads
-        }
-      };
-
-      const { data } = await axios.post("http://localhost:3000/api/users/upload-profile-picture", formData, config);
-      setProfilePictureUrl(data.profilePictureUrl); // Update the URL
-      alert("Profile picture uploaded successfully!");
-
-    } catch (error) {
-      console.error("Error uploading profile picture:", error);
-      alert("Profile picture upload failed.");
-    }
+    setProfilePictureFile(file); // Store file for later upload
+    setProfilePictureUrl(URL.createObjectURL(file)); // Display preview image
   };
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('name', username);
+    formData.append('email', email);
+    if (password) formData.append('password', password);
+    if (profilePictureFile) formData.append('profilePicture', profilePictureFile); // Use 'profilePicture' as the field name
+
     try {
       const token = localStorage.getItem('token');
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       };
-      const profileData = { name: username, email, password }; // Removed profilePicture
 
-      await axios.put("http://localhost:3000/api/users/profile", profileData, config);
+      const { data } = await axios.put("http://localhost:3000/api/users/profile", formData, config);
+
+      // Update state with the data received from backend
+      setUsername(data.name);
+      setEmail(data.email);
+      setProfilePictureUrl(data.profilePicture || cecep_ganteng);
       alert("Profile updated successfully!");
       setIsEditing(false);
-
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Profile update failed.");
     }
   };
-
-
 
   const handleClaimVoucher = async (voucherId) => {
     try {
@@ -146,9 +128,9 @@ const Profile = () => {
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex flex-col sm:flex-row items-center">
             <img
-                src={`http://localhost:3000${profilePictureUrl}`}
-                alt="Profile"
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mr-0 sm:mr-4 mb-4 sm:mb-0"
+              src={profilePictureUrl} // Correct source for profile image
+              alt="Profile"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mr-0 sm:mr-4 mb-4 sm:mb-0"
             />
             <div>
               <h2 className="text-xl sm:text-2xl font-semibold">{username}</h2>
@@ -162,8 +144,13 @@ const Profile = () => {
             </button>
           </div>
 
-          <div className='mt-6 bg-[#334147] rounded-lg p-4 text-white relative overflow-hidden'>
-            <img src={cup_profile} alt="Trophy" className="absolute -left-16 -top-8 w-24 h-auto sm:w-32 sm:-top-10 sm:-left-20"  style={{transform: 'scale(1.2)'}}/>
+          <div className="mt-6 bg-[#334147] rounded-lg p-4 text-white relative overflow-hidden">
+            <img
+              src={cup_profile}
+              alt="Trophy"
+              className="absolute -left-16 -top-8 w-24 h-auto sm:w-32 sm:-top-10 sm:-left-20"
+              style={{ transform: 'scale(1.2)' }}
+            />
             <div className="sm:ml-32">
               <div className="flex items-center justify-between">
                 <div>
@@ -186,7 +173,10 @@ const Profile = () => {
               <img src={xp} alt="Xp" className="w-6 h-6 mr-2" />
               <p className="text-gray-700 text-sm sm:text-base">XP Points: {point}</p>
             </div>
-            <div className="flex items-center rounded-lg border border-blue-400 bg-[#CFF2F5] px-4 py-2 cursor-pointer transition-transform" onClick={toggleVouchers}>
+            <div
+              className="flex items-center rounded-lg border border-blue-400 bg-[#CFF2F5] px-4 py-2 cursor-pointer transition-transform"
+              onClick={toggleVouchers}
+            >
               <img src={voucher} alt="Voucher" className="w-6 h-6 mr-2" />
               <p className="text-gray-700 text-sm sm:text-base">Vouchers</p>
               {isOpen ? (
@@ -231,7 +221,8 @@ const Profile = () => {
                         </button>
                       </div>
                     </div>
-                  )))}
+                  ))
+                )}
               </div>
             </div>
           )}
@@ -259,25 +250,25 @@ const Profile = () => {
               <div className="grid grid-cols-1 gap-4">
                 {/* Profile Picture Upload */}
                 <div>
-                <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">
-                  Profile Picture
-                </label>
-                <input
-                  type="file"
-                  id="profilePicture"
-                  accept="image/*" // Accepts only image files
-                  onChange={handleProfilePictureUpload}
-                  className="mt-1 block w-full"
-                />
-                {/* Preview (Optional) */}
-                {profilePictureFile && (
-                  <img
-                    src={URL.createObjectURL(profilePictureFile)}  //Temporary preview URL
-                    alt="Preview"
-                    className="mt-2 w-20 h-20 rounded-full"
+                  <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">
+                    Profile Picture
+                  </label>
+                  <input
+                    type="file"
+                    id="profilePicture"
+                    accept="image/*" // Accepts only image files
+                    onChange={handleProfilePictureUpload}
+                    className="mt-1 block w-full"
                   />
-                )}
-              </div>
+                  {/* Preview (Optional) */}
+                  {profilePictureFile && (
+                    <img
+                      src={URL.createObjectURL(profilePictureFile)}  // Temporary preview URL
+                      alt="Preview"
+                      className="mt-2 w-20 h-20 rounded-full"
+                    />
+                  )}
+                </div>
                 <div>
                   <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
                   <input
@@ -316,7 +307,11 @@ const Profile = () => {
                 <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
                   Save Changes
                 </button>
-                <button type="button" onClick={() => setIsEditing(false)} className="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+                >
                   Cancel
                 </button>
               </div>

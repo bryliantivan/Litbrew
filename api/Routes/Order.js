@@ -149,12 +149,11 @@ orderRoute.put(
   })
 );
 
-// Update order paid status (isPaid)
 orderRoute.put(
   "/:id/pay",
-  protect, // Pastikan hanya pengguna terotorisasi yang bisa melakukan pembayaran
+  protect, // Ensure only authorized users can make a payment
   asyncHandler(async (req, res) => {
-    const { isPaid } = req.body; // Ambil status pembayaran (true/false) dari body request
+    const { isPaid } = req.body; // Get the payment status (true/false) from the request body
     
     if (typeof isPaid !== "boolean") {
       res.status(400);
@@ -164,16 +163,27 @@ orderRoute.put(
     const order = await Order.findById(req.params.id);
 
     if (order) {
-      // Perbarui status pembayaran pesanan
+      // Update the payment status of the order
       order.isPaid = isPaid;
-      if (isPaid) {
-        order.paidAt = Date.now(); // Tentukan waktu pembayaran jika sudah dibayar
-      } else {
-        order.paidAt = null; // Reset waktu pembayaran jika belum dibayar
-      }
       
-      const updatedOrder = await order.save();
-      res.status(200).json(updatedOrder);
+      if (isPaid) {
+        order.paidAt = Date.now(); // Set the payment date if the order is paid
+        
+        // Calculate 5% of the total price and add it to the user's points
+        const pointsToAdd = Math.round(order.totalPrice * 0.05); // 5% of the total price
+        const user = await User.findById(order.user); // Find the user who placed the order
+        
+        if (user) {
+          user.points += pointsToAdd; // Add points to the user's account
+          await user.save(); // Save the updated user with the new points
+        }
+
+      } else {
+        order.paidAt = null; // Reset the payment date if the order is not paid
+      }
+
+      const updatedOrder = await order.save(); // Save the updated order
+      res.status(200).json(updatedOrder); // Respond with the updated order details
     } else {
       res.status(404);
       throw new Error("Order Not Found");
@@ -181,16 +191,12 @@ orderRoute.put(
   })
 );
 
-
 // Get all orders (Admin or authorized user only)
 orderRoute.get(
   "/",
   protect, // Add authorization check here
   asyncHandler(async (req, res) => {
     try {
-      // Admin or authorized user check (Optional)
-      // You can check for an admin or other roles if needed here
-      // Example: if (!req.user.isAdmin) { ... } 
       
       const orders = await Order.find()
         .sort({ createdAt: -1 }) // Sort by newest first

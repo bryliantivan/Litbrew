@@ -16,8 +16,9 @@ const userSchema = new mongoose.Schema(
     },
     redeemedVouchers: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Voucher',  // Referensikan model Voucher
+      ref: 'Voucher',  // Reference to the Voucher model
     }],
+    profilePicture: { type: String, default: 'https://res.cloudinary.com/dhwvjtkyw/image/upload/v1741318281/litbrew_profiles/wco4dztan09ukrsi5yue.png' },  // Store profile picture URL
   },
   { timestamps: true }
 );

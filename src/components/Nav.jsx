@@ -1,11 +1,10 @@
 import { Link, NavLink } from 'react-router-dom';
-import { navLinks, navLinksAdmin } from '../constants'; // Pastikan path ke constants.js benar
+import { navLinks, navLinksAdmin } from '../constants'; // Make sure the path to constants.js is correct
 import { useState, useEffect } from 'react';
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { xp } from '../assets/images';
 import axios from 'axios';
-
 
 const Nav = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -47,7 +46,6 @@ const Nav = () => {
                 }
             });
             setUser(response.data);
-            // console.log("User data fetched:", response.data); // Untuk debugging, lihat data user di console
         } catch (error) {
             console.error('Error fetching user data:', error);
             if (error.response && error.response.status === 401) {
@@ -73,7 +71,6 @@ const Nav = () => {
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
-        // console.log("dropdown activated!"); // Untuk debugging dropdown
     };
 
     const updateCart = (product, action) => {
@@ -111,7 +108,6 @@ const Nav = () => {
                         </Link>
                     ) : (
                         <>
-                            {/* {console.log("User is logged in")} */}
                             <div className="relative flex">
                                 <Link to="/order">
                                     <div className="relative py-2">
@@ -135,9 +131,11 @@ const Nav = () => {
                                     className="text-[#03151E] focus:ring-4 focus:outline-none focus:ring-blue-300 font-raleway font-semibold rounded-lg text-sm px-4 py-2 text-center transition-transform duration-300 ease-in-out transform hover:scale-105 flex items-center"
                                 >
                                     <div className="relative w-10 h-10 overflow-hidden rounded-full">
-                                        <svg className="absolute w-12 h-12 -left-1" fill="#D1E9FF" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
-                                        </svg>
+                                        <img 
+                                            src={user?.profilePicture || "/default-avatar.png"}  // Display user's profile picture or default if not available
+                                            alt="Profile"
+                                            className="w-full h-full object-cover"
+                                        />
                                     </div>
                                 </button>
                                 {dropdownOpen && user && (
@@ -149,8 +147,13 @@ const Nav = () => {
                                         ) : (
                                             <>
                                                 <div className="flex items-center space-x-3 mb-3">
-                                                    <div className="w-8 h-8 rounded-full bg-gray-300">
-                                                        {/* Placeholder for user avatar */}
+                                                    <div className="w-8 h-8 rounded-full overflow-hidden">
+                                                        {/* Show the profile picture in the dropdown */}
+                                                        <img 
+                                                            src={user?.profilePicture || "/default-avatar.png"} 
+                                                            alt="User Avatar" 
+                                                            className="w-full h-full object-cover"
+                                                        />
                                                     </div>
                                                     <div>
                                                         <p className="text-sm text-gray-800 font-semibold">{user.name}</p>

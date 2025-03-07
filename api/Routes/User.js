@@ -1,11 +1,56 @@
 const express = require("express");
-const asyncHandler = require("express-async-handler");  // <-- Import AsyncHandler
+const asyncHandler = require("express-async-handler");
 const userRoute = express.Router();
 const User = require("../Models/User");
 const generateToken = require('../tokenGenerate');
 const protect = require("../middleware/Auth");
 const Voucher = require("../Models/Voucher");
 const multer = require("multer");
+const cloudinary = require("../cloudinaryConfig");
+const fs = require('fs');
+const path = require('path');
+const bcrypt = require('bcryptjs'); // For hashing passwords
+
+// Create uploads directory if it doesn't exist
+const uploadDirectory = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDirectory)) {
+    fs.mkdirSync(uploadDirectory);
+    console.log('Uploads directory created');
+}
+
+// Multer configuration for handling file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDirectory);  // Save files in 'uploads/' folder temporarily
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);  // Ensure unique filenames
+    }
+});
+
+// Multer file filter for validating image uploads
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.mimetype)) {
+        return cb(new Error('Only image files are allowed'), false);
+    }
+    cb(null, true);
+};
+
+const upload = multer({ storage: storage, fileFilter }).single('profilePicture'); // Expect a single 'profilePicture' field
+
+// Cloudinary Upload Function
+const uploadToCloudinary = async (filePath) => {
+    try {
+        const result = await cloudinary.uploader.upload(filePath, {
+            folder: "litbrew_profile",  // Optional: Specify the folder in your Cloudinary account
+        });
+        return result.secure_url;  // Return the secure URL of the uploaded image
+    } catch (error) {
+        console.error("Error uploading image to Cloudinary:", error);
+        throw error;  // Handle error appropriately
+    }
+};
 
 // Login route
 userRoute.post('/login', asyncHandler(
@@ -13,14 +58,13 @@ userRoute.post('/login', asyncHandler(
         const { email, password } = req.body;
         const user = await User.findOne({ email });
 
-        // Verifikasi email dan password
         if (user && (await user.matchPassword(password))) {
             res.json({
                 _id: user.id,
                 name: user.name,
                 email: user.email,
-                points: user.points,  // Mengirimkan poin pengguna saat login
-                redeemedVouchers: user.redeemedVouchers,  // Mengirimkan voucher yang sudah ditebus
+                points: user.points,
+                redeemedVouchers: user.redeemedVouchers,
                 isAdmin: user.isAdmin,
                 token: generateToken(user._id),
                 createdAt: user.createdAt,
@@ -37,17 +81,18 @@ userRoute.post("/", asyncHandler(
     async (req, res) => {
         const { email, password, name } = req.body;
 
-        // Periksa apakah pengguna sudah ada
         const existUser = await User.findOne({ email });
         if (existUser) {
             res.status(400);
             throw new Error("User already exists");
         } else {
-            // Buat pengguna baru
+            // Hash the password before saving
+            const hashedPassword = await bcrypt.hash(password, 10); 
+
             const user = await User.create({
                 name,
                 email,
-                password
+                password: hashedPassword // Store hashed password
             });
 
             if (user) {
@@ -55,8 +100,8 @@ userRoute.post("/", asyncHandler(
                     _id: user._id,
                     name: user.name,
                     email: user.email,
-                    points: user.points,  // Poin default yang dimiliki pengguna baru
-                    redeemedVouchers: user.redeemedVouchers,  // Voucher yang telah ditebus
+                    points: user.points,  
+                    redeemedVouchers: user.redeemedVouchers,
                     isAdmin: user.isAdmin,
                     createdAt: user.createdAt,
                 });
@@ -89,63 +134,48 @@ userRoute.get("/profile", protect, asyncHandler(async (req, res) => {
     }
 }));
 
-
-// Update user profile (Auth protected)
-userRoute.put("/profile", protect, asyncHandler(async (req, res) => {
+// Update user profile (Auth protected) with profile picture upload
+userRoute.put("/profile", protect, upload, asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     if (user) {
-        // Update profil pengguna
+        // Update profile
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
 
-        // Update password jika ada
+        // Hash password if provided
         if (req.body.password) {
-            user.password = req.body.password;
+            user.password = await bcrypt.hash(req.body.password, 10); // Hash the password
         }
 
-        // Simpan perubahan profil
+        // Handle profile picture upload
+        if (req.file) {
+            const filePath = req.file.path;
+            try {
+                // Upload image to Cloudinary
+                const imageUrl = await uploadToCloudinary(filePath);
+                user.profilePicture = imageUrl;
+
+                // Delete the temporary file after upload
+                fs.unlinkSync(filePath);
+            } catch (error) {
+                console.error("Error uploading profile picture:", error);
+                res.status(500);
+                throw new Error("Error uploading profile picture");
+            }
+        }
+
+        // Save profile changes
         const updatedUser = await user.save();
         res.json({
             _id: updatedUser._id,
             email: updatedUser.email,
             name: updatedUser.name,
-            points: updatedUser.points,  // Mengirimkan poin setelah update
-            redeemedVouchers: updatedUser.redeemedVouchers,  // Mengirimkan voucher yang sudah ditebus
+            points: updatedUser.points,  
+            redeemedVouchers: updatedUser.redeemedVouchers, 
             isAdmin: updatedUser.isAdmin,
             createdAt: updatedUser.createdAt,
-            token: generateToken(updatedUser._id)  // Generate token baru setelah update profil
-        });
-    } else {
-        res.status(404);
-        throw new Error("User not found");
-    }
-}))
-
-//redeem voucher
-userRoute.put("/redeem", protect, asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id); // Find the user based on the token
-    const { voucherCode } = req.body; // Assuming the voucher code is sent in the body
-
-    if (user) {
-        // Check if the user has the voucher in the redeemed list
-        const voucherIndex = user.redeemedVouchers.indexOf(voucherCode);
-
-        if (voucherIndex === -1) {
-            res.status(400);
-            throw new Error("Voucher not found or already used");
-        }
-
-        // Remove the redeemed voucher from the list
-        user.redeemedVouchers.splice(voucherIndex, 1);
-
-        // Subtract points for the voucher redemption
-        user.points -= 100;  // Assuming 100 points for redemption, adjust as needed
-        await user.save();  // Save the updated user data
-
-        res.json({
-            message: "Voucher redeemed and removed from list",
-            points: user.points, // Send the updated points
-            redeemedVouchers: user.redeemedVouchers, // Send the updated redeemed vouchers list
+            profilePicture: updatedUser.profilePicture, 
+            token: generateToken(updatedUser._id) 
         });
     } else {
         res.status(404);
@@ -153,100 +183,34 @@ userRoute.put("/redeem", protect, asyncHandler(async (req, res) => {
     }
 }));
 
-// Konfigurasi Multer (Storage, File Filter)
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/'); // Buat folder 'uploads' di root proyek
-    },
-    filename: function (req, file, cb) {
-      // Gunakan userId dan timestamp untuk nama file unik.  Ini MENCEGAH overwrite.
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const ext = file.originalname.split('.').pop(); // Get file extension
-      cb(null, req.user.id + '-' + uniqueSuffix + '.' + ext);
+// Redeem voucher
+userRoute.put("/redeem", protect, asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    const { voucherCode } = req.body;
+
+    if (user) {
+        // Check if the voucher is already redeemed
+        const voucherIndex = user.redeemedVouchers.indexOf(voucherCode);
+        if (voucherIndex === -1) {
+            res.status(400);
+            throw new Error("Voucher not found or already used");
+        }
+
+        // Redeem the voucher
+        user.redeemedVouchers.splice(voucherIndex, 1);
+        user.points -= 100; 
+
+        await user.save();
+
+        res.json({
+            message: "Voucher redeemed and removed from list",
+            points: user.points,
+            redeemedVouchers: user.redeemedVouchers,
+        });
+    } else {
+        res.status(404);
+        throw new Error("User not found");
     }
-  });
-  
-  //Filter untuk memastikan hanya menerima image
-  const fileFilter = (req, file, cb) => {
-      if (file.mimetype.startsWith('image/')) {
-          cb(null, true);
-      } else {
-          cb(new Error('Not an image! Please upload only images.'), false);
-      }
-  };
-  
-  const upload = multer({ storage: storage, fileFilter: fileFilter });
-  
-  // Endpoint untuk upload foto profil
-  userRoute.post('/upload-profile-picture', protect, upload.single('profilePicture'), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded' });
-      }
-  
-      // Update user profile with the new picture URL
-      const user = await User.findById(req.user.id);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-  
-      // Simpan path relatif ke file di database.
-      //  'req.file.path' berisi path LENGKAP ke file yang diupload.
-      //  Kita simpan path relatifnya agar lebih fleksibel.
-      user.profilePicture = '/uploads/' + req.file.filename; // Simpan path RELATIF!
-      await user.save();
-  
-      // Return the URL to the frontend
-      res.status(200).json({
-        message: 'Profile picture uploaded successfully',
-        profilePictureUrl: user.profilePicture // Kirim URL RELATIF
-      });
-  
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
-  
-  
-  // Endpoint untuk mendapatkan profil pengguna (TERMASUK URL foto profil)
-  userRoute.get('/profile', protect, async (req, res) => {
-    try {
-      const user = await User.findById(req.user.id);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-      res.status(200).json(user);  // Kirim semua data user, TERMASUK profilePicture
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
-  
-  // Endpoint untuk update profile (username, email, password)
-  userRoute.put('/profile', protect, async (req, res) => {
-      try {
-          const { name, email, password } = req.body;
-          const user = await User.findById(req.user.id);
-  
-          if (name) user.name = name;
-          if (email) user.email = email;
-          if (password) { // Consider hashing the password!
-              // In a real application, you would hash the password before saving.
-              // Example using bcrypt:
-              // const salt = await bcrypt.genSalt(10);
-              // user.password = await bcrypt.hash(password, salt);
-  
-              user.password = password; // VERY IMPORTANT: Hash passwords in production!
-          }
-  
-          await user.save();
-          res.status(200).json({ message: 'Profile updated successfully!' });
-      } catch (error) {
-           console.error(error);
-          res.status(500).json({ message: 'Server error' });
-      }
-  });
-  
+}));
 
 module.exports = userRoute;
