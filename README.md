@@ -1,8 +1,16 @@
-# React + Vite
+======== Guidance To Run The APP ========
+git clone https://github.com/bryliantivan/Litbrew.git
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+=== How To Install Local Library ===
+(in the /Litbrew folder and write this line in the terminal)
+npm i
+npm i -g nodemon express dotenv mongoose cors bcryptjs express-async-handler jsonwebtoken cloudinary@^1.21.0
+npm install flowbite flowbite-react
 
-Currently, two official plugins are available:
+(go in /api and write this line in the terminal)
+npm i
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+=== How To Run ===
+1. Use 2 terminal
+2. In terminal 1, write "cd api" (go in to /api folder) and write : "nodemon index.js" to run the back-end
+4. terminal 2 (in the /Litbrew) write "npm run dev" and copy the local host to the browser
