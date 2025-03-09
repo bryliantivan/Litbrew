@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AdminManageOrders = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [orders, setOrders] = useState([]); // State untuk menyimpan data pesanan
   const token = localStorage.getItem('token'); // Pastikan token disimpan setelah login

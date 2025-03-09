@@ -26,6 +26,8 @@ const Order = () => {
   const [customerName, setCustomerName] = useState("");
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const savedOrder = JSON.parse(localStorage.getItem("cart"));
     console.log("Saved Order:", savedOrder);
 

@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 
 // Reusable component for the card
 const Card = ({ title, description, buttonText, navigateTo }) => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="bg-[#EFFCFF] border-light-blue rounded-md p-4 w-full sm:w-1/2 md:w-1/3 shadow-md mb-4 md:mb-0">
             <h3 className="font-raleway font-bold text-lg text-[#07779D]">{title}</h3>

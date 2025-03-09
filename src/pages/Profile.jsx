@@ -29,6 +29,8 @@ const Profile = () => {
   const [profilePictureFile, setProfilePictureFile] = useState(null); // File object for upload
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');

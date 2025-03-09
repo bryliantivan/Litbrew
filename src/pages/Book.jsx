@@ -16,6 +16,8 @@ const Book = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     // Check if token exists in local storage
     const token = localStorage.getItem("token");
     if (token) {

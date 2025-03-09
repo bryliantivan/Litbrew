@@ -5,6 +5,10 @@ import { Button } from "flowbite-react";
 import { FaShoppingCart } from "react-icons/fa"; // Import icon keranjang
 
 const Menu = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState("All"); // State for category filter
   const [searchTerm, setSearchTerm] = useState(""); // State for search input

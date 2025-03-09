@@ -9,6 +9,8 @@ const BookDetail = () => {
     const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+
         // Fetch product details and reviews
         axios.get(`http://localhost:3000/api/products/${id}`)
             .then((response) => {

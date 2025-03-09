@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const Home = () => {
+  window.scrollTo(0, 0);
+
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(1);
   const galleryImages = [

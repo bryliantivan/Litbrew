@@ -1,7 +1,12 @@
 import React from 'react';
 import { about_us_photo, about_team_photo, barista_making_coffee, barista_smiling, customer_interaction } from "../assets/images";
+import { useEffect } from "react";
 
 const AboutUs = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   return (
     <>
       <main className="md: mt-32 w-full flex flex-col justify-center items-center gap-5 bg-[#fef9f6]">

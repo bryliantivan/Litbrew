@@ -4,6 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AdminEditItem = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [menu, setMenu] = useState(null);

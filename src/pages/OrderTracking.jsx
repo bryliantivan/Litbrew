@@ -9,6 +9,8 @@ const OrderTracking = () => {
     const { orderId } = useParams();
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+
         const fetchOrderDetails = async () => {
             try {
                 const token = localStorage.getItem('token'); // Ambil token dari local storage

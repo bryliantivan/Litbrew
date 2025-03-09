@@ -6,6 +6,8 @@ const MyOrder = () => {
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+
         const fetchOrders = async () => {
             try {
                 const token = localStorage.getItem("token");

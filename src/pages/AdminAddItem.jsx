@@ -4,6 +4,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const AdminAddItem = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   const navigate = useNavigate();
   const [isDirty, setIsDirty] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);

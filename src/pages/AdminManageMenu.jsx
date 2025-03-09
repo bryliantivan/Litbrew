@@ -5,6 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AdminManageMenu = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
