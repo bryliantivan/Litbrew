@@ -112,8 +112,8 @@ const Nav = () => {
                                 <Link to="/order">
                                     <div className="relative py-2">
                                         {cart.length > 0 && (
-                                            <div className="absolute top-6 left-5">
-                                                <p className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500 p-1 text-xs text-white">
+                                            <div className="absolute top-3 left-5">
+                                                <p className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500 p-1 mx-auto text-xs text-white">
                                                     {cart.length}
                                                 </p>
                                             </div>
