@@ -25,8 +25,8 @@ const Profile = () => {
   const [point, setPoint] = useState(0);
   const [level, setLevel] = useState(0);
   const [levelProgress, setLevelProgress] = useState(0);
-  const [profilePictureUrl, setProfilePictureUrl] = useState(cecep_ganteng); // Default to placeholder image
-  const [profilePictureFile, setProfilePictureFile] = useState(null); // File object for upload
+  const [profilePictureUrl, setProfilePictureUrl] = useState(cecep_ganteng);
+  const [profilePictureFile, setProfilePictureFile] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -40,7 +40,7 @@ const Profile = () => {
         setEmail(data.email || '');
         setPoint(data.points || 0);
         setLevel(data.level || 0);
-        setProfilePictureUrl(data.profilePicture || cecep_ganteng); // Use placeholder if no picture
+        setProfilePictureUrl(data.profilePicture || cecep_ganteng);
         const nextLevelThreshold = 1000;
         setLevelProgress((data.points % nextLevelThreshold) / nextLevelThreshold * 100);
       } catch (error) {
@@ -70,8 +70,8 @@ const Profile = () => {
     const file = event.target.files[0];
     if (!file) return;
 
-    setProfilePictureFile(file); // Store file for later upload
-    setProfilePictureUrl(URL.createObjectURL(file)); // Display preview image
+    setProfilePictureFile(file);
+    setProfilePictureUrl(URL.createObjectURL(file));
   };
 
   const handleProfileSubmit = async (e) => {
@@ -81,7 +81,7 @@ const Profile = () => {
     formData.append('name', username);
     formData.append('email', email);
     if (password) formData.append('password', password);
-    if (profilePictureFile) formData.append('profilePicture', profilePictureFile); // Use 'profilePicture' as the field name
+    if (profilePictureFile) formData.append('profilePicture', profilePictureFile);
 
     try {
       const token = localStorage.getItem('token');
@@ -130,7 +130,7 @@ const Profile = () => {
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex flex-col sm:flex-row items-center">
             <img
-              src={profilePictureUrl} // Correct source for profile image
+              src={profilePictureUrl}
               alt="Profile"
               className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mr-0 sm:mr-4 mb-4 sm:mb-0"
             />
@@ -145,31 +145,6 @@ const Profile = () => {
               Edit
             </button>
           </div>
-
-          <div className="mt-6 bg-[#334147] rounded-lg p-4 text-white relative overflow-hidden">
-            <img
-              src={cup_profile}
-              alt="Trophy"
-              className="absolute -left-16 -top-8 w-24 h-auto sm:w-32 sm:-top-10 sm:-left-20"
-              style={{ transform: 'scale(1.2)' }}
-            />
-            <div className="sm:ml-32">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-base sm:text-lg">Your Level is {level}! Surpassing</p>
-                  <p className="text-sm sm:text-base">90.1% People Around the World!</p>
-                </div>
-              </div>
-              <div className="mt-2">
-                <p>Level {level}</p>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                  <div className="bg-yellow-400 h-2.5 rounded-full" style={{ width: `${levelProgress}%` }}></div>
-                </div>
-                <p className="text-sm mt-1">XP Points: {point}</p>
-              </div>
-            </div>
-          </div>
-
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex items-center rounded-lg border border-blue-400 bg-[#CFF2F5] px-4 py-2">
               <img src={xp} alt="Xp" className="w-6 h-6 mr-2" />
@@ -261,14 +236,14 @@ const Profile = () => {
                   <input
                     type="file"
                     id="profilePicture"
-                    accept="image/*" // Accepts only image files
+                    accept="image/*"
                     onChange={handleProfilePictureUpload}
                     className="mt-1 block w-full"
                   />
                   {/* Preview (Optional) */}
                   {profilePictureFile && (
                     <img
-                      src={URL.createObjectURL(profilePictureFile)}  // Temporary preview URL
+                      src={URL.createObjectURL(profilePictureFile)}
                       alt="Preview"
                       className="mt-2 w-20 h-20 rounded-full"
                     />

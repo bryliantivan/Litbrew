@@ -46,7 +46,7 @@ const AdminEditItem = () => {
       form.append('rating', formData.rating);
       form.append('numReview', formData.numReview);
       if (formData.images) {
-        form.append('image', formData.images[0]); // Assuming only one image
+        form.append('image', formData.images[0]);
       }
   
       const response = await axios.put(
@@ -64,7 +64,7 @@ const AdminEditItem = () => {
       }
   
       alert("Item Updated Successfully!");
-      navigateToPreviousPage(); // Navigasi ke halaman sebelumnya setelah berhasil
+      navigateToPreviousPage();
     } catch (error) {
       console.error("Error updating item:", error);
       alert(`Error updating item: ${error.message}`);
@@ -111,7 +111,7 @@ const AdminEditItem = () => {
     if (window.history.length > 1) {
       navigate(-1);
     } else {
-      navigate('/AdminHome'); // Fallback jika tidak ada riwayat
+      navigate('/AdminHome');
     }
   };
 

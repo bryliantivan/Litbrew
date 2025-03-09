@@ -26,7 +26,7 @@ const AdminAddItem = () => {
 
       console.log('Success:', response.data);
       alert('Item Added Successfully!');
-      navigateToPreviousPage(); // Navigasi ke halaman sebelumnya setelah berhasil
+      navigateToPreviousPage();
     } catch (error) {
       console.error('Error:', error);
       alert(`Error adding item: ${error.message}`);
@@ -54,7 +54,7 @@ const AdminAddItem = () => {
     if (window.history.length > 1) {
       navigate(-1);
     } else {
-      navigate('/AdminHome'); // Fallback jika tidak ada riwayat
+      navigate('/AdminHome');
     }
   };
 

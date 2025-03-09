@@ -201,15 +201,15 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
   const quantity = productInCart ? productInCart.quantity : 0;
 
   return (
-    <div className="group flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-[#03151E] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
-      <Link to={`/menu/${product._id}`} className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
+    <div className="group flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-[#03151E] transition-transform duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg min-h-[400px]"> {/* Add min-height to ensure consistency */}
+      <Link to={`/book/${product._id}`} className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
         <img className="absolute top-0 right-0 h-full w-full object-cover bg-[#D1E9FF]" src={product.image} alt={product.name} />
       </Link>
-      <div className="mt-4 px-5 pb-1">
-        <Link to={`/menu/${product._id}`}>
+      <div className="mt-4 px-5 pb-1 flex flex-col justify-between flex-grow"> {/* Added flex-grow to ensure proper spacing */}
+        <Link to={`/book/${product._id}`}>
           <h4 className="text-xl tracking-tight text-white pb-3">{product.name}</h4>
         </Link>
-        <p className="text-xs text-white sm:text-l pb-4">
+        <p className="text-xs text-white sm:text-l pb-4 flex-grow">
           {product?.description}
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -217,25 +217,25 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
             <p><span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. {product.price}</span></p>
           </div>
           {added ? (
-          <div className="flex items-center space-x-4"> {/* Container Flexbox */}
-          <button
-            type="button"
-            className="text-white w-8 h-8 font-bold font-raleway bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 rounded-full text-xl text-center"
-            onClick={() => decrementQuantity(product)}
-          >
-            -
-          </button>
-          <span className="text-white text-lg">{quantity}</span> {/* Ukuran teks lebih besar */}
-          <button
-            type="button"
-            className="text-white w-8 h-8 font-bold font-raleway bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 rounded-full text-xl text-center"
-            onClick={() => incrementQuantity(product)}
-          >
-            +
-          </button>
-        </div>
+            <div className="flex items-center space-x-4 justify-between"> {/* Container Flexbox */}
+              <button
+                type="button"
+                className="text-white w-8 h-8 font-bold font-raleway bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 rounded-full text-xl text-center"
+                onClick={() => decrementQuantity(product)}
+              >
+                -
+              </button>
+              <span className="text-white text-lg">{quantity}</span> {/* Ukuran teks lebih besar */}
+              <button
+                type="button"
+                className="text-white w-8 h-8 font-bold font-raleway bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 rounded-full text-xl text-center"
+                onClick={() => incrementQuantity(product)}
+              >
+                +
+              </button>
+            </div>
           ) : (
-            <button type="button" className="text-white bg-[#4BC1D2] hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => { addToCart(product); setShowCartPopup(true); }}>
+            <button type="button" className="text-white bg-[#4BC1D2] hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => addToCart(product)}>
               BUY
             </button>
           )}
@@ -244,5 +244,6 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
     </div>
   );
 };
+
 
 export default Menu;
