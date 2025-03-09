@@ -128,7 +128,7 @@ orderRoute.put(
   protect,  // Pastikan hanya pengguna terotorisasi yang bisa mengubah status
   asyncHandler(async (req, res) => {
     const { orderStatus } = req.body;  // Ambil status baru dari body request
-    
+
     // Validasi status yang valid
     if (!["confirm", "processing", "delivered"].includes(orderStatus)) {
       res.status(400);
@@ -154,7 +154,7 @@ orderRoute.put(
   protect, // Ensure only authorized users can make a payment
   asyncHandler(async (req, res) => {
     const { isPaid } = req.body; // Get the payment status (true/false) from the request body
-    
+
     if (typeof isPaid !== "boolean") {
       res.status(400);
       throw new Error("Invalid payment status. It must be a boolean (true/false).");
@@ -165,19 +165,41 @@ orderRoute.put(
     if (order) {
       // Update the payment status of the order
       order.isPaid = isPaid;
-      
+
       if (isPaid) {
         order.paidAt = Date.now(); // Set the payment date if the order is paid
-        
+
         // Calculate 1% of the total price and add it to the user's points
-        const pointsToAdd = Math.round(order.totalPrice * 0.01); // 5% of the total price
+        const pointsToAdd = Math.round(order.totalPrice * 0.01); // 1% of the total price
         const user = await User.findById(order.user); // Find the user who placed the order
-        
+
         if (user) {
           user.points += pointsToAdd; // Add points to the user's account
           await user.save(); // Save the updated user with the new points
-        }
 
+          // Ensure redeemedVoucher is initialized as an array if it's undefined
+          if (!user.redeemedVoucher) {
+            user.redeemedVoucher = []; // Initialize as an empty array if it's undefined
+          }
+
+          // If the order has a voucher, remove it from the user's redeemedVoucher
+          if (order.voucher) {
+            console.log("Checking if voucher exists in redeemedVoucher...");
+
+            const voucherIndex = user.redeemedVoucher.indexOf(order.voucher);
+            console.log("Voucher index:", voucherIndex);
+
+            if (voucherIndex !== -1) {
+              user.redeemedVoucher.splice(voucherIndex, 1); // Remove the voucher from redeemedVoucher
+              console.log("Voucher removed, updating user...");
+
+              await user.save(); // Save the updated user after removing the voucher
+              console.log("User updated:", user);
+            } else {
+              console.log("Voucher not found in redeemedVoucher.");
+            }
+          }
+        }
       } else {
         order.paidAt = null; // Reset the payment date if the order is not paid
       }
@@ -191,13 +213,14 @@ orderRoute.put(
   })
 );
 
+
 // Get all orders (Admin or authorized user only)
 orderRoute.get(
   "/",
   protect, // Add authorization check here
   asyncHandler(async (req, res) => {
     try {
-      
+
       const orders = await Order.find()
         .sort({ createdAt: -1 }) // Sort by newest first
         .populate("user", "name email");
