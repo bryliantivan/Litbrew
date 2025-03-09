@@ -60,7 +60,7 @@ userRoute.post('/login', asyncHandler(
 
         if (user && (await user.matchPassword(password))) {
             res.json({
-                _id: user.id,
+                _id: user._id,
                 name: user.name,
                 email: user.email,
                 points: user.points,
@@ -86,13 +86,10 @@ userRoute.post("/", asyncHandler(
             res.status(400);
             throw new Error("User already exists");
         } else {
-            // Hash the password before saving
-            const hashedPassword = await bcrypt.hash(password, 10); 
-
             const user = await User.create({
                 name,
                 email,
-                password: hashedPassword // Store hashed password
+                password
             });
 
             if (user) {
