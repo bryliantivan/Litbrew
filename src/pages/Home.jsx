@@ -7,8 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const Home = () => {
-  window.scrollTo(0, 0);
-
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(1);
   const galleryImages = [
@@ -19,6 +17,7 @@ const Home = () => {
     homepage_galery5,
   ];
   useEffect(() => {
+    window.scrollTo(0, 0);
     const carouselElement = document.getElementById('default-carousel');
     const carousel = new Carousel(carouselElement, {
       interval: 5000,
