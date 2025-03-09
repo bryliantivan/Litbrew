@@ -113,7 +113,7 @@ const Book = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full p-3 ps-5 text-sm text-gray-600 border border-blue-400 rounded-full bg-white focus:ring-blue-500 focus:border-blue-500 outline-none"
-            placeholder="Search Menu"
+            placeholder="Search Book"
           />
 
           {/* Search Button with Icon */}
