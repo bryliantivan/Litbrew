@@ -209,7 +209,10 @@ const Profile = () => {
                         Minimum Spend: {voucher.minSpend}
                       </p>
                       <p className="text-gray-600 text-sm">
-                        Exp Date: {new Date(voucher.expDate).toLocaleDateString()}
+                        Exp Date: {new Date(voucher.expirationDate).toLocaleDateString()}
+                      </p>
+                      <p className="text-gray-600 text-sm">
+                        Minimum Point: {voucher.pointsRequired}
                       </p>
                       <div className="flex justify-between items-center mt-2">
                         <p className="text-gray-600 text-sm">{voucher.claim}</p>

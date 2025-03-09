@@ -169,8 +169,8 @@ orderRoute.put(
       if (isPaid) {
         order.paidAt = Date.now(); // Set the payment date if the order is paid
         
-        // Calculate 5% of the total price and add it to the user's points
-        const pointsToAdd = Math.round(order.totalPrice * 0.05); // 5% of the total price
+        // Calculate 1% of the total price and add it to the user's points
+        const pointsToAdd = Math.round(order.totalPrice * 0.01); // 5% of the total price
         const user = await User.findById(order.user); // Find the user who placed the order
         
         if (user) {
