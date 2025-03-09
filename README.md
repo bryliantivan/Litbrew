@@ -18,4 +18,4 @@ npm i
 === How To Run ===
 1. Use 2 terminal
 2. In terminal 1, write "cd api" (go in to /api folder) and write : "nodemon index.js" to run the back-end
-3. terminal 2 (in the /Litbrew) write "npm run dev" and copy the local host to the browser
+3. terminal 2 (in the /Litbrew) write "npm run dev" and copy the local host link to the browser
