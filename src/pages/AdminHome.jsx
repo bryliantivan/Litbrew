@@ -7,7 +7,7 @@ const Card = ({ title, description, buttonText, navigateTo }) => {
         window.scrollTo(0, 0);
     }, []);
 
-    return (
+    return (   
         <div className="bg-[#EFFCFF] border-light-blue rounded-md p-4 w-full sm:w-1/2 md:w-1/3 shadow-md mb-4 md:mb-0">
             <h3 className="font-raleway font-bold text-lg text-[#07779D]">{title}</h3>
             <p className="font-raleway text-sm">{description}</p>
@@ -74,7 +74,7 @@ const AdminHome = () => {
 
             <div>
                 <h2 className="font-raleway font-bold text-2xl">Content & Orders Management</h2>
-                <div className="flex flex-wrap justify-around mt-4">
+                <div className="flex gap-[1vw] justify-around mt-4">
                     <Card
                         title="MANAGE MENU"
                         description="Add, Edit, or Remove Menu Items"
