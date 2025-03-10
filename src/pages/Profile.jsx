@@ -154,12 +154,33 @@ const Profile = () => {
   const handleClaimVoucher = async (voucherId) => {
     try {
       const token = localStorage.getItem('token');
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const { data } = await axios.post(`http://localhost:3000/api/vouchers/claim/${voucherId}`, {}, config);
-      alert(`Voucher claimed: ${data.name}`);
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
+      // Ambil userId dari token (misalnya dari payload token)
+      const userId = JSON.parse(atob(token.split('.')[1])).id;
+
+      // Kirim request untuk menebus voucher
+      const { data } = await axios.post(
+        `http://localhost:3000/api/vouchers/redeem`,
+        { userId, voucherId },
+        config
+      );
+
+      // Update UI setelah klaim berhasil
+      alert(`${data.message} - ${data.voucher.name}`);
+
+      // Jika klaim berhasil, hapus voucher yang diklaim dari daftar vouchers yang tersedia
+      setVouchers(vouchers.filter(voucher => voucher._id !== voucherId)); // Menghapus voucher yang sudah diklaim dari UI
+
     } catch (error) {
       console.error("Error claiming voucher:", error);
-      alert("Failed to claim voucher.");
+      if (error.response) {
+        alert(error.response.data.message || "Failed to claim voucher.");
+      } else {
+        alert("Failed to claim voucher.");
+      }
     }
   };
 
