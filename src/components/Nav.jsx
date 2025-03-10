@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { navLinks, navLinksAdmin } from '../constants'; // Make sure the path to constants.js is correct
 import { useState, useEffect } from 'react';
 import { IoPersonSharp } from "react-icons/io5";
@@ -15,6 +15,7 @@ const Nav = () => {
     const [userError, setUserError] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+    const navigate = useNavigate(); 
 
     const checkToken = () => {
         const token = localStorage.getItem('token');
@@ -67,6 +68,7 @@ const Nav = () => {
         localStorage.setItem('cart', JSON.stringify([]));
         window.dispatchEvent(new Event('storage'));
         setDropdownOpen(false);
+        navigate('/login');
     };
 
     const toggleDropdown = () => {
