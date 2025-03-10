@@ -124,6 +124,8 @@ userRoute.get("/profile", protect, asyncHandler(async (req, res) => {
             isAdmin: user.isAdmin,
             createdAt: user.createdAt,
             profilePicture: user.profilePicture,
+            badges: user.badges,
+            orderCount: user.orderCount,
         });
     } else {
         res.status(404);

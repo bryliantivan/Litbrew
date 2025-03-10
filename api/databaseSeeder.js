@@ -6,6 +6,8 @@ const users = require("./data/Users");
 const asyncHandler = require('express-async-handler');
 const voucher = require("./data/Voucher");
 const Voucher = require("./Models/Voucher");
+const Badge = require("./Models/Badge");
+const badge = require("./data/Badge");
 
 
 router.post('/users', asyncHandler(
@@ -31,4 +33,12 @@ router.post('/Vouchers', asyncHandler(
         const voucherSeeder = await Voucher.insertMany(voucher);
         res.send({ voucherSeeder });
     }))
+
+router.post('/Badge', asyncHandler(
+    async(req,res) =>{
+        await Badge.deleteMany({});
+        const badgeSeeder = await Badge.insertMany(badge);
+        res.send({badgeSeeder});
+    }
+))
 module.exports = router;

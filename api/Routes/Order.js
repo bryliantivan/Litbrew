@@ -4,8 +4,8 @@ const protect = require("../middleware/Auth");
 const asyncHandler = require("express-async-handler");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
+const Badge = require("../Models/Badge")
 
-// Create a new order
 orderRoute.post(
   "/",
   protect,
@@ -22,7 +22,7 @@ orderRoute.post(
       numPeople,
       voucher,
       location,
-      estimatedPickUpTime,  // Make sure this is included in the request body
+      estimatedPickUpTime,
       customerName
     } = req.body;
 
@@ -30,31 +30,6 @@ orderRoute.post(
     if (!orderItems || !orderItems.length) {
       res.status(400);
       throw new Error("No items in the order.");
-    }
-
-    if (!orderType || !["dine-in", "takeaway"].includes(orderType)) {
-      res.status(400);
-      throw new Error("Invalid order type. It must be either 'dine-in' or 'takeaway'.");
-    }
-
-    if (orderType === "dine-in" && !tableNumber) {
-      res.status(400);
-      throw new Error("Table number is required for dine-in orders.");
-    }
-
-    if (!orderStatus || !["confirm", "processing", "delivered"].includes(orderStatus)) {
-      res.status(400);
-      throw new Error("Invalid order status. It must be 'confirm', 'processing', or 'delivered'.");
-    }
-
-    if (!location || !["arrived", "not-arrived"].includes(location)) {
-      res.status(400);
-      throw new Error("Invalid location status. It must be 'arrived' or 'not-arrived'.");
-    }
-
-    if (location === "not-arrived" && !estimatedPickUpTime) {
-      res.status(400);
-      throw new Error("Estimated pickup time is required when location is 'not-arrived'.");
     }
 
     // Create a new order
@@ -65,24 +40,34 @@ orderRoute.post(
       totalPrice,
       user: req.user._id,
       note,
-      orderType, // Menyimpan jenis pesanan (takeaway/dine-in)
-      tableNumber, // Menyimpan nomor meja untuk dine-in
-      location, // Menyimpan status pesanan
-      numPeople, // Menyimpan jumlah orang untuk dine-in
+      orderType,
+      tableNumber,
+      location,
+      numPeople,
       voucher,
-      isPaid: false, // Set isPaid menjadi false, jika belum dibayar
-      paidAt: null, // Set waktu pembayaran menjadi null
+      isPaid: false,
+      paidAt: null,
       orderStatus,
-      estimatedPickUpTime, // Ensure this is saved as well
-      isReviewed: false, // Set isReviewed menjadi false, jika belum direview
+      estimatedPickUpTime,
+      isReviewed: false,
       customerName
     });
 
     // Save the order
     const createdOrder = await order.save();
+
+    // Increment orderCount and update badges
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.orderCount += 1; // Increment the order count
+      await user.updateBadges(Badge); // Pass the Badge model here
+      await user.save(); // Save the updated user
+    }
+
     res.status(201).json(createdOrder);
   })
 );
+
 
 // Get all orders for a user
 orderRoute.get(
@@ -169,9 +154,8 @@ orderRoute.put(
       if (isPaid) {
         order.paidAt = Date.now(); // Set the payment date if the order is paid
 
-        // Calculate 1% of the total price and add it to the user's points
-        const pointsToAdd = Math.round(order.totalPrice * 0.01); // 1% of the total price
-        const user = await User.findById(order.user); // Find the user who placed the order
+        const pointsToAdd = Math.round(order.totalPrice * 0.0001);
+        const user = await User.findById(order.user);
 
         if (user) {
           user.points += pointsToAdd; // Add points to the user's account

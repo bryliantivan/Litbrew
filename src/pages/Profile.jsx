@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaTimes, FaChevronDown } from 'react-icons/fa';
-import { cup_profile, Badge_01, Badge_02, Badge_03, Badge_04, Badge_05, Badge_06, Badge_07, xp, voucher } from '../assets/images';
-import cecep_ganteng from '../assets/images/cecep_ganteng.png'; // Placeholder image
+import { cup_profile, xp, voucher } from '../assets/images';
 
 const Profile = () => {
-  const badges = [
-    { name: 'Litbrew Einstein', image: Badge_01 },
-    { name: 'Tough Sipper', image: Badge_02 },
-    { name: 'Cookie Runner', image: Badge_03 },
-    { name: 'Adventurer', image: Badge_04 },
-    { name: 'Innovator King', image: Badge_05 },
-    { name: 'Level Grinder', image: Badge_06 },
-    { name: 'Mighty Genius', image: Badge_07 }
-  ];
-
+  const [badges, setBadges] = useState([]);
+  const [userBadges, setUserBadges] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [vouchers, setVouchers] = useState([]);
@@ -24,41 +15,94 @@ const Profile = () => {
   const [password, setPassword] = useState('');
   const [point, setPoint] = useState(0);
   const [level, setLevel] = useState(0);
-  const [levelProgress, setLevelProgress] = useState(0);
-  const [profilePictureUrl, setProfilePictureUrl] = useState(cecep_ganteng);
+  const [profilePictureUrl, setProfilePictureUrl] = useState('');
   const [profilePictureFile, setProfilePictureFile] = useState(null);
+
+  // Statis Badge List
+  const Badge = [
+    {
+      color: 'blue',
+      name: 'Rookie Orderer',
+      orderCount: 1,
+      image: "https://res.cloudinary.com/dhwvjtkyw/image/upload/v1741571701/Badge/ydialxvv82jumvkh2xoh.png"
+    },
+    {
+      color: 'green',
+      name: 'Order Enthusiast',
+      orderCount: 5,
+      image: "https://res.cloudinary.com/dhwvjtkyw/image/upload/v1741571715/Badge/k7wmeytzqlxfu67d7wcu.png"
+    },
+    {
+      color: 'purple',
+      name: 'Veteran Shopper',
+      orderCount: 10,
+      image: "https://res.cloudinary.com/dhwvjtkyw/image/upload/v1741571719/Badge/tloh6qbaew2ljph2mrcz.png"
+    },
+    {
+      color: 'bronze',
+      name: 'Frequent Buyer',
+      orderCount: 15,
+      image: "https://res.cloudinary.com/dhwvjtkyw/image/upload/v1741571706/Badge/lbwy0j3tpwieyo9zpp47.png"
+    },
+    {
+      color: 'silver',
+      name: 'Shopping Master',
+      orderCount: 20,
+      image: "https://res.cloudinary.com/dhwvjtkyw/image/upload/v1741571723/Badge/ngdpnzm0ubrirc7qnc0d.png"
+    },
+    {
+      color: 'gold',
+      name: 'Elite Shopper',
+      orderCount: 30,
+      image: "https://res.cloudinary.com/dhwvjtkyw/image/upload/v1741571710/Badge/fxpwhput7yam86p7kkuu.png"
+    },
+    {
+      color: 'black',
+      name: 'Legendary Shopper',
+      orderCount: 50,
+      image: "https://res.cloudinary.com/dhwvjtkyw/image/upload/v1741571697/Badge/sywqmyibr99xt5qhaema.png"
+    },
+  ];
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
+    // Fetch user profile data
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const { data } = await axios.get("http://localhost:3000/api/users/profile", config);
+        console.log("Profile Data:", data);  // Log data profil yang diterima
         setUsername(data.name || '');
         setEmail(data.email || '');
         setPoint(data.points || 0);
         setLevel(data.level || 0);
-        setProfilePictureUrl(data.profilePicture || cecep_ganteng);
-        const nextLevelThreshold = 1000;
-        setLevelProgress((data.points % nextLevelThreshold) / nextLevelThreshold * 100);
+        
+        // Set profile picture from the API
+        setProfilePictureUrl(data.profilePicture || ''); // Use profilePicture from the backend data
+
+        // Map user order count to badges based on orderCount
+        const userBadgeList = Badge.filter(badge => data.orderCount >= badge.orderCount); // Filter badges based on orderCount
+        setUserBadges(userBadgeList);  // Set the user's badges based on orderCount
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
     };
-    fetchProfile();
-  }, []);
 
-  useEffect(() => {
+    // Fetch available vouchers
     const fetchVouchers = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/api/vouchers");
+        const token = localStorage.getItem('token');
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const { data } = await axios.get("http://localhost:3000/api/vouchers", config);
         setVouchers(data);
       } catch (error) {
         console.error("Error fetching vouchers:", error);
       }
     };
+
+    fetchProfile();
     fetchVouchers();
   }, []);
 
@@ -97,7 +141,7 @@ const Profile = () => {
       // Update state with the data received from backend
       setUsername(data.name);
       setEmail(data.email);
-      setProfilePictureUrl(data.profilePicture || cecep_ganteng);
+      setProfilePictureUrl(data.profilePicture || ''); // Use the updated profile picture
       alert("Profile updated successfully!");
       setIsEditing(false);
     } catch (error) {
@@ -106,21 +150,16 @@ const Profile = () => {
     }
   };
 
+  // Placeholder for voucher claiming function
   const handleClaimVoucher = async (voucherId) => {
     try {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const userId = JSON.parse(atob(token.split('.')[1])).id;
-      const { data } = await axios.post(
-        `http://localhost:3000/api/vouchers/redeem`,
-        { userId, voucherId },
-        config
-      );
-      alert(`${data.message} - ${data.voucher.name}`);
-      setVouchers(vouchers.filter(voucher => voucher._id !== voucherId));
+      const { data } = await axios.post(`http://localhost:3000/api/vouchers/claim/${voucherId}`, {}, config);
+      alert(`Voucher claimed: ${data.name}`);
     } catch (error) {
       console.error("Error claiming voucher:", error);
-      alert(error.response?.data?.message || "Failed to claim voucher.");
+      alert("Failed to claim voucher.");
     }
   };
 
@@ -207,11 +246,10 @@ const Profile = () => {
             </div>
           )}
         </div>
-
         <div className="mt-8">
           <h2 className="text-2xl font-semibold mb-4">Your Badges!</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            {badges.map((badge, index) => (
+            {userBadges.map((badge, index) => (
               <div
                 key={index}
                 className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center justify-center hover:scale-105 transition-transform"
@@ -222,7 +260,6 @@ const Profile = () => {
             ))}
           </div>
         </div>
-
         {isEditing && (
           <div className="my-8 bg-white rounded-lg shadow-md p-6">
             <h2 className="text-2xl font-semibold mb-4">Edit Profile</h2>

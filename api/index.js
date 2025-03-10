@@ -29,10 +29,12 @@ const userRoute = require("./Routes/User");
 const productRoute = require("./Routes/Product");
 const orderRoute = require("./Routes/Order");
 const voucherRoute = require("./Routes/Voucher");
+const badgeRoute = require("./Routes/Badge")
+
 
 
 // database Seeder Route
-app.use('/api/seed', databaseSeeder)
+app.use('/api/seed', databaseSeeder);
 
 //routes buat user
 // api/users/login
@@ -48,6 +50,7 @@ app.use('/api/orders', orderRoute);
 
 app.use('/api/vouchers', voucherRoute);
 
+app.use('/api/badge', badgeRoute);
 // ... (start server)
 
 moongose.connect(process.env.MONGOOSEDB_RUL)
