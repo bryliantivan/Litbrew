@@ -136,7 +136,7 @@ const Nav = () => {
                                 >
                                     <div className="relative w-10 h-10 overflow-hidden rounded-full">
                                         <img 
-                                            src={user?.profilePicture || "/default-avatar.png"}  // Display user's profile picture or default if not available
+                                            src={user?.profilePicture || "/default-avatar.png"} 
                                             alt="Profile"
                                             className="w-full h-full object-cover"
                                         />
@@ -144,54 +144,68 @@ const Nav = () => {
                                 </button>
                                 {dropdownOpen && user && (
                                     <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-4 px-6 z-50 font-raleway font-bold border border-gray-200">
-                                        {loadingUser ? (
-                                            <p>Loading user data...</p>
-                                        ) : userError ? (
-                                            <p className="text-red-500">{userError}</p>
+                                        {/* Kondisi untuk admin */}
+                                        {user.isAdmin ? (
+                                            <div>
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
+                                                >
+                                                    Sign Out
+                                                </button>
+                                            </div>
                                         ) : (
                                             <>
-                                                <div className="flex items-center space-x-3 mb-3">
-                                                    <div className="w-8 h-8 rounded-full overflow-hidden">
-                                                        {/* Show the profile picture in the dropdown */}
-                                                        <img 
-                                                            src={user?.profilePicture || "/default-avatar.png"} 
-                                                            alt="User Avatar" 
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm text-gray-800 font-semibold">{user.name}</p>
-                                                        <p className="text-xs text-gray-500">{user.email}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-[0.5vw] text-l text-gray-800 mb-3">
-                                                    <img src={xp} alt="XP Icon" />
-                                                    <p>XP Points: {user.points}</p>
-                                                </div>
-                                                <div>
-                                                    <Link
-                                                        to="/order"
-                                                        className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
-                                                    >
-                                                        My Order
-                                                    </Link>
-                                                </div>
-                                                <div>
-                                                    <Link
-                                                        to="/profile"
-                                                        className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
-                                                    >
-                                                        Profile Settings
-                                                    </Link>
-                                                </div>
-                                                <div>
-                                                    <button
-                                                        onClick={handleLogout}
-                                                        className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
-                                                    >
-                                                        Sign Out
-                                                    </button>
-                                                </div>
+                                                {/* Isi dropdown untuk pengguna biasa */}
+                                                {loadingUser ? (
+                                                    <p>Loading user data...</p>
+                                                ) : userError ? (
+                                                    <p className="text-red-500">{userError}</p>
+                                                ) : (
+                                                    <>
+                                                        <div className="flex items-center space-x-3 mb-3">
+                                                            <div className="w-8 h-8 rounded-full overflow-hidden">
+                                                                <img 
+                                                                    src={user?.profilePicture || "/default-avatar.png"} 
+                                                                    alt="User Avatar" 
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm text-gray-800 font-semibold">{user.name}</p>
+                                                                <p className="text-xs text-gray-500">{user.email}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex gap-[0.5vw] text-l text-gray-800 mb-3">
+                                                            <img src={xp} alt="XP Icon" />
+                                                            <p>XP Points: {user.points}</p>
+                                                        </div>
+                                                        <div>
+                                                            <Link
+                                                                to="/order"
+                                                                className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
+                                                            >
+                                                                My Order
+                                                            </Link>
+                                                        </div>
+                                                        <div>
+                                                            <Link
+                                                                to="/profile"
+                                                                className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
+                                                            >
+                                                                Profile Settings
+                                                            </Link>
+                                                        </div>
+                                                        <div>
+                                                            <button
+                                                                onClick={handleLogout}
+                                                                className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-300 rounded"
+                                                            >
+                                                                Sign Out
+                                                            </button>
+                                                        </div>
+                                                    </>
+                                                )}
                                             </>
                                         )}
                                     </div>
