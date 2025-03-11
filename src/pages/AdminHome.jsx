@@ -69,7 +69,7 @@ const AdminHome = () => {
                 {error ? (
                     <p className="text-red-500">Error: {error}</p>
                 ) : (
-                    <p className="font-motter-corpus-std text-red-500">Total Income: ${totalIncome.toLocaleString('id-ID')}</p>
+                    <p className="font-motter-corpus-std text-red-500">Total Income: Rp{totalIncome.toLocaleString('id-ID')}</p>
                 )}
             </div>
 
