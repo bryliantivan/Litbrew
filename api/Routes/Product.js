@@ -169,7 +169,6 @@ productRoute.post(
             const alreadyReviewed = product.reviews.find(
                 (review) => review.user.toString() === req.user._id.toString()
             );
-
             if (alreadyReviewed) {
                 // If review exists, update the review
                 alreadyReviewed.rating = Number(rating);
@@ -182,11 +181,11 @@ productRoute.post(
                     comment,
                     user: req.user._id,
                 };
-
                 product.reviews.push(review);
             }
-
-            product.numReviews = product.reviews.length;
+            // Hitung jumlah unik user yang memberikan review
+            const uniqueUsers = new Set(product.reviews.map(review => review.user.toString()));
+            product.numReviews = uniqueUsers.size;
 
             // Recalculate average rating
             const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);
