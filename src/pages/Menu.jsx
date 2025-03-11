@@ -16,7 +16,7 @@ const Menu = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State for user login status
   const [addedProducts, setAddedProducts] = useState([]); // State for tracking added products
   const [showCartPopup, setShowCartPopup] = useState(false); // State for controlling cart popup visibility
-  
+
 
   const navigate = useNavigate();
 
@@ -217,7 +217,10 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
         </p>
         <div className="grid grid-cols-2 gap-3">
           <div className="mt-2 mb-5 flex items-center justify-between">
-            <p><span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. {product.price}</span></p>
+            <p>
+              <span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. {product.price}</span><br></br>
+              <span className="text-sm text-gray-400 ml-2">({product.countInStock} in stock)</span>
+            </p>
           </div>
           {isOutOfStock ? (
             <div className="text-center text-red-500 font-bold py-2">Out of Stock</div>
@@ -240,15 +243,15 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
               </button>
             </div>
           ) : (
-            <button 
-              type="button" 
-              className="font-raleway font-bold text-white bg-[#4BC1D2] hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-xs px-2 py-1 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            <button
+              type="button"
+              className="font-raleway font-bold text-white bg-[#4BC1D2] hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-xs px-4 py-1 h-12 text-center me-4 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               onClick={() => addToCart(product)}
               disabled={isOutOfStock} // Nonaktifkan tombol jika produk habis
             >
               BUY
             </button>
-          )}
+          )} 
         </div>
       </div>
     </div>
