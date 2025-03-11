@@ -502,32 +502,36 @@ const Order = () => {
                   className="flex-1 py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition"
                   value={selectedVoucher}
                   onChange={handleVoucherSelection}
-                  disabled={redeemedVouchers.length === 0} // Pastikan ini tidak menyebabkan dropdown tidak bisa dipilih
                 >
+                  {/* Default option */}
                   <option value="">Select a voucher</option>
+
+                  {/* Jika ada voucher yang dimiliki */}
                   {redeemedVouchers.length > 0 ? (
                     vouchers
-                      .filter(voucher => redeemedVouchers.includes(voucher._id))  // Show only redeemed vouchers
+                      .filter(voucher => redeemedVouchers.includes(voucher._id))  // Hanya tampilkan voucher yang sudah ditebus
                       .map(voucher => (
                         <option key={voucher._id} value={voucher._id}>
                           {voucher.name} - {voucher.discount}% off
                         </option>
                       ))
                   ) : (
-                    <option value="" disabled>No vouchers available</option>
+                    // Jika tidak ada voucher yang dimiliki
+                    <option value="" disabled>
+                      No vouchers available
+                    </option>
                   )}
                 </select>
+
+                {/* Tombol Apply */}
                 <button
                   className="py-2 px-4 rounded-full text-white bg-[#21325E] hover:bg-[#4BC1D2] focus:outline-none focus:ring-2 focus:ring-[#4BC1D2] transition"
-                  disabled={redeemedVouchers.length === 0} // Disable apply button if no vouchers available
+                  disabled={redeemedVouchers.length === 0} // Nonaktifkan tombol jika tidak ada voucher
                 >
                   Apply
                 </button>
               </div>
             </section>
-
-
-
             {/* Order Summary */}
             <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
               <div className="mt-6 space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
