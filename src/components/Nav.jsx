@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { navLinks, navLinksAdmin } from '../constants'; // Make sure the path to constants.js is correct
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { xp } from '../assets/images';
@@ -21,9 +21,15 @@ const Nav = () => {
         checkToken();
         loadCart(); 
 
-        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('storage', () => {
+            checkToken(); // 🔥 Pastikan navbar update saat token berubah
+            loadCart();  // 🔥 Pastikan cart tetap diperbarui juga
+        });
         return () => {
-            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('storage', () => {
+                checkToken();
+                loadCart();
+            });
         };
     }, []);
 
@@ -32,13 +38,11 @@ const Nav = () => {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
 
-    const checkToken = () => {
+    const checkToken = useCallback(() => {
         const token = localStorage.getItem('token');
         setIsLoggedIn(!!token);
-        if (token) {
-            fetchUserData(token);
-        }
-    };
+        if (token) fetchUserData(token);
+    }, []);
 
     const handleStorageChange = () => {
         loadCart();
