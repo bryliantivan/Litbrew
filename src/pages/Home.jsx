@@ -95,7 +95,7 @@ const Home = () => {
     },
   ];
   // Untuk Carrousel kedua Buddy Choice
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(1);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % homepage_drinks.length);
