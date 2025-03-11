@@ -40,7 +40,10 @@ const orderSchema = new mongoose.Schema({
     },
     orderItems: [orderItemSchema],
     totalPrice: { type: Number, required: true },
-    voucher: { type: String},  // Ensure voucher is included
+    voucher: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Voucher", 
+    },
     location: { type: String, enum: ['arrived', 'not-arrived'] },
     numPeople: {
         type: Number,

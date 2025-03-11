@@ -20,10 +20,10 @@ orderRoute.post(
       tableNumber,
       orderStatus,
       numPeople,
-      voucher,
+      voucher, // ID voucher yang digunakan
       location,
       estimatedPickUpTime,
-      customerName
+      customerName,
     } = req.body;
 
     // Validation
@@ -44,13 +44,13 @@ orderRoute.post(
       tableNumber,
       location,
       numPeople,
-      voucher,
+      voucher, // Simpan ID voucher yang digunakan di order
       isPaid: false,
       paidAt: null,
       orderStatus,
       estimatedPickUpTime,
       isReviewed: false,
-      customerName
+      customerName,
     });
 
     // Save the order
@@ -60,7 +60,13 @@ orderRoute.post(
     const user = await User.findById(req.user._id);
     if (user) {
       user.orderCount += 1; // Increment the order count
-      await user.updateBadges(Badge); // Pass the Badge model here
+
+      // Jika voucher digunakan, hapus dari redeemedVouchers
+      if (voucher) {
+        user.redeemedVouchers.pull(voucher); // Hapus voucher dari array
+      }
+
+      await user.updateBadges(Badge); // Update badges
       await user.save(); // Save the updated user
     }
 
