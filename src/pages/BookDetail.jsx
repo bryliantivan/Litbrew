@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Avatar from '@mui/material/Avatar';
+import { deepPurple } from '@mui/material/colors';  // Import warna untuk Avatar
 
 const BookDetail = () => {
     const { id } = useParams();
@@ -10,7 +12,7 @@ const BookDetail = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        
+
         // Fetch product details and reviews
         axios.get(`http://localhost:3000/api/products/${id}`)
             .then((response) => {
@@ -111,20 +113,16 @@ const BookDetail = () => {
                                     {reviews.map((review, index) => (
                                         <div key={index} className="p-4">
                                             <div className="flex gap-4">
-                                                {/* User Avatar */}
+                                                {/* Avatar with First Letter */}
                                                 <div className="flex-shrink-0">
-                                                    <div className="w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center">
-                                                        <span className="text-lg font-medium text-white">
-                                                            {review.user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                                                        </span>
-                                                    </div>
+                                                <Avatar src="/broken-image.jpg"/>
                                                 </div>
 
                                                 {/* Review Content */}
                                                 <div className="flex-1">
                                                     <div className="flex justify-between items-center">
                                                         <p className="text-sm font-semibold text-gray-900">
-                                                            {review.user?.name || 'Anonymous'}
+                                                            {review.name || 'Anonymous'}
                                                         </p>
                                                         <time
                                                             className="text-xs text-gray-500"
@@ -153,16 +151,9 @@ const BookDetail = () => {
                                                     </div>
 
                                                     {/* Review Text */}
-                                                    <div className="mt-3">
-                                                        <p className="text-sm text-gray-700 whitespace-pre-line">
-                                                            {review.comment}
-                                                        </p>
-                                                        {review.overallReview && (
-                                                            <p className="mt-2 text-sm text-gray-500 italic">
-                                                                "{review.overallReview}"
-                                                            </p>
-                                                        )}
-                                                    </div>
+                                                    <p className="mt-2 text-sm text-gray-600">
+                                                        {review.comment}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>

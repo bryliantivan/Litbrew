@@ -27,17 +27,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('image');  // Expect a single 'image' field
 
-// Cloudinary Upload Function
 const uploadToCloudinary = async (filePath) => {
-    try {
-        const result = await cloudinary.uploader.upload(filePath, {
-            folder: "litbrew",  // Optional: Specify the folder in your Cloudinary account
-        });
-        return result.secure_url;  // Return the secure URL of the uploaded image
-    } catch (error) {
-        console.error("Error uploading image to Cloudinary:", error);
-        throw error;  // Handle error appropriately
-    }
+    const folderName = 'product_images';  // Can dynamically change based on category or product
+    const result = await cloudinary.uploader.upload(filePath, {
+        folder: folderName,
+    });
+    return result.secure_url;
 };
 
 // Route for adding a new product
