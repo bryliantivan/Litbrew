@@ -17,6 +17,21 @@ const Nav = () => {
     const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
     const navigate = useNavigate(); 
 
+    useEffect(() => {
+        checkToken();
+        loadCart(); 
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
+    // 🔥 Tambahkan useEffect ini agar `cart` selalu update tanpa refresh
+    useEffect(() => {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }, [cart]);
+
     const checkToken = () => {
         const token = localStorage.getItem('token');
         setIsLoggedIn(!!token);
@@ -25,17 +40,14 @@ const Nav = () => {
         }
     };
 
-    useEffect(() => {
-        checkToken();
-        window.addEventListener('storage', checkToken);
-        return () => {
-            window.removeEventListener('storage', checkToken);
-        };
-    }, []);
+    const handleStorageChange = () => {
+        loadCart();
+    };
 
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }, [cart]);
+    const loadCart = () => {
+        const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+        setCart(savedCart);
+    };
 
     const fetchUserData = async (token) => {
         setLoadingUser(true);
@@ -62,10 +74,10 @@ const Nav = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.setItem('cart', JSON.stringify([]));
         setIsLoggedIn(false);
         setUser(null);
         setCart([]);
-        localStorage.setItem('cart', JSON.stringify([]));
         window.dispatchEvent(new Event('storage'));
         setDropdownOpen(false);
         navigate('/login');
@@ -75,20 +87,31 @@ const Nav = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
+    // 🔥 Perbaiki `updateCart` agar memicu perubahan di `localStorage`
     const updateCart = (product, action) => {
-        let newCart;
+        let newCart = [...cart];
+        const existingProductIndex = cart.findIndex(item => item._id === product._id);
+
         if (action === "add") {
-            const existingProductIndex = cart.findIndex(item => item._id === product._id);
             if (existingProductIndex > -1) {
-                newCart = [...cart];
-                newCart[existingProductIndex].quantity = (newCart[existingProductIndex].quantity || 1) + 1;
+                newCart[existingProductIndex].quantity += 1;
             } else {
-                newCart = [...cart, { ...product, quantity: 1 }];
+                newCart.push({ ...product, quantity: 1 });
             }
         } else if (action === "remove") {
             newCart = cart.filter(item => item._id !== product._id);
+        } else if (action === "decrement") {
+            if (existingProductIndex > -1) {
+                newCart[existingProductIndex].quantity -= 1;
+                if (newCart[existingProductIndex].quantity === 0) {
+                    newCart.splice(existingProductIndex, 1);
+                }
+            }
         }
+
         setCart(newCart);
+        localStorage.setItem("cart", JSON.stringify(newCart));
+        window.dispatchEvent(new Event("storage")); // 🔥 Memicu perubahan di `Nav.jsx`
     };
 
     return (

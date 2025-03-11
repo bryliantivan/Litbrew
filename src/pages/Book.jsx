@@ -67,6 +67,7 @@ const Book = () => {
     setShowCartPopup(true);
     window.dispatchEvent(new Event("cartUpdated")); // Dispatch event here
     console.log("Cart:", newCart);
+    window.dispatchEvent(new Event("storage")); // 🔥 Paksa Nav memperbarui cart
   };
   
   // Function to handle incrementing product quantity
@@ -75,21 +76,20 @@ const Book = () => {
       item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
     );
     setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart));
-    window.dispatchEvent(new Event("cartUpdated")); // Dispatch event here
+    localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
   };
-  
+
   // Function to handle decrementing product quantity
   const decrementQuantity = (product) => {
     const newCart = cart.map(item =>
       item._id === product._id ? { ...item, quantity: item.quantity - 1 } : item
     ).filter(item => item.quantity > 0);
     setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart));
-    window.dispatchEvent(new Event("cartUpdated")); // Dispatch event here
+    localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
     if (newCart.find(item => item._id === product._id) === undefined) {
       setAddedProducts(addedProducts.filter(id => id !== product._id)); // Remove product from added products
     }
+    window.dispatchEvent(new Event("storage")); // 🔥 Paksa Nav memperbarui cart
   };
 
   return (

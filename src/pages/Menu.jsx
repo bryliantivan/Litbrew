@@ -16,8 +16,6 @@ const Menu = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State for user login status
   const [addedProducts, setAddedProducts] = useState([]); // State for tracking added products
   const [showCartPopup, setShowCartPopup] = useState(false); // State for controlling cart popup visibility
-  
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,6 +69,7 @@ const Menu = () => {
     setAddedProducts([...addedProducts, product._id]); // Add product to added products
     setShowCartPopup(true); // Show cart popup
     console.log("Cart:", newCart);
+    window.dispatchEvent(new Event("storage")); // 🔥 Paksa Nav memperbarui cart
 
     // Hide the popup after 3 seconds
     setTimeout(() => {
@@ -97,6 +96,7 @@ const Menu = () => {
     if (newCart.find(item => item._id === product._id) === undefined) {
       setAddedProducts(addedProducts.filter(id => id !== product._id)); // Remove product from added products
     }
+    window.dispatchEvent(new Event("storage")); // 🔥 Paksa Nav memperbarui cart
   };
 
   return (
