@@ -267,7 +267,7 @@ const Order = () => {
       localStorage.removeItem("cart");
       setOrder([]);
 
-      alert("Your order has been processed successfully!");
+      alert("Your order has been processed successfully! Please go to the cashier to pay.");
 
       navigate("/myorders");
     } catch (error) {

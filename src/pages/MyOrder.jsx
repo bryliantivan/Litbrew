@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 const MyOrder = () => {
     const [orders, setOrders] = useState([]);
+    const [paymentPending, setPaymentPending] = useState(localStorage.getItem('paymentPending') === 'true');
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -22,26 +23,33 @@ const MyOrder = () => {
         };
 
         fetchOrders();
-    }, []);
+
+        // Tampilkan alert jika paymentPending true
+        if (paymentPending) {
+            alert("Please go to the cashier to pay first, then your order history will appear.");
+            localStorage.removeItem('paymentPending'); // Hapus paymentPending setelah alert ditampilkan
+            setPaymentPending(false); // Update state paymentPending
+        }
+    }, [paymentPending]);
 
     // Filter orders to display only those with isPaid === true
     const paidOrders = orders.filter(order => order.isPaid);
 
     return (
-        <div className="container px-4 sm:px-5 py-12 sm:py-24 mx-auto font-raleway"> {/* Responsive padding and margin */}
-            <h1 className="mt-16 text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-center">Order History</h1> {/* Responsive text and margin, centered */}
+        <div className="container px-4 sm:px-5 py-12 sm:py-24 mx-auto font-raleway">
+            <h1 className="mt-16 text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-center">Order History</h1>
             {paidOrders.length > 0 ? (
                 paidOrders.map((order) => (
-                    <div key={order._id} className="mb-6 p-4 border rounded-lg shadow-sm bg-white"> {/* Added bg-white */}
+                    <div key={order._id} className="mb-6 p-4 border rounded-lg shadow-sm bg-white">
                         <h2 className="text-lg sm:text-xl font-semibold mb-2">Order ID: {order._id}</h2>
                         <p className="text-gray-600 mb-4">
                             Total Price: IDR {order.totalPrice.toLocaleString('id-ID')}
                         </p>
-                        <div className="flex flex-wrap gap-4"> {/* Simplified flex-wrap */}
+                        <div className="flex flex-wrap gap-4">
                             {order.orderItems.map((item) => (
-                                <div key={item.product} className="flex-grow sm:flex-grow-0  w-full sm:w-auto"> {/* Responsive item width */}
-                                    <div className="flex items-center sm:space-x-4 border border-blue-300 rounded-xl p-2 sm:p-4">  {/* Added padding */}
-                                         <img src={item.image} className="w-16 sm:w-20 h-16 sm:h-20 object-contain rounded" alt={item.name} /> {/* Responsive image, object-contain, and rounded */}
+                                <div key={item.product} className="flex-grow sm:flex-grow-0  w-full sm:w-auto">
+                                    <div className="flex items-center sm:space-x-4 border border-blue-300 rounded-xl p-2 sm:p-4">
+                                        <img src={item.image} className="w-16 sm:w-20 h-16 sm:h-20 object-contain rounded" alt={item.name} />
                                         <div>
                                             <h3 className="text-base sm:text-lg font-medium">{item.name}</h3>
                                             <p className="text-gray-600 text-sm sm:text-base">Quantity: {item.qty}</p>
@@ -53,7 +61,6 @@ const MyOrder = () => {
                                 </div>
                             ))}
                         </div>
-                        {/* Render Track button if orderStatus is 'processing', otherwise show review button */}
                         {order.orderStatus === "processing" ? (
                             <Link
                                 to={`/orderTracking/${order._id}`}
@@ -78,7 +85,7 @@ const MyOrder = () => {
                     </div>
                 ))
             ) : (
-                <p className="text-gray-600 text-center">You have no orders yet.</p> /* Centered text */
+                <p className="text-gray-600 text-center">You have no orders yet.</p>
             )}
         </div>
     );
