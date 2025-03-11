@@ -512,7 +512,7 @@ const Order = () => {
                       .filter(voucher => redeemedVouchers.includes(voucher._id))  // Hanya tampilkan voucher yang sudah ditebus
                       .map(voucher => (
                         <option key={voucher._id} value={voucher._id}>
-                          {voucher.name} - {voucher.discount}% off
+                          {voucher.name}
                         </option>
                       ))
                   ) : (
