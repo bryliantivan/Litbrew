@@ -4,7 +4,8 @@ const protect = require("../middleware/Auth");
 const asyncHandler = require("express-async-handler");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
-const Badge = require("../Models/Badge")
+const Badge = require("../Models/Badge");
+const Product = require("../Models/Product");
 
 orderRoute.post(
   "/",
@@ -56,6 +57,23 @@ orderRoute.post(
     // Save the order
     const createdOrder = await order.save();
 
+    // Loop through each order item to decrease the countInStock of the product
+    for (let item of orderItems) {
+      const product = await Product.findById(item.product); // Find the product by ID
+      if (product) {
+        if (product.countInStock >= item.qty) {
+          product.countInStock -= item.qty; // Decrease stock based on quantity ordered
+          await product.save(); // Save the updated product
+        } else {
+          res.status(400);
+          throw new Error(`Insufficient stock for product ${product.name}`);
+        }
+      } else {
+        res.status(404);
+        throw new Error("Product not found");
+      }
+    }
+
     // Increment orderCount and update badges
     const user = await User.findById(req.user._id);
     if (user) {
@@ -73,6 +91,7 @@ orderRoute.post(
     res.status(201).json(createdOrder);
   })
 );
+
 
 
 // Get all orders for a user

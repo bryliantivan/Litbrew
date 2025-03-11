@@ -27,17 +27,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('image');  // Expect a single 'image' field
 
-// Cloudinary Upload Function
 const uploadToCloudinary = async (filePath) => {
-    try {
-        const result = await cloudinary.uploader.upload(filePath, {
-            folder: "litbrew",  // Optional: Specify the folder in your Cloudinary account
-        });
-        return result.secure_url;  // Return the secure URL of the uploaded image
-    } catch (error) {
-        console.error("Error uploading image to Cloudinary:", error);
-        throw error;  // Handle error appropriately
-    }
+    const folderName = 'product_images';  // Can dynamically change based on category or product
+    const result = await cloudinary.uploader.upload(filePath, {
+        folder: folderName,
+    });
+    return result.secure_url;
 };
 
 // Route for adding a new product
@@ -174,7 +169,6 @@ productRoute.post(
             const alreadyReviewed = product.reviews.find(
                 (review) => review.user.toString() === req.user._id.toString()
             );
-
             if (alreadyReviewed) {
                 // If review exists, update the review
                 alreadyReviewed.rating = Number(rating);
@@ -187,11 +181,11 @@ productRoute.post(
                     comment,
                     user: req.user._id,
                 };
-
                 product.reviews.push(review);
             }
-
-            product.numReviews = product.reviews.length;
+            // Hitung jumlah unik user yang memberikan review
+            const uniqueUsers = new Set(product.reviews.map(review => review.user.toString()));
+            product.numReviews = uniqueUsers.size;
 
             // Recalculate average rating
             const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);

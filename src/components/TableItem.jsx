@@ -55,7 +55,7 @@ const TableItem = ({ items, titles, onEdit, onDelete }) => {
               <td className="p-4 border-y-4 border-x-2 text-center font-raleway">{item.price}</td>
               <td className="p-4 border-y-4 border-x-2 text-center font-raleway">{item.countInStock}</td>
               <td className="p-4 border-y-4 border-x-2 text-center font-raleway">{item.rating}</td>
-              <td className="p-4 border-y-4 border-x-2 text-center font-raleway">{item.numReview}</td>
+              <td className="p-4 border-y-4 border-x-2 text-center font-raleway">{item.reviews.length}</td>
               <td className="p-4 border-y-4 border-x-2 text-center font-raleway">{item.category}</td>
               <td className="p-4 border-y-4 border-x-2 text-center font-raleway">
                 <div className="flex justify-center items-center space-x-2">

@@ -84,7 +84,7 @@ const AdminAddItem = () => {
     if (data.images && Array.isArray(data.images)) {
       data.images.forEach((image, index) => {
         if (image instanceof File) {
-          formData.append('images', image);
+          formData.append('image', image);
         }
       });
     }

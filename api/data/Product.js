@@ -1,5 +1,5 @@
-const getRandomRating = () => (Math.random() * 5).toFixed(1); // Menghasilkan rating acak antara 0 dan 5 dengan satu desimal
-const getRandomNumReview = () => Math.floor(Math.random() * 50) + 1; // Menghasilkan jumlah ulasan acak antara 1 dan 50
+// const getRandomRating = () => (Math.random() * 5).toFixed(1); // Menghasilkan rating acak antara 0 dan 5 dengan satu desimal
+// const getRandomNumReview = () => Math.floor(Math.random() * 50) + 1; // Menghasilkan jumlah ulasan acak antara 1 dan 50
 
 const product = [
     {
@@ -10,8 +10,8 @@ const product = [
           "A refreshing and sweet iced tea infused with the juicy flavor of ripe peaches. Perfect for a light and fruity pick-me-up.",
         price: 10000,
         countInStock: 14,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -22,8 +22,8 @@ const product = [
           "A traditional Japanese green tea made with premium matcha powder and steamed milk. Smooth, earthy, and calming.",
         price: 11000,
         countInStock: 5,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -34,8 +34,8 @@ const product = [
           "A refreshing and fruity drink made with fresh blueberries and blended with creamy yogurt. Perfectly sweet and tangy with every sip.",
         price: 14000,
         countInStock: 15,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -46,8 +46,8 @@ const product = [
           "A refreshing and fruity drink made with fresh blueberries and blended with creamy yogurt. Perfectly sweet and tangy with every sip.",
         price: 14000,
         countInStock: 5,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -58,8 +58,8 @@ const product = [
           "A creamy and smooth combination of brewed coffee and fresh milk. A balanced drink for those who enjoy a mild coffee flavor.",
         price: 12500,
         countInStock: 5,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -70,8 +70,8 @@ const product = [
           "A rich and creamy espresso-based drink with steamed milk and a light foam layer. Perfectly balanced for a smooth and mellow coffee experience.",
         price: 13000,
         countInStock: 25,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -82,8 +82,8 @@ const product = [
           "A bold and robust black coffee made from high-quality espresso and hot water. Simple yet packed with rich flavor for coffee purists.",
         price: 1500,
         countInStock: 15,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -94,8 +94,8 @@ const product = [
           "A delightful blend of espresso, steamed milk, and a sweet drizzle of caramel sauce. A smooth and indulgent coffee experience.",
         price: 14500,
         countInStock: 15,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },     
     {
@@ -106,8 +106,8 @@ const product = [
           "Sweet and creamy milk tea with soft and chewy tapioca pearls. A fun and refreshing treat for any time of the day.",
         price: 13500,
         countInStock: 15,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -118,8 +118,8 @@ const product = [
           "A warm and velvety drink made with rich chocolate and steamed milk. Perfect for indulging in a comforting and luxurious treat.",
         price: 13500,
         countInStock: 15,
-        rating: getRandomRating(),
-        numReview: getRandomNumReview(),
+        rating: 0,
+        numReview: 0,
         category:"Drink"
     },
     {
@@ -131,8 +131,8 @@ const product = [
         "Mengisahkan perjalanan hidup dan cinta Kugy dan Keenan, dua anak muda yang saling melengkapi meski terpisah oleh mimpi dan keadaan. Kugy, si penulis dongeng, dan Keenan, pelukis berbakat, berusaha menemukan jati diri dan cinta sejati di tengah lika-liku kehidupan.",
       price: 10000,
       countInStock: 14,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -144,8 +144,8 @@ const product = [
         "Bercerita tentang perjuangan sepuluh anak dari Desa Gantong, Belitung, yang gigih mengejar pendidikan meski berbagai keterbatasan menghadang. Kisah ini penuh inspirasi, harapan, dan persahabatan sejati.",
       price: 12000,
       countInStock: 11,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -157,8 +157,8 @@ const product = [
         "Mengangkat kisah cinta Minke, seorang pemuda pribumi cerdas, dengan Annelies, gadis Indo-Belanda yang rapuh. Novel ini juga menggambarkan kritik sosial terhadap kolonialisme di Hindia Belanda.",
       price: 15000,
       countInStock: 10,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -170,8 +170,8 @@ const product = [
         "Kisah cinta seorang mahasiswa Indonesia, Fahri, di Mesir, yang dipenuhi konflik budaya, agama, dan moral. Novel ini menawarkan pandangan tentang Islam yang penuh cinta dan toleransi.",
       price: 10000,
       countInStock: 1,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -183,8 +183,8 @@ const product = [
         "Novel yang menggabungkan romansa, filsafat, dan sains ini bercerita tentang perjalanan dua karakter utama, Reuben dan Dimas, dalam menciptakan sebuah karya yang mengubah hidup banyak orang.",
       price: 12000,
       countInStock: 8,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -196,8 +196,8 @@ const product = [
         "Mengisahkan perjuangan Alif dan teman-temannya di sebuah pesantren. Mereka menemukan arti mimpi dan persahabatan melalui filosofi “man jadda wajada” (siapa yang bersungguh-sungguh akan berhasil).",
       price: 10000,
       countInStock: 9,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -209,8 +209,8 @@ const product = [
         "Cerita tragis Srintil, seorang penari ronggeng, yang menjadi simbol kehidupan masyarakat desa dan perjuangannya melawan takdir. Novel ini menyentuh isu sosial dan politik Indonesia di masa lampau.",
       price: 12000,
       countInStock: 3,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -222,8 +222,8 @@ const product = [
         "Kelanjutan dari Laskar Pelangi, novel ini menceritakan mimpi-mimpi Arai, Jimbron, dan Ikal, serta usaha mereka mengejar pendidikan hingga ke Eropa. Kisah penuh semangat dan inspirasi.",
       price: 10000,
       countInStock: 13,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   }, 
   {
@@ -235,8 +235,8 @@ const product = [
         "Kisah cinta Dilan dan Milea yang manis dan unik, berlatar belakang Bandung tahun 1990. Novel ini menawarkan nostalgia masa SMA dengan gaya bahasa yang ringan dan menghibur.",
       price: 10000,
       countInStock: 43,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -248,8 +248,8 @@ const product = [
         "Kumpulan cerita pendek yang berpadu dengan lagu, mengangkat tema cinta, kehilangan, dan makna hidup. Setiap cerita memiliki kedalaman yang memikat dan menyentuh hati.",
       price: 12000,
       countInStock: 13,
-      rating: getRandomRating(),
-      numReview: getRandomNumReview(),
+      rating: 0,
+      numReview: 0,
       category:"Book"
   },
   {
@@ -260,8 +260,8 @@ const product = [
       "A luscious cheesecake with a rich Oreo crust, creamy filling, and a topping of crushed Oreo cookies. Perfect for fans of this classic cookie treat.",
     price: 20000,
     countInStock: 4,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 {
@@ -272,8 +272,8 @@ const product = [
       "Soft and chewy cookies with the warm, caramel-like flavor of brown sugar and a hint of vanilla. A classic treat for every occasion.",
     price: 15000,
     countInStock: 5,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 {
@@ -284,8 +284,8 @@ const product = [
       "A decadent chocolate cake with layers of moist, rich chocolate sponge and a smooth chocolate ganache. A delightful indulgence for chocolate lovers.",
     price: 18000,
     countInStock: 15,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 {
@@ -296,8 +296,8 @@ const product = [
       "A moist and fluffy cupcake baked with Oreo crumbles, topped with a creamy frosting and a mini Oreo. A playful twist on a beloved classic.",
     price: 17000,
     countInStock: 5,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 {
@@ -308,8 +308,8 @@ const product = [
       "A timeless dessert with a buttery, flaky crust and a filling of cinnamon-spiced apples. Perfectly sweet and comforting with every bite.",
     price: 12000,
     countInStock: 5,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 {
@@ -320,8 +320,8 @@ const product = [
       "A soft and fluffy cupcake infused with refreshing mint and topped with a light, creamy mint frosting. A delightful treat for mint enthusiasts.",
     price: 14000,
     countInStock: 25,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 {
@@ -332,8 +332,8 @@ const product = [
       "A golden, flaky croissant filled with gooey melted chocolate chips. A delightful mix of buttery pastry and rich chocolate goodness.",
     price: 15500,
     countInStock: 15,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 {
@@ -344,8 +344,8 @@ const product = [
       "A buttery and flaky croissant filled with creamy almond paste and topped with toasted almond slices. A perfect balance of texture and nutty sweetness.",
     price: 14500,
     countInStock: 15,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },     
 {
@@ -356,8 +356,8 @@ const product = [
       "A delightful pie filled with a medley of sweet and tangy berries and encased in a golden, flaky crust. Perfect for fruit dessert lovers.",
     price: 13500,
     countInStock: 15,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 {
@@ -368,8 +368,8 @@ const product = [
       "Crispy on the edges and chewy in the center, these cookies are packed with rich dark chocolate chips. A perfect balance of sweetness and cocoa richness.",
     price: 13500,
     countInStock: 15,
-    rating: getRandomRating(),
-    numReview: getRandomNumReview(),
+    rating: 0,
+    numReview: 0,
     category:"Food"
 },
 ]
