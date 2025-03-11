@@ -268,7 +268,8 @@ const Order = () => {
       setOrder([]);
 
       alert("Your order has been processed successfully! Please go to the cashier to pay.");
-
+      
+      localStorage.setItem('paymentPending', 'true');
       navigate("/myorders");
     } catch (error) {
       console.error("Error saving order:", error);
