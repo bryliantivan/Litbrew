@@ -10,6 +10,8 @@ npm i
 
 npm i -g nodemon express dotenv mongoose cors bcryptjs express-async-handler jsonwebtoken cloudinary@^1.21.0
 
+npm install @mui/material @emotion/react @emotion/styled
+
 npm install flowbite flowbite-react
 
 (go in /api and write this line in the terminal)
