@@ -223,7 +223,7 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
         <div className="grid grid-cols-2 gap-3">
           <div className="mt-2 mb-5 flex items-center justify-between">
             <p>
-              <span className="text-xl font-bold text-[#4BC1D2] font-raleway">IDR. {product.price}</span><br></br>
+              <span className="text-xl font-bold text-[#4BC1D2] font-raleway">Rp {new Intl.NumberFormat('id-ID').format(product.price)}</span><br></br>
               <span className="text-sm text-gray-400 ml-2">({product.countInStock} in stock)</span>
             </p>
           </div>
