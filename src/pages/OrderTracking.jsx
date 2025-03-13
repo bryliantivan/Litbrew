@@ -6,6 +6,7 @@ const OrderTracking = () => {
     const [orderItems, setOrderItems] = useState([]);
     const [orderDetails, setOrderDetails] = useState({});
     const [loading, setLoading] = useState(true);
+    const [status, setStatus] = useState('');
     const { orderId } = useParams();
 
     useEffect(() => {
@@ -30,8 +31,24 @@ const OrderTracking = () => {
             }
         };
 
+        const fetchOrderStatus = async () => {
+            try {
+                const token = localStorage.getItem('token'); // Ambil token dari local storage
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                };
+                const response = await axios.get(`http://localhost:3000/api/orders/${orderId}/status`, config);
+                setStatus(response.data.status);
+            } catch (error) {
+                console.error('Error fetching order status:', error);
+            }
+        };
+
         fetchOrderDetails();
-    }, []);
+        fetchOrderStatus();
+    }, [orderId]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -70,23 +87,23 @@ const OrderTracking = () => {
 
                     <div className="w-full flex flex-col justify-center sm:items-center items-start gap-8">
                         <ol className="flex sm:items-center items-start w-full sm:gap-0 gap-3">
-                            <li className="flex w-full relative justify-center text-base font-semibold after:content-[''] after:w-full after:h-0.5 after:border after:border-dashed after:bg-[#4BC1D2] after:inline-block after:absolute lg:after:top-5 after:top-3 xl:after:left-52 lg:after:left-48 md:after:left-36 sm:after:left-28 after:left-20">
+                            <li className={`flex w-full relative justify-center text-base font-semibold after:content-[''] after:w-full after:h-0.5 after:border after:border-dashed ${(status === 'confirm' || status === 'processing' || status === 'delivered')? 'after:bg-[#4BC1D2]' : 'after:bg-gray-500'} after:inline-block after:absolute lg:after:top-5 after:top-3 xl:after:left-52 lg:after:left-48 md:after:left-36 sm:after:left-28 after:left-20`}>
                                 <div className="sm:whitespace-nowrap z-10 flex flex-col items-center">
-                                    <span className="w-6 h-6 bg-[#4BC1D2] text-center border-2 border-transparent rounded-full flex justify-center items-center mx-auto mb-1 text-base font-bold text-white lg:w-10 lg:h-10"></span>
+                                    <span className={`w-6 h-6 ${(status === 'confirm' || status === 'processing' || status === 'delivered') ? 'bg-[#4BC1D2]' : 'bg-gray-500'} text-center border-2 border-transparent rounded-full flex justify-center items-center mx-auto mb-1 text-base font-bold text-white lg:w-10 lg:h-10`}></span>
                                     Order Confirmed <br />
                                     <span className="text-base font-normal text-center">{new Date(orderDetails.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}, {formatDate(orderDetails.createdAt)}</span>
                                 </div>
                             </li>
-                            <li className="flex w-full relative justify-center text-black text-base font-semibold after:content-[''] after:w-full after:h-0.5 after:border after:border-dashed after:bg-indigo-200 after:inline-block after:absolute lg:after:top-5 after:top-3 xl:after:left-52 lg:after:left-48 md:after:left-36 sm:after:left-28 after:left-20">
+                            <li className={`flex w-full relative justify-center text-base font-semibold after:content-[''] after:w-full after:h-0.5 after:border after:border-dashed ${(status === 'processing' || status === 'delivered') ? 'after:bg-[#4BC1D2]' : 'after:bg-gray-500'} after:inline-block after:absolute lg:after:top-5 after:top-3 xl:after:left-52 lg:after:left-48 md:after:left-36 sm:after:left-28 after:left-20`}>
                                 <div className="sm:whitespace-nowrap z-10 flex flex-col items-center">
-                                    <span className="w-6 h-6 bg-[#4BC1D2] rounded-full flex justify-center items-center mx-auto mb-1 text-white text-base font-bold lg:w-10 lg:h-10"></span>
+                                    <span className={`w-6 h-6 ${(status === 'processing' || status === 'delivered') ? 'bg-[#4BC1D2]' : 'bg-gray-500'} rounded-full flex justify-center items-center mx-auto mb-1 text-white text-base font-bold lg:w-10 lg:h-10`}></span>
                                     In Processing
                                     <span className="text-gray-500 text-base font-normal text-center">Pesanan sedang disiapkan oleh koki</span>
                                 </div>
                             </li>
                             <li className="flex w-full relative justify-center text-gray-500 text-base font-semibold">
                                 <div className="sm:whitespace-nowrap z-10 flex flex-col items-center">
-                                    <span className="w-6 h-6 bg-gray-400 rounded-full flex justify-center items-center mx-auto mb-1 text-white text-base font-bold lg:w-10 lg:h-10"></span>
+                                <span className={`w-6 h-6 ${(status === 'delivered') ? 'bg-[#4BC1D2]' : 'bg-gray-500'} text-center border-2 border-transparent rounded-full flex justify-center items-center mx-auto mb-1 text-base font-bold text-white lg:w-10 lg:h-10`}></span>
                                     Completed
                                     <span className="text-white text-base font-normal text-center "> .</span>
                                 </div>

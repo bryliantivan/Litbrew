@@ -62,13 +62,21 @@ const MyOrder = () => {
                             ))}
                         </div>
                         {order.orderStatus === "processing" ? (
-                            <Link
-                                to={`/orderTracking/${order._id}`}
-                                className="block bg-[#4BC1D2] rounded-full w-full sm:w-auto text-center mt-4 px-4 py-2 text-sm text-white hover:bg-blue-300"
-                            >
-                                Track
-                            </Link>
-                        ) : (
+                                <Link
+                                    to={`/orderTracking/${order._id}`} // Tambahkan parameter status
+                                    className="block bg-[#4BC1D2] rounded-full w-full sm:w-auto text-center mt-4 px-4 py-2 text-sm text-white hover:bg-blue-300"
+                                >
+                                    Track
+                                </Link>
+                            ) : 
+                            order.orderStatus === "confirm" ? (
+                                <Link
+                                    to={`/orderTracking/${order._id}`} // Tambahkan parameter status
+                                    className="block bg-[#4BC1D2] rounded-full w-full sm:w-auto text-center mt-4 px-4 py-2 text-sm text-white hover:bg-blue-300"
+                                >
+                                    Track
+                                </Link>
+                            ) :
                             !order.isReviewed ? (
                                 <Link
                                     to={`/review/${order._id}`}
@@ -81,7 +89,7 @@ const MyOrder = () => {
                                     Reviewed
                                 </span>
                             )
-                        )}
+                        }
                     </div>
                 ))
             ) : (

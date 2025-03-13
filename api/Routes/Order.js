@@ -159,6 +159,21 @@ orderRoute.put(
   })
 );
 
+orderRoute.get(
+  "/:id/status",
+  protect,
+  asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+      res.status(200).json({ status: order.orderStatus });
+    } else {
+      res.status(404);
+      throw new Error("Order Not Found");
+    }
+  })
+);
+
 orderRoute.put(
   "/:id/pay",
   protect, // Ensure only authorized users can make a payment
