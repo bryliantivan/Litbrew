@@ -79,11 +79,16 @@ const Menu = () => {
 
   // Function to handle incrementing product quantity
   const incrementQuantity = (product) => {
-    const newCart = cart.map(item =>
-      item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
-    );
-    setCart(newCart);
-    localStorage.setItem("cart", JSON.stringify(newCart)); // Simpan keranjang di local storage
+    const productInCart = cart.find(item => item._id === product._id);
+
+    // If product is already in the cart, increment the quantity
+    if (productInCart && productInCart.quantity < product.countInStock) {
+      const newCart = cart.map(item =>
+        item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+      setCart(newCart);
+      localStorage.setItem("cart", JSON.stringify(newCart)); // Save to localStorage
+    }
   };
 
   // Function to handle decrementing product quantity
@@ -236,8 +241,13 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
               <span className="text-white text-lg">{quantity}</span>
               <button
                 type="button"
-                className="text-white w-8 h-8 font-bold font-raleway bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 rounded-full text-xl text-center"
+                className={`text-white w-8 h-8 font-bold font-raleway 
+    ${product.countInStock === 0 || quantity >= product.countInStock
+                    ? 'bg-gray-500 cursor-not-allowed' // Disabled style
+                    : 'bg-green-500 hover:bg-green-700'} // Enabled style with hover effect
+    focus:outline-none focus:ring-4 focus:ring-green-300 rounded-full text-xl text-center`}
                 onClick={() => incrementQuantity(product)}
+                disabled={product.countInStock === 0 || quantity >= product.countInStock} // Disable button if stock is 0 or quantity reaches stock
               >
                 +
               </button>
@@ -251,7 +261,7 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
             >
               BUY
             </button>
-          )} 
+          )}
         </div>
       </div>
     </div>

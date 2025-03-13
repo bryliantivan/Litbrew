@@ -234,7 +234,6 @@ const ProductCard = ({ product, addToCart, added, incrementQuantity, decrementQu
                 +
               </button>
 
-
             </div>
           ) : (
             <button
