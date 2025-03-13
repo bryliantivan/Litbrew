@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { About, Book, Home, Menu, Order, MenuDetail, BookDetail, Login, Register, MyOrder, Profile, Review, OrderTracking, AdminHome, AdminManageMenu, AdminManageBook, AdminManageOrders, AdminAddItem, AdminEditItem } from './pages';
+import { About, Book, Home, Menu, Order, MenuDetail, BookDetail, Login, Register, MyOrder, Profile, Review, OrderTracking, AdminHome, AdminManageMenu, AdminManageBook, AdminManageOrders, AdminAddItem, AdminEditItem, AdminReturnBook } from './pages';
 import { Nav, Footer } from './components';
 import PrivateRoute from './context/PrivateRoute';
 
@@ -58,6 +58,11 @@ const App = () => {
                 <Route path="/AdminEditItem/:id" element={
                     <PrivateRoute>
                         <AdminEditItem />
+                    </PrivateRoute>
+                } />
+                <Route path="/AdminReturnBook" element={
+                    <PrivateRoute>
+                        <AdminReturnBook />
                     </PrivateRoute>
                 } />
             </Routes>

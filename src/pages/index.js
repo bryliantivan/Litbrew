@@ -17,6 +17,7 @@ import AdminManageBook from './AdminManageBook';
 import AdminManageOrders from './AdminManageOrders';
 import AdminAddItem from './AdminAddItem';   
 import AdminEditItem from './AdminEditItem';
+import AdminReturnBook from './AdminReturnBook';
 
 export {
     About,
@@ -37,5 +38,6 @@ export {
     AdminManageBook,
     AdminManageOrders,
     AdminAddItem,
-    AdminEditItem
+    AdminEditItem,
+    AdminReturnBook
 };

@@ -130,6 +130,10 @@ const AdminManageBook = () => {
           <Link to="/AdminAddItem" className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4">
             + Add New
           </Link>
+
+          <Link to="/AdminReturnBook" className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4">
+            Return Book
+          </Link>
         </div>
 
         <div className="relative ml-0 md:ml-4 w-full md:w-[300px]">
