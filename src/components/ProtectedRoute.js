@@ -8,7 +8,7 @@ const ProtectedRoute = ({ children }) => {
 
   // Jika tidak ada user (belum login), redirect ke halaman login
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   return children;
