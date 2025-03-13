@@ -54,7 +54,7 @@ const AdminReturnBook = () => {
   const filteredOrders = orders.filter(
     (order) =>
       order.orderItems.some((item) => item.category === 'Book') && // Only include items of category 'Book'
-      order.orderStatus === 'delivered' && // Only include orders where status is 'delivered'
+      order.bookStatus === 'borrowed' && order.orderStatus === 'delivered' &&
       (order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.orderItems.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase())))
