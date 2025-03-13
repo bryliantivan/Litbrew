@@ -72,6 +72,13 @@ const orderSchema = new mongoose.Schema({
         enum: ['confirm', 'processing', 'delivered', 'returned'],
         default: 'confirm',
     },
+    bookStatus: {
+        type:String, 
+        enum: ['returned', 'borrowed'],
+        default: 'borrowed',
+        require: true
+    }
+    ,
     estimatedPickUpTime: {
         type: Date,
         validate: {

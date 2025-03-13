@@ -33,14 +33,16 @@ const AdminReturnBook = () => {
     try {
       // Send a PUT request to update the order status to 'returned'
       const { data } = await axios.put(`http://localhost:3000/api/orders/${orderId}/return`);
-      
-      // If successful, update the order status in the frontend
+
+      // If successful, update the order status and bookStatus in the frontend
       setOrders(
         orders.map((order) =>
-          order._id === orderId ? { ...order, orderStatus: 'returned' } : order
+          order._id === orderId
+            ? { ...order, orderStatus: 'returned', bookStatus: 'returned' }  // Update both orderStatus and bookStatus
+            : order
         )
       );
-  
+
       alert('Book returned successfully!');
     } catch (error) {
       console.error('Error returning book:', error);
@@ -48,14 +50,14 @@ const AdminReturnBook = () => {
     }
   };
 
-  // Filter orders where the status is 'borrowed' and category is 'Book'
+  // Filter orders where the status is 'delivered' and category is 'Book'
   const filteredOrders = orders.filter(
     (order) =>
       order.orderItems.some((item) => item.category === 'Book') && // Only include items of category 'Book'
-      order.orderStatus === "delivered" && // Only include orders where status is 'delivered'
-      (order._id.toLowerCase().includes(searchTerm.toLowerCase()) || 
-       order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       order.orderItems.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase())))
+      order.orderStatus === 'delivered' && // Only include orders where status is 'delivered'
+      (order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.orderItems.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase())))
   );
 
   return (
@@ -125,10 +127,10 @@ const AdminReturnBook = () => {
                 <td className="px-[0.5vw] py-[1vw] border text-center">
                   {order.orderItems.map(item => (
                     item.category === 'Book' && ( // Only display books
-                    <div key={item._id}>
-                      <strong>{item.name}</strong><br />
-                      <img src={item.image} alt={item.name} style={{ width: '50px', height: 'auto' }} /><br />
-                    </div>
+                      <div key={item._id}>
+                        <strong>{item.name}</strong><br />
+                        <img src={item.image} alt={item.name} style={{ width: '50px', height: 'auto' }} /><br />
+                      </div>
                     )
                   ))}
                 </td>

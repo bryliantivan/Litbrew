@@ -52,6 +52,7 @@ orderRoute.post(
       estimatedPickUpTime,
       isReviewed: false,
       customerName,
+      bookStatus: 'borrowed', // Set default book status to borrowed
     });
 
     // Save the order
@@ -91,7 +92,6 @@ orderRoute.post(
     res.status(201).json(createdOrder);
   })
 );
-
 
 
 // Get all orders for a user
@@ -135,7 +135,7 @@ orderRoute.get(
 // Update order status (orderStatus)
 orderRoute.put(
   "/:id/status",
-  protect, 
+  protect,
   asyncHandler(async (req, res) => {
     const { orderStatus } = req.body;  // Ambil status baru dari body request
 
@@ -222,13 +222,11 @@ orderRoute.put(
   })
 );
 
-
 // Get all orders (Admin or authorized user only)
 orderRoute.get(
   "/",
   asyncHandler(async (req, res) => {
     try {
-
       const orders = await Order.find()
         .sort({ createdAt: -1 }) // Sort by newest first
         .populate("user", "name email");
@@ -289,7 +287,7 @@ orderRoute.put(
 
     // Ensure the order has 'borrowed' items
     if (order.orderStatus !== 'delivered') {
-      res.status(400).json({ message: "This order cannot be returned as it is not borrowed." });
+      res.status(400).json({ message: "This order cannot be returned as it is not delivered." });
       return;
     }
 
@@ -302,12 +300,13 @@ orderRoute.put(
       }
     }
 
-    // Mark the order as returned
-    order.orderStatus = 'returned';
+    // Mark the order as returned and update bookStatus for each book item
+    order.bookStatus = 'returned'; // Set book status to 'returned'
     const updatedOrder = await order.save();  // Save the updated order
 
     res.status(200).json(updatedOrder);  // Respond with the updated order details
   })
 );
+
 
 module.exports = orderRoute;
