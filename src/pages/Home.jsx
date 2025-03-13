@@ -143,7 +143,7 @@ const Home = () => {
       <div className="w-full flex flex-col items-center justify-center">
         <div id="default-carousel" className="relative w-full h-screen" data-carousel="slide">
           {/* Carousel wrapper */}
-          <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
+          <div className="relative w-full mt-[6vw] h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
             {welcome_slides.map((slide, index) => (
               <div
                 key={index}
@@ -163,7 +163,7 @@ const Home = () => {
           </div>
 
           {/* Content overlay */}
-          <div className="absolute inset-0 flex items-center justify-center z-30 bg-[#4BC1D2]/30 backdrop-blur-[50px]">
+          <div className="absolute inset-0 flex items-center justify-center z-30 bg-[#4BC1D2]/30 backdrop-blur-[60px]">
             <div className="text-center max-w-4xl px-4">
               <p className="text-white text-xl tracking-wider mb-4 animate-fade-in">
                 Our Summer Hot-takes!
