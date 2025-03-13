@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const AdminReturnBook = () => {
   useEffect(() => {
@@ -6,63 +7,55 @@ const AdminReturnBook = () => {
   }, []);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [books, setBooks] = useState([
-    {
-      _id: 'ORDER123',
-      customerName: 'John Doe',
-      bookTitle: 'The Hitchhiker\'s Guide to the Galaxy',
-      bookStatus: 'borrowed',
-    },
-    {
-      _id: 'ORDER456',
-      customerName: 'Jane Smith',
-      bookTitle: 'Pride and Prejudice',
-      bookStatus: 'returned',
-    },
-    {
-      _id: 'ORDER789',
-      customerName: 'Alice Johnson',
-      bookTitle: '1984',
-      bookStatus: 'borrowed',
-    },
-    {
-        _id: 'ORDER101',
-        customerName: 'Bob Williams',
-        bookTitle: 'To Kill a Mockingbird',
-        bookStatus: 'returned',
-      },
-      {
-        _id: 'ORDER112',
-        customerName: 'Eva Brown',
-        bookTitle: 'The Great Gatsby',
-        bookStatus: 'borrowed',
-      },
-  ]);
+  const [orders, setOrders] = useState([]);
+
+  // Fetch all orders when the component mounts
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const { data } = await axios.get('http://localhost:3000/api/orders'); // Fetch orders from the backend API
+        setOrders(data);  // Store the fetched orders in the state
+        console.log(data);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        alert('Failed to load orders');
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleBookStatusChange = (orderId, value) => {
-    setBooks(
-      books.map((book) =>
-        book._id === orderId ? { ...book, bookStatus: value } : book
-      )
-    );
+  const handleReturnBook = async (orderId) => {
+    try {
+      // Send a PUT request to update the order status to 'returned'
+      const { data } = await axios.put(`http://localhost:3000/api/orders/${orderId}/return`);
+      
+      // If successful, update the order status in the frontend
+      setOrders(
+        orders.map((order) =>
+          order._id === orderId ? { ...order, orderStatus: 'returned' } : order
+        )
+      );
+  
+      alert('Book returned successfully!');
+    } catch (error) {
+      console.error('Error returning book:', error);
+      alert('Failed to return the book. Please try again.');
+    }
   };
 
-  const handleSaveChanges = () => {
-    alert('Changes saved successfully! (Dummy Function)');
-    console.log(books); // Log the updated books to console (for demonstration)
-  };
-
-  const filteredBooks = books.filter(
-    (book) =>
-      (book._id && book._id.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (book.customerName &&
-        book.customerName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (book.bookTitle &&
-        book.bookTitle.toLowerCase().includes(searchTerm.toLowerCase()))
+  // Filter orders where the status is 'borrowed' and category is 'Book'
+  const filteredOrders = orders.filter(
+    (order) =>
+      order.orderItems.some((item) => item.category === 'Book') && // Only include items of category 'Book'
+      order.orderStatus === "delivered" && // Only include orders where status is 'delivered'
+      (order._id.toLowerCase().includes(searchTerm.toLowerCase()) || 
+       order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       order.orderItems.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase())))
   );
 
   return (
@@ -70,12 +63,6 @@ const AdminReturnBook = () => {
       <div className="flex flex-col md:flex-row items-center justify-between mb-4 mt-7">
         <div className="flex items-center mb-4 md:mb-0">
           <h1 className="text-2xl font-bold font-raleway">RETURN BOOKS</h1>
-          <button
-            className="bg-[#334147] hover:bg-[#07779D] text-white font-raleway font-medium py-2 px-4 rounded-md ml-4"
-            onClick={handleSaveChanges}
-          >
-            SAVE CHANGES
-          </button>
         </div>
 
         <div className="relative ml-0 md:ml-4 w-full md:w-[300px]">
@@ -119,40 +106,39 @@ const AdminReturnBook = () => {
                 BOOK'S TITLE
               </th>
               <th className="px-[0.5vw] py-[1vw] border font-bold font-raleway text-black text-center w-[20%]">
-                BOOK STATUS
+                ACTION
               </th>
             </tr>
           </thead>
           <tbody>
-            {filteredBooks.map((book, index) => (
+            {filteredOrders.map((order, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}
               >
                 <td className="px-[0.5vw] py-[1vw] border text-center">
-                  {book._id}
+                  {order._id}
                 </td>
                 <td className="px-[0.5vw] py-[1vw] border text-center">
-                  {book.customerName}
+                  {order.customerName}
                 </td>
                 <td className="px-[0.5vw] py-[1vw] border text-center">
-                  {book.bookTitle}
+                  {order.orderItems.map(item => (
+                    item.category === 'Book' && ( // Only display books
+                    <div key={item._id}>
+                      <strong>{item.name}</strong><br />
+                      <img src={item.image} alt={item.name} style={{ width: '50px', height: 'auto' }} /><br />
+                    </div>
+                    )
+                  ))}
                 </td>
                 <td className="px-[0.5vw] py-[1vw] border text-center">
-                  <select
-                    value={book.bookStatus}
-                    onChange={(e) =>
-                      handleBookStatusChange(book._id, e.target.value)
-                    }
-                    className={`border rounded p-1 ${
-                      book.bookStatus === 'borrowed'
-                        ? 'bg-yellow-200'
-                        : 'bg-green-200'
-                    }`}
+                  <button
+                    className="bg-[#07779D] text-white font-medium py-2 px-4 rounded-md"
+                    onClick={() => handleReturnBook(order._id)}
                   >
-                    <option value="borrowed">Borrowed</option>
-                    <option value="returned">Returned</option>
-                  </select>
+                    Return Book
+                  </button>
                 </td>
               </tr>
             ))}

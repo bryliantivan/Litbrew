@@ -69,7 +69,7 @@ const orderSchema = new mongoose.Schema({
     orderStatus: {
         type: String,
         required: true,
-        enum: ['confirm', 'processing', 'delivered'],
+        enum: ['confirm', 'processing', 'delivered', 'returned'],
         default: 'confirm',
     },
     estimatedPickUpTime: {

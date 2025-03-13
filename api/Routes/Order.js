@@ -135,7 +135,7 @@ orderRoute.get(
 // Update order status (orderStatus)
 orderRoute.put(
   "/:id/status",
-  protect,  // Pastikan hanya pengguna terotorisasi yang bisa mengubah status
+  protect, 
   asyncHandler(async (req, res) => {
     const { orderStatus } = req.body;  // Ambil status baru dari body request
 
@@ -226,7 +226,6 @@ orderRoute.put(
 // Get all orders (Admin or authorized user only)
 orderRoute.get(
   "/",
-  protect, // Add authorization check here
   asyncHandler(async (req, res) => {
     try {
 
@@ -275,5 +274,40 @@ orderRoute.put(
   })
 );
 
+// Return book (Update stock)
+orderRoute.put(
+  "/:id/return", // Route for returning books
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;  // Get the orderId from request params
+
+    // Find the order by ID
+    const order = await Order.findById(id);
+    if (!order) {
+      res.status(404).json({ message: "Order not found" });
+      return;  // Exit early if order is not found
+    }
+
+    // Ensure the order has 'borrowed' items
+    if (order.orderStatus !== 'delivered') {
+      res.status(400).json({ message: "This order cannot be returned as it is not borrowed." });
+      return;
+    }
+
+    // Process the order return (e.g., update the stock, change order status)
+    for (let item of order.orderItems) {
+      const product = await Product.findById(item.product);
+      if (product) {
+        product.countInStock += item.qty;  // Increase stock based on quantity returned
+        await product.save(); // Save the updated product
+      }
+    }
+
+    // Mark the order as returned
+    order.orderStatus = 'returned';
+    const updatedOrder = await order.save();  // Save the updated order
+
+    res.status(200).json(updatedOrder);  // Respond with the updated order details
+  })
+);
 
 module.exports = orderRoute;
