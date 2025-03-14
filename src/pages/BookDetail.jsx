@@ -53,7 +53,7 @@ const BookDetail = () => {
                         </h1>
                         <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
                             <p className="text-2xl font-extrabold text-gray-900 sm:text-3xl">
-                                Rp. {product?.price} / 3 hours
+                                Rp. {product?.price}
                             </p>
                         </div>
                         <div className="flex items-center mt-4">
